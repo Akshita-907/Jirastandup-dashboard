@@ -73,6 +73,11 @@ const TODAY = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '
 // Sprint #38 window (update on rollover, or derive from Jira sprint field once stored)
 const SPRINT_START = '2026-07-16';
 const SPRINT_END_DAY = '2026-07-30';
+// Reporting window is scoped to the ELAPSED part of the sprint: start → today
+// (clamped to the sprint end). Time-series charts and the headline framing cover
+// Jul 16 → today rather than projecting empty days out to the sprint end. ISO date
+// strings compare correctly with <, so no Date parsing is needed here.
+const REPORT_END = TODAY < SPRINT_END_DAY ? TODAY : SPRINT_END_DAY;
 
 // Count working days (Mon–Fri) strictly AFTER start, up to and including end.
 function workingDaysBetween(startStr, endStr) {
@@ -202,6 +207,32 @@ function fmtHours(h) {
 const DONE_STATUSES = ['Done', 'Released To Prod', 'Ready to Release'];
 const isDone = (status) => DONE_STATUSES.includes(status);
 
+// Canonical issue-type sort order (Story first, then Bug, …) used by type filters and grouping.
+const TYPE_ORDER = { Story: 0, Bug: 1, Task: 2, Epic: 3 };
+const pluralType = (t) => (t === 'Story' ? 'Stories' : `${t}s`);
+
+// Reusable issue-type filter chips (All types / Stories / Bugs / …), built from the
+// distinct types present in `scope`. `value` is the selected type ('All' = no filter);
+// clicking the active chip again clears back to 'All'.
+function TypeFilterChips({ scope, value, onChange }) {
+  const types = [...new Set(scope.map(i => i.type))].sort((a, b) => (TYPE_ORDER[a] ?? 9) - (TYPE_ORDER[b] ?? 9));
+  // Nothing to filter when the scope is a single type — but keep chips visible if a
+  // filter is currently active, so the user can always clear back to All.
+  if (types.length < 2 && value === 'All') return null;
+  return (
+    <div className="filter-tabs">
+      <button className={`filter-tab ${value === 'All' ? 'active' : ''}`} onClick={() => onChange('All')}>
+        All types <span className="filter-tab-count">{scope.length}</span>
+      </button>
+      {types.map(t => (
+        <button key={t} className={`filter-tab ${value === t ? 'active' : ''}`} onClick={() => onChange(value === t ? 'All' : t)}>
+          <TypeIcon type={t} /> {pluralType(t)} <span className="filter-tab-count">{scope.filter(i => i.type === t).length}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // SLA "stuck" thresholds — days a ticket can sit in an ACTIVE status without an update
 // before it's flagged. Only statuses where work should be moving are tracked; To Do is
 // deliberately excluded (an unstarted ticket is backlog, not a breach — its risk is
@@ -292,7 +323,8 @@ function GlobalSearch({ issues, onPick }) {
 function Burnup({ issues }) {
   const doneSet = new Set(DONE_STATUSES);
   const start = new Date(SPRINT_START + 'T00:00:00');
-  const end = new Date(SPRINT_END_DAY + 'T00:00:00');
+  // Elapsed window only: span start → today, not the full sprint end.
+  const end = new Date(REPORT_END + 'T00:00:00');
   const days = [];
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) days.push(dateStr(new Date(d)));
   const total = issues.length;
@@ -596,12 +628,15 @@ function App() {
   const [showTeamOverdue, setShowTeamOverdue] = useState(false);
   const [teamMemberFilter, setTeamMemberFilter] = useState('All');
   const [teamStatusFilter, setTeamStatusFilter] = useState('');
+  const [teamTypeFilter, setTeamTypeFilter] = useState('All'); // 'All' | 'Bug' | 'Story' | …
   const [capTeam, setCapTeam] = useState(null);
   const [analyticsRange, setAnalyticsRange] = useState('sprint');
   const [analyticsDev, setAnalyticsDev] = useState(null);
   const [analyticsDevStatus, setAnalyticsDevStatus] = useState('all');
+  const [analyticsDevType, setAnalyticsDevType] = useState('All');
   const [analyticsQA, setAnalyticsQA] = useState(null);
   const [analyticsQAStatus, setAnalyticsQAStatus] = useState('all');
+  const [analyticsQAType, setAnalyticsQAType] = useState('All');
 
   // When a person is drilled into on Analytics, the detail panel renders near the top
   // of the page — scroll it into view so the click visibly "does something".
@@ -615,6 +650,7 @@ function App() {
   const [discussed, setDiscussed] = useState(() => new Set());
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [personFilter, setPersonFilter] = useState('all');
+  const [personTypeFilter, setPersonTypeFilter] = useState('All');
   const [qaFilter, setQaFilter] = useState('all');
   const [standupPerson, setStandupPerson] = useState('all');
   const [standupCat, setStandupCat] = useState('focus');
@@ -672,6 +708,10 @@ function App() {
   // ---- Dashboard headline stats + auto insights ----
   const SPRINT_END = new Date(SPRINT_END_DAY + 'T23:59:59');
   const daysLeft = Math.max(0, Math.round((SPRINT_END - new Date(TODAY + 'T23:59:59')) / 86400000));
+  // Elapsed-window framing: which day of the sprint we're reporting through (inclusive).
+  const sprintTotalDays = calDays(SPRINT_START, SPRINT_END_DAY) + 1;
+  const sprintDayNum = Math.min(sprintTotalDays, calDays(SPRINT_START, TODAY) + 1);
+  const reportEndLabel = new Date(REPORT_END + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
   const doneCount = issues.filter(i => isDone(i.status)).length;
   const completionPct = issues.length ? Math.round((doneCount / issues.length) * 100) : 0;
   const unassignedActive = issues.filter(i => i.assignee === 'Unassigned' && !isDone(i.status)).length;
@@ -864,6 +904,7 @@ function App() {
     else if (personFilter === 'stalled') list = p.stalled;
     else if (personFilter === 'blocked') list = p.blocked;
     else list = active.filter(i => i.status === personFilter);
+    if (personTypeFilter !== 'All') list = list.filter(i => i.type === personTypeFilter);
     list = [...list].sort((a, b) => daysInStatus(b) - daysInStatus(a));
     return (
       <>
@@ -881,6 +922,7 @@ function App() {
             </button>
           ))}
         </div>
+        <TypeFilterChips scope={active} value={personTypeFilter} onChange={setPersonTypeFilter} />
         <table className="aging-table">
           <thead><tr><th>Key</th><th>Summary</th><th>Status</th><th>In status</th><th>Flags</th></tr></thead>
           <tbody>
@@ -1102,7 +1144,7 @@ function App() {
         <div className="top-header">
           <div className="header-title">
             <h1>Engineering Control Tower</h1>
-            <p>{new Date(TODAY + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} • Sprint #38 (Jul 16–30) • {daysLeft === 0 ? 'Final day' : `${daysLeft} days remaining`}</p>
+            <p>{new Date(TODAY + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} • Sprint #38 • Jul 16 – {reportEndLabel} elapsed (day {sprintDayNum} of {sprintTotalDays}) • {daysLeft === 0 ? 'Final day' : `${daysLeft} days remaining`}</p>
           </div>
           <div className="header-actions">
             <GlobalSearch issues={issues} onPick={(i) => setSelectedTicket(i)} />
@@ -1183,7 +1225,7 @@ function App() {
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
                 <h2 className="section-title">Sprint Progress</h2>
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-                  {doneCount} of {issues.length} done · {daysLeft} day{daysLeft === 1 ? '' : 's'} left
+                  {doneCount} of {issues.length} done · day {sprintDayNum} of {sprintTotalDays} · {daysLeft} day{daysLeft === 1 ? '' : 's'} left
                 </span>
               </div>
               {(() => {
@@ -1248,7 +1290,7 @@ function App() {
             <div className="section-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
                 <h2 className="section-title">Sprint burnup</h2>
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Completed (Done / Ready) vs total scope, by day</span>
+                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Completed (Done / Ready) vs total scope, by day · Jul 16 – {reportEndLabel}</span>
               </div>
               <Burnup issues={issues} />
             </div>
@@ -1480,7 +1522,7 @@ function App() {
                       ))}
                     </select>
                   </div>
-                  <button className="btn btn-primary" onClick={() => { setPresenter(!presenter); setPresenterIdx(0); setPersonFilter('all'); }}>
+                  <button className="btn btn-primary" onClick={() => { setPresenter(!presenter); setPresenterIdx(0); setPersonFilter('all'); setPersonTypeFilter('All'); }}>
                     <Icon name="zap" size={15} /> {presenter ? 'Exit presenter' : 'Presenter mode'}
                   </button>
                 </div>
@@ -1501,10 +1543,10 @@ function App() {
                     return (
                       <div className="presenter">
                         <div className="presenter-nav">
-                          <button className="btn btn-secondary" disabled={presenterIdx === 0} onClick={() => { setPresenterIdx(i => Math.max(0, i - 1)); setPersonFilter('all'); }}>← Prev</button>
+                          <button className="btn btn-secondary" disabled={presenterIdx === 0} onClick={() => { setPresenterIdx(i => Math.max(0, i - 1)); setPersonFilter('all'); setPersonTypeFilter('All'); }}>← Prev</button>
                           <span className="presenter-count">{presenterIdx + 1} / {personBriefs.length} · {discussed.size} discussed</span>
-                          <button className="btn btn-secondary" disabled={presenterIdx >= personBriefs.length - 1} onClick={() => { setPresenterIdx(i => Math.min(personBriefs.length - 1, i + 1)); setPersonFilter('all'); }}>Next →</button>
-                          <button className="btn btn-primary" onClick={() => { setDiscussed(prev => new Set(prev).add(p.name)); setPresenterIdx(i => Math.min(personBriefs.length - 1, i + 1)); setPersonFilter('all'); }}>
+                          <button className="btn btn-secondary" disabled={presenterIdx >= personBriefs.length - 1} onClick={() => { setPresenterIdx(i => Math.min(personBriefs.length - 1, i + 1)); setPersonFilter('all'); setPersonTypeFilter('All'); }}>Next →</button>
+                          <button className="btn btn-primary" onClick={() => { setDiscussed(prev => new Set(prev).add(p.name)); setPresenterIdx(i => Math.min(personBriefs.length - 1, i + 1)); setPersonFilter('all'); setPersonTypeFilter('All'); }}>
                             <Icon name="check" size={15} /> Discussed &amp; next
                           </button>
                           <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>← → move · D / Space = discussed</span>
@@ -1808,7 +1850,7 @@ function App() {
                     { key: 'week', label: 'Last 7 days' },
                     { key: 'last', label: 'Last sprint (#37)' },
                   ].map(r => (
-                    <button key={r.key} className={`filter-tab ${analyticsRange === r.key ? 'active' : ''}`} onClick={() => { setAnalyticsRange(r.key); setAnalyticsDev(null); setAnalyticsDevStatus('all'); setAnalyticsQA(null); setAnalyticsQAStatus('all'); }}>
+                    <button key={r.key} className={`filter-tab ${analyticsRange === r.key ? 'active' : ''}`} onClick={() => { setAnalyticsRange(r.key); setAnalyticsDev(null); setAnalyticsDevStatus('all'); setAnalyticsDevType('All'); setAnalyticsQA(null); setAnalyticsQAStatus('all'); setAnalyticsQAType('All'); }}>
                       {r.label}
                     </button>
                   ))}
@@ -1832,6 +1874,7 @@ function App() {
                 const stCounts = {};
                 tix.forEach(i => { stCounts[i.status] = (stCounts[i.status] || 0) + 1; });
                 const shown = (analyticsDevStatus === 'all' ? tix : tix.filter(i => i.status === analyticsDevStatus))
+                  .filter(i => analyticsDevType === 'All' || i.type === analyticsDevType)
                   .sort((a, b) => daysInStatus(b) - daysInStatus(a));
                 return (
                   <div id="analytics-detail" className="section-panel" style={{ borderColor: 'var(--color-primary)' }}>
@@ -1865,8 +1908,9 @@ function App() {
                         </button>
                       ))}
                     </div>
+                    <TypeFilterChips scope={tix} value={analyticsDevType} onChange={setAnalyticsDevType} />
                     <SmartTable
-                      key={'devdetail' + analyticsDev + analyticsDevStatus}
+                      key={'devdetail' + analyticsDev + analyticsDevStatus + analyticsDevType}
                       rows={shown}
                       columns={['Key', 'Summary', 'Status', 'SP', 'In status', 'Dev SLA', 'QA time', 'Flags']}
                       searchText={(i) => `${i.key} ${i.summary} ${i.status}`}
@@ -1908,6 +1952,7 @@ function App() {
                 const stCounts = {};
                 tix.forEach(i => { stCounts[i.status] = (stCounts[i.status] || 0) + 1; });
                 const shown = (analyticsQAStatus === 'all' ? tix : tix.filter(i => i.status === analyticsQAStatus))
+                  .filter(i => analyticsQAType === 'All' || i.type === analyticsQAType)
                   .sort((a, b) => daysInStatus(b) - daysInStatus(a));
                 return (
                   <div id="analytics-detail" className="section-panel" style={{ borderColor: '#7c3aed' }}>
@@ -1936,8 +1981,9 @@ function App() {
                         </button>
                       ))}
                     </div>
+                    <TypeFilterChips scope={tix} value={analyticsQAType} onChange={setAnalyticsQAType} />
                     <SmartTable
-                      key={'qadetail' + analyticsQA + analyticsQAStatus}
+                      key={'qadetail' + analyticsQA + analyticsQAStatus + analyticsQAType}
                       rows={shown}
                       columns={['Key', 'Summary', 'Status', 'Developer', 'SP', 'In status', 'QA time', 'Flags']}
                       searchText={(i) => `${i.key} ${i.summary} ${i.assignee} ${i.status}`}
@@ -1982,7 +2028,7 @@ function App() {
                 <div className="team-chart">
                   {devBarRows.map(r => (
                     <div key={r.name} className="team-chart-row clickable-card" title={`${r.name}: ${r.ontime} on time, ${r.late} late, ${r.flagged} flagged, ${r.pending} pending — click for detail`}
-                      onClick={() => { setAnalyticsDev(r.name); setAnalyticsDevStatus('all'); setAnalyticsQA(null); scrollToDetail(); }}>
+                      onClick={() => { setAnalyticsDev(r.name); setAnalyticsDevStatus('all'); setAnalyticsDevType('All'); setAnalyticsQA(null); scrollToDetail(); }}>
                       <span className="tc-name">{r.name}</span>
                       <span className="tc-track">
                         <span className="tc-fill" style={{ width: `${r.pct}%`, background: r.pct >= 70 ? 'var(--color-success)' : r.pct >= 40 ? 'var(--color-warning)' : 'var(--color-danger)' }} />
@@ -1994,7 +2040,7 @@ function App() {
                   {devBarRows.length === 0 && <p style={{ margin: 0, color: 'var(--text-muted)' }}>No started tickets to measure yet.</p>}
                 </div>
                 <h4 style={{ margin: '8px 0 0', fontSize: '13px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Developer stats — click a header to sort, a row for detail</h4>
-                <DevStatsTable key={'devstats' + analyticsRange} rows={devRows} showSpill={analyticsRange !== 'last'} onPick={(name) => { setAnalyticsDev(name); setAnalyticsDevStatus('all'); setAnalyticsQA(null); scrollToDetail(); }} />
+                <DevStatsTable key={'devstats' + analyticsRange} rows={devRows} showSpill={analyticsRange !== 'last'} onPick={(name) => { setAnalyticsDev(name); setAnalyticsDevStatus('all'); setAnalyticsDevType('All'); setAnalyticsQA(null); scrollToDetail(); }} />
               </div>
 
               {/* SLA BREACHES PER DEVELOPER */}
@@ -2004,7 +2050,7 @@ function App() {
                   <p>Tickets currently past their story-point budget without reaching QA, by assignee.</p>
                   <div className="team-chart">
                     {devBreachRows.map(r => (
-                      <div key={r.name} className="team-chart-row clickable-card" onClick={() => { setAnalyticsDev(r.name); setAnalyticsDevStatus('all'); setAnalyticsQA(null); scrollToDetail(); }}>
+                      <div key={r.name} className="team-chart-row clickable-card" onClick={() => { setAnalyticsDev(r.name); setAnalyticsDevStatus('all'); setAnalyticsDevType('All'); setAnalyticsQA(null); scrollToDetail(); }}>
                         <span className="tc-name">{r.name}</span>
                         <span className="tc-track">
                           <span className="tc-fill" style={{ width: `${(r.flagged / maxFlagged) * 100}%`, background: 'var(--color-danger)' }} />
@@ -2024,7 +2070,7 @@ function App() {
                 <div className="team-chart">
                   {qaBarRows.map(r => (
                     <div key={r.name} className="team-chart-row clickable-card" title={`${r.name}: ${r.within} within 24h, ${r.over} over, ${r.pendingOk} in QA <24h — click for detail`}
-                      onClick={() => { setAnalyticsQA(r.name); setAnalyticsQAStatus('all'); setAnalyticsDev(null); scrollToDetail(); }}>
+                      onClick={() => { setAnalyticsQA(r.name); setAnalyticsQAStatus('all'); setAnalyticsQAType('All'); setAnalyticsDev(null); scrollToDetail(); }}>
                       <span className="tc-name">{r.name}</span>
                       <span className="tc-track">
                         {r.pct != null && <span className="tc-fill" style={{ width: `${r.pct}%`, background: r.pct >= 70 ? 'var(--color-success)' : r.pct >= 40 ? 'var(--color-warning)' : 'var(--color-danger)' }} />}
@@ -2042,7 +2088,7 @@ function App() {
                   columns={['QA', 'Assigned', 'Total SP', 'In QA now', 'Tested (done)', 'Tested SP', 'Avg turnaround', 'Within 24h', 'Success rate']}
                   searchText={(r) => r.name}
                   renderRow={(r) => (
-                    <tr key={r.name} className="clickable-card" onClick={() => { setAnalyticsQA(r.name); setAnalyticsQAStatus('all'); setAnalyticsDev(null); scrollToDetail(); }}>
+                    <tr key={r.name} className="clickable-card" onClick={() => { setAnalyticsQA(r.name); setAnalyticsQAStatus('all'); setAnalyticsQAType('All'); setAnalyticsDev(null); scrollToDetail(); }}>
                       <td style={{ fontWeight: 600 }}>{r.name}</td>
                       <td>{r.assigned}</td>
                       <td>{r.sp}</td>
@@ -2124,7 +2170,7 @@ function App() {
                   <div 
                     key={teamName} 
                     className={`team-card ${selectedTeam === teamName ? 'active' : ''}`}
-                    onClick={() => { setSelectedTeam(teamName); setShowTeamSla(false); setShowTeamOverdue(false); setSelectedDevFilter(null); setTeamMemberFilter('All'); setTeamStatusFilter(''); }}
+                    onClick={() => { setSelectedTeam(teamName); setShowTeamSla(false); setShowTeamOverdue(false); setSelectedDevFilter(null); setTeamMemberFilter('All'); setTeamStatusFilter(''); setTeamTypeFilter('All'); }}
                     style={{ 
                       borderColor: selectedTeam === teamName ? 'var(--color-primary)' : 'var(--border-color)',
                       boxShadow: selectedTeam === teamName ? '0 0 10px var(--color-primary-glow)' : 'none'
@@ -2249,6 +2295,9 @@ function App() {
                     })}
                   </div>
 
+                  {/* Issue-type breakdown — clickable filter (Stories / Bugs / …), scoped to the selected member */}
+                  <TypeFilterChips scope={metrics.allIssues.filter(matchesMember)} value={teamTypeFilter} onChange={setTeamTypeFilter} />
+
                   {/* Member stat cards (when a member is selected) */}
                   {teamMemberFilter !== 'All' && (() => {
                     const mt = metrics.allIssues.filter(matchesMember);
@@ -2277,8 +2326,9 @@ function App() {
                   {(() => {
                     let list = metrics.allIssues.filter(matchesMember);
                     if (teamStatusFilter) list = list.filter(i => i.status === teamStatusFilter);
+                    if (teamTypeFilter !== 'All') list = list.filter(i => i.type === teamTypeFilter);
                     const ORD = { 'To Do': 0, 'In Progress': 1, 'Code Review': 2, 'QA Review': 3, 'QA BLOCKED': 4, 'Ready to Release': 5, 'Done': 6, 'Released To Prod': 7, 'Rejected': 8 };
-                    const TYPE_ORD = { Story: 0, Bug: 1, Task: 2, Epic: 3 };
+                    const TYPE_ORD = TYPE_ORDER;
                     const ownerOf = (i) => (selectedTeam === 'QA Team' ? issueQAs(i)[0] : i.assignee) || 'zzz-Unassigned';
                     // Group: assignee together; within each person, by issue type (all Stories, then all
                     // Bugs, ...), then statuses clustered in workflow order within each type
@@ -2300,7 +2350,7 @@ function App() {
                     return (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                         <h4 style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                          {who}{teamStatusFilter ? ' · ' + teamStatusFilter : ''} ({list.length})
+                          {who}{teamTypeFilter !== 'All' ? ' · ' + (teamTypeFilter === 'Story' ? 'Stories' : teamTypeFilter + 's') : ''}{teamStatusFilter ? ' · ' + teamStatusFilter : ''} ({list.length})
                         </h4>
                         <div className="summary-grid">
                           <MetricCard icon="target" title="Total SP" value={totalSP}
@@ -2310,7 +2360,7 @@ function App() {
                             color={pendingSP > 0 ? 'var(--color-warning)' : 'var(--text-primary)'} desc="In flight or unstarted" />
                         </div>
                         <SmartTable
-                          key={selectedTeam + teamMemberFilter + teamStatusFilter}
+                          key={selectedTeam + teamMemberFilter + teamStatusFilter + teamTypeFilter}
                           rows={list}
                           columns={['Type', 'Key', 'Summary', selectedTeam === 'QA Team' ? 'Primary QA' : 'Assignee', 'Status', 'SP', 'In status', 'Flags']}
                           searchText={(i) => `${i.key} ${i.summary} ${i.assignee} ${i.primaryQA} ${i.status} ${i.type}`}
