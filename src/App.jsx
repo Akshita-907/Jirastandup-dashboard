@@ -1687,7 +1687,9 @@ function App() {
                   <h2 className="section-title">AI standup call transcripts</h2>
                   {(() => {
                     const t = TRANSCRIPTS.find(x => x.date === transcriptDate);
-                    return t ? <a className="btn btn-secondary" href={t.viewUrl} target="_blank" rel="noreferrer"><Icon name="refresh" size={14} /> Open in Drive</a> : null;
+                    if (!t) return null;
+                    const href = t.downloadUrl || `${import.meta.env.BASE_URL}transcripts/${t.date}.docx`;
+                    return <a className="btn btn-secondary" href={href} download={`standup-${t.date}.docx`}><Icon name="download" size={14} /> Download transcript</a>;
                   })()}
                 </div>
                 <p>Gemini notes &amp; full transcript from each daily standup call (Jul 16 onward). Ask-anything AI search is coming next.</p>
