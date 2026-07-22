@@ -970,6 +970,33 @@ tr.type-start:not(.group-start) td { border-top: 1px dashed var(--border-color-h
   gap: 7px;
 }
 
+/* Labeled filter group — a leading caption tells the user what the chips filter by
+   (Member / Status / Type), so stacked chip rows aren't ambiguous. */
+.filter-group {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 8px 0;
+}
+.filter-group + .filter-group {
+  border-top: 1px solid var(--border-color);
+}
+.filter-group-label {
+  flex: 0 0 auto;
+  width: 62px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  padding-top: 8px;
+}
+.filter-group .filter-tabs {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
 .filter-tab {
   display: inline-flex;
   align-items: center;
@@ -1025,6 +1052,34 @@ tr.type-start:not(.group-start) td { border-top: 1px dashed var(--border-color-h
 .filter-tab.tone-warn .filter-tab-count { color: var(--color-warning); background: var(--color-warning-glow); border-color: rgba(178,106,0,0.2); }
 .filter-tab.tone-good .filter-tab-count { color: var(--color-success); background: var(--color-success-glow); border-color: rgba(18,129,63,0.2); }
 .filter-tab.tone-qa .filter-tab-count { color: #7c3aed; background: rgba(124,58,237,0.1); border-color: rgba(124,58,237,0.2); }
+
+/* Inline team-member capacity breakdown — expands under the clicked team row */
+.cap-member-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 4px 0 10px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-deep);
+  animation: cap-detail-in 0.16s ease;
+}
+@keyframes cap-detail-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Inline "why flagged" info icon on the analytics reliability bars */
+.flag-info {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 5px;
+  color: var(--color-danger);
+  cursor: help;
+  vertical-align: middle;
+}
+.flag-info:hover { opacity: 0.75; }
 .filter-tab.active .filter-tab-count { color: #fff; background: rgba(255,255,255,0.2); border-color: transparent; }
 
 /* Standup control bar + category cards */

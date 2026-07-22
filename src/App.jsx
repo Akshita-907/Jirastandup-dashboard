@@ -5,6 +5,11 @@ import LAST_SPRINT from './lastSprint.json';
 import DATA_META from './dataMeta.json';
 import { Icon, StatusBadge, PriorityBadge, getStatusMeta, Verdict, TypeIcon } from './Icon.jsx';
 
+// Standup transcripts load OPTIONALLY: src/transcripts.json is gitignored (it holds
+// internal meeting content + emails and must not be committed to a public repo), so it
+// may be absent in a fresh clone. Fall back to an empty list when the file isn't present.
+const TRANSCRIPTS = Object.values(import.meta.glob('./transcripts.json', { eager: true, import: 'default' }))[0] || [];
+
 // Complete list of G99PRODUCT active board members restructured by teams.
 // Names must match the Jira display name exactly (that's how tickets attribute).
 const REAL_TEAM = [
@@ -14,7 +19,7 @@ const REAL_TEAM = [
   { name: 'Ankur Singh', code: 'AN', devGroup: 'DevOps' },
   { name: 'abhishek.h', code: 'AH', devGroup: 'DevOps', intern: true },
   { name: 'Neha Kakkar', code: 'NE', devGroup: 'DevOps', intern: true },
-  { name: 'Sachin Tripathi', code: 'ST', devGroup: 'DevOps' },
+  { name: 'Sachin Tripathi', code: 'ST', devGroup: 'DevOps', intern: true },
 
   // Dev 1
   { name: 'Pushkar Murkute', code: 'PM', devGroup: 'Dev 1' },
@@ -35,7 +40,7 @@ const REAL_TEAM = [
 
   // TED
   { name: 'Saumya Mishra', code: 'SM', devGroup: 'TED' },
-  { name: 'gopesh.pandey', code: 'GP', devGroup: 'TED' },
+  { name: 'gopesh.pandey', code: 'GP', devGroup: 'TED', intern: true },
 
   // PM
   { name: 'akshita.garg', code: 'AG', devGroup: 'PM' },
@@ -763,8 +768,11 @@ function App() {
   const [personFilter, setPersonFilter] = useState('all');
   const [personTypeFilter, setPersonTypeFilter] = useState('All');
   const [qaFilter, setQaFilter] = useState('all');
+  const [qaTypeFilter, setQaTypeFilter] = useState('All'); // 'All' | 'Story' | 'Bug' | …
   const [standupPerson, setStandupPerson] = useState('all');
   const [standupCat, setStandupCat] = useState('focus');
+  const [transcriptDate, setTranscriptDate] = useState(TRANSCRIPTS.length ? TRANSCRIPTS[TRANSCRIPTS.length - 1].date : null);
+  const [transcriptQuery, setTranscriptQuery] = useState('');
 
   // Action Tracker inputs
   const [newActionText, setNewActionText] = useState('');
@@ -918,16 +926,21 @@ function App() {
     const completed = tickets.filter(i => isDone(i.status));
     const cycles = completed.map(i => i.qaCycleDays).filter(t => t != null && t >= 0);
     const avgCycle = cycles.length ? (cycles.reduce((a, b) => a + b, 0) / cycles.length).toFixed(1) : null;
+    // Tickets stuck in QA Review beyond the 24h allowance.
+    const overdueInQa = inQa.filter(i => overdueInfo(i).overdue);
     const cards = [
       { label: 'Assigned', value: tickets.length, color: 'var(--color-primary)', icon: 'target' },
       { label: 'In QA now', value: inQa.length, color: '#7c3aed', icon: 'clock' },
+      { label: 'Overdue in QA', value: overdueInQa.length, color: 'var(--color-danger)', icon: 'clock' },
       { label: 'QA Blocked', value: blocked.length, color: 'var(--color-danger)', icon: 'ban' },
       { label: 'Completed', value: completed.length, color: 'var(--color-success)', icon: 'check' },
       { label: 'Avg QA cycle', value: avgCycle != null ? `${avgCycle}d` : 'N/A', color: 'var(--text-primary)', icon: 'chart' },
     ];
     const statusCounts = {};
     tickets.forEach(i => { statusCounts[i.status] = (statusCounts[i.status] || 0) + 1; });
+    const typeScope = [...new Set(tickets.map(i => i.type))].sort((a, b) => (TYPE_ORDER[a] ?? 9) - (TYPE_ORDER[b] ?? 9));
     let list = qaFilter === 'all' ? tickets : tickets.filter(i => i.status === qaFilter);
+    if (qaTypeFilter !== 'All') list = list.filter(i => i.type === qaTypeFilter);
     list = [...list].sort((a, b) => daysInStatus(b) - daysInStatus(a));
     return (
       <div className="person-detail">
@@ -942,17 +955,36 @@ function App() {
             ))}
           </div>
         )}
-        {/* One filter row: All + each status actually present (no duplicate flag row) */}
-        <div className="filter-tabs">
-          <button className={`filter-tab ${qaFilter === 'all' ? 'active' : ''}`} onClick={() => setQaFilter('all')}>
-            All <span className="filter-tab-count">{tickets.length}</span>
-          </button>
-          {['QA Review', 'QA BLOCKED', 'In Progress', 'Code Review', 'Ready to Release', 'Done', 'Released To Prod'].filter(s => statusCounts[s]).map(s => (
-            <button key={s} className={`filter-tab ${qaFilter === s ? 'active' : ''}`} onClick={() => setQaFilter(qaFilter === s ? 'all' : s)}>
-              <span className="chip-dot" style={{ backgroundColor: getStatusMeta(s).color }} />{s} <span className="filter-tab-count">{statusCounts[s]}</span>
+        {/* Status filter — All + each status actually present */}
+        <div className="filter-group">
+          <span className="filter-group-label">Status</span>
+          <div className="filter-tabs">
+            <button className={`filter-tab ${qaFilter === 'all' ? 'active' : ''}`} onClick={() => setQaFilter('all')}>
+              All <span className="filter-tab-count">{tickets.length}</span>
             </button>
-          ))}
+            {['QA Review', 'QA BLOCKED', 'In Progress', 'Code Review', 'Ready to Release', 'Done', 'Released To Prod'].filter(s => statusCounts[s]).map(s => (
+              <button key={s} className={`filter-tab ${qaFilter === s ? 'active' : ''}`} onClick={() => setQaFilter(qaFilter === s ? 'all' : s)}>
+                <span className="chip-dot" style={{ backgroundColor: getStatusMeta(s).color }} />{s} <span className="filter-tab-count">{statusCounts[s]}</span>
+              </button>
+            ))}
+          </div>
         </div>
+        {/* Issue-type filter (Story / Bug / …) */}
+        {typeScope.length > 1 && (
+          <div className="filter-group">
+            <span className="filter-group-label">Type</span>
+            <div className="filter-tabs">
+              <button className={`filter-tab ${qaTypeFilter === 'All' ? 'active' : ''}`} onClick={() => setQaTypeFilter('All')}>
+                All types <span className="filter-tab-count">{tickets.length}</span>
+              </button>
+              {typeScope.map(t => (
+                <button key={t} className={`filter-tab ${qaTypeFilter === t ? 'active' : ''}`} onClick={() => setQaTypeFilter(qaTypeFilter === t ? 'All' : t)}>
+                  <TypeIcon type={t} /> {pluralType(t)} <span className="filter-tab-count">{tickets.filter(i => i.type === t).length}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
         <SmartTable
           key={(qa || 'all') + qaFilter}
           rows={list}
@@ -962,7 +994,7 @@ function App() {
             <tr key={i.key} className="clickable-card" onClick={() => setSelectedTicket(i)}>
               <td style={{ fontWeight: 600 }}>{i.key}</td>
               <td>{i.summary}</td>
-              <td><StatusBadge status={i.status} /></td>
+              <td><StatusBadge status={i.status} />{overdueInfo(i).overdue && i.status === 'QA Review' && <span className="qa-owner qa-unassigned" style={{ marginLeft: '6px' }}>Overdue {overdueInfo(i).label}</span>}</td>
               {!qa && <td><QAOwnerTag issue={i} />{!['QA Review','QA BLOCKED'].includes(i.status) && (issueQAs(i).join(', ') || '—')}</td>}
               <td>{i.assignee}</td>
               <td>{daysInStatus(i)}d</td>
@@ -1576,15 +1608,18 @@ function App() {
                   const mine = issues.filter(i => i.assignee === name);
                   const sp = mine.reduce((s, i) => s + (i.storyPoints || 0), 0);
                   const doneSp = mine.filter(i => isDone(i.status)).reduce((s, i) => s + (i.storyPoints || 0), 0);
-                  const bugs = mine.filter(i => i.type === 'Bug').length;
+                  const bugList = mine.filter(i => i.type === 'Bug');
+                  const bugs = bugList.length;
+                  // A bug counts as "done" once it has reached QA Review or beyond (done statuses).
+                  const bugsDone = bugList.filter(i => isDone(i.status) || i.status === 'QA Review').length;
                   // Active (not-done) ticket count — same definition used everywhere else in the app.
                   const tickets = mine.filter(i => !isDone(i.status)).length;
-                  return { name, team: teamOf(name), tickets, sp, doneSp, bugs };
+                  return { name, team: teamOf(name), tickets, sp, doneSp, bugs, bugsDone };
                 }).sort((a, b) => b.sp - a.sp || b.bugs - a.bugs);
                 return (
                   <table className="aging-table">
                     <thead>
-                      <tr><th>Person</th><th>Team</th><th>Tickets</th><th>Story points (done/total)</th><th>Bugs</th></tr>
+                      <tr><th>Person</th><th>Team</th><th>Tickets</th><th>Story points (done/total)</th><th>Bugs (done/total)</th></tr>
                     </thead>
                     <tbody>
                       {rows.map(r => (
@@ -1593,7 +1628,10 @@ function App() {
                           <td style={{ color: 'var(--text-muted)' }}>{r.team}</td>
                           <td>{r.tickets}</td>
                           <td style={{ fontFeatureSettings: '"tnum"' }}><span style={{ color: 'var(--color-success)' }}>{r.doneSp}</span> / {r.sp}</td>
-                          <td style={{ fontWeight: 600, color: r.bugs > 0 ? 'var(--color-danger)' : 'var(--text-muted)' }}>{r.bugs}</td>
+                          <td style={{ fontWeight: 600, fontFeatureSettings: '"tnum"' }}>
+                            <span style={{ color: 'var(--color-success)' }}>{r.bugsDone}</span>
+                            <span style={{ color: r.bugs > 0 ? 'var(--color-danger)' : 'var(--text-muted)' }}> / {r.bugs}</span>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -1643,6 +1681,57 @@ function App() {
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
 
+              {/* AI STANDUP CALL TRANSCRIPTS */}
+              <div className="section-panel">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                  <h2 className="section-title">AI standup call transcripts</h2>
+                  {(() => {
+                    const t = TRANSCRIPTS.find(x => x.date === transcriptDate);
+                    if (!t) return null;
+                    const href = t.downloadUrl || `${import.meta.env.BASE_URL}transcripts/${t.date}.docx`;
+                    return <a className="btn btn-secondary" href={href} download={`standup-${t.date}.docx`}><Icon name="download" size={14} /> Download transcript</a>;
+                  })()}
+                </div>
+                <p>Gemini notes &amp; full transcript from each daily standup call (Jul 16 onward). Ask-anything AI search is coming next.</p>
+                {TRANSCRIPTS.length === 0 ? (
+                  <p style={{ color: 'var(--text-muted)', margin: 0 }}>No transcripts available yet.</p>
+                ) : (
+                  <>
+                    <div className="filter-tabs">
+                      {TRANSCRIPTS.map(t => (
+                        <button key={t.date} className={`filter-tab ${transcriptDate === t.date ? 'active' : ''}`} onClick={() => setTranscriptDate(t.date)}>
+                          {new Date(t.date + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })}
+                        </button>
+                      ))}
+                    </div>
+                    <input
+                      style={{ width: '100%', margin: '4px 0 12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-primary)', fontSize: '13px', boxSizing: 'border-box' }}
+                      placeholder="Search within this transcript (keyword)…"
+                      value={transcriptQuery}
+                      onChange={(e) => setTranscriptQuery(e.target.value)}
+                    />
+                    {(() => {
+                      const t = TRANSCRIPTS.find(x => x.date === transcriptDate) || TRANSCRIPTS[TRANSCRIPTS.length - 1];
+                      const q = transcriptQuery.trim().toLowerCase();
+                      let body = t.content, note = null;
+                      if (q) {
+                        const hits = t.content.split('\n').filter(l => l.toLowerCase().includes(q));
+                        body = hits.join('\n');
+                        note = `${hits.length} matching line${hits.length === 1 ? '' : 's'} for “${transcriptQuery}”`;
+                      }
+                      return (
+                        <>
+                          {note && <p style={{ fontSize: '12px', color: 'var(--text-muted)', margin: '0 0 8px' }}>{note}</p>}
+                          <div style={{ maxHeight: '460px', overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '13px', lineHeight: 1.6, backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '16px' }}>
+                            {body || 'No matching lines in this transcript.'}
+                          </div>
+                        </>
+                      );
+                    })()}
+                  </>
+                )}
+              </div>
+
               {/* CONTROL BAR + CATEGORY CARDS */}
               <div className="section-panel">
                 <div className="standup-controlbar">
@@ -1671,7 +1760,7 @@ function App() {
                 </div>
               </div>
 
-              {presenter ? (
+              {presenter && (
                 <div className="section-panel">
                   {personBriefs.length > 0 && (() => {
                     const p = personBriefs[Math.min(presenterIdx, personBriefs.length - 1)];
@@ -1691,33 +1780,6 @@ function App() {
                       </div>
                     );
                   })()}
-                </div>
-              ) : (
-                <div className="section-panel">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                    <h2 className="section-title">{activeCat.label} — {scopeLabel} ({list.length})</h2>
-                    <span className="filter-count">Click any ticket for its full timeline</span>
-                  </div>
-                  <SmartTable
-                    key={standupCat + standupPerson}
-                    rows={list}
-                    columns={['Key', 'Summary', 'Assignee', 'Status', 'In status', 'Flags']}
-                    searchText={(i) => `${i.key} ${i.summary} ${i.assignee} ${i.primaryQA} ${i.status}`}
-                    renderRow={(i) => (
-                      <tr key={i.key} className="clickable-card" onClick={() => setSelectedTicket(i)}>
-                        <td style={{ fontWeight: 600 }}>{i.key}</td>
-                        <td>{i.summary}</td>
-                        <td>{i.assignee}</td>
-                        <td><StatusBadge status={i.status} /></td>
-                        <td>{daysInStatus(i)}d</td>
-                        <td>
-                          {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
-                          {overdueInfo(i).approaching && <span className="vchip vchip-warn">due soon</span>}
-                          <QAOwnerTag issue={i} />
-                        </td>
-                      </tr>
-                    )}
-                  />
                 </div>
               )}
 
@@ -1778,53 +1840,54 @@ function App() {
               <p>Active load per team, with delivered velocity. Click a team to see its members.</p>
               <div className="team-chart">
                 {teamRows.map(r => (
-                  <div key={r.t} className={`team-chart-row clickable-card ${capTeam === r.t ? 'tc-active' : ''}`}
-                    title={`${r.t}: ${r.m.activeCount} active · ${r.m.velocity} SP/dev · ${r.m.deliveredSP} SP delivered`}
-                    onClick={() => setCapTeam(capTeam === r.t ? null : r.t)}>
-                    <span className="tc-name">{r.t}</span>
-                    <span className="tc-track">
-                      <span className="tc-fill" style={{ width: `${(r.m.activeCount / maxActive) * 100}%` }} />
-                    </span>
-                    <span className="tc-total">{r.m.activeCount}</span>
-                    <span className="tc-meta">{r.m.velocity} SP/dev · {r.m.deliveredSP} SP done · {r.m.devCount} devs{r.overdueN > 0 ? ` · ${r.overdueN} overdue` : ''}</span>
-                  </div>
+                  <React.Fragment key={r.t}>
+                    <div className={`team-chart-row clickable-card ${capTeam === r.t ? 'tc-active' : ''}`}
+                      title={`${r.t}: ${r.m.activeCount} active · ${r.m.velocity} SP/dev · ${r.m.deliveredSP} SP delivered`}
+                      onClick={() => setCapTeam(capTeam === r.t ? null : r.t)}>
+                      <span className="tc-name">{r.t}</span>
+                      <span className="tc-track">
+                        <span className="tc-fill" style={{ width: `${(r.m.activeCount / maxActive) * 100}%` }} />
+                      </span>
+                      <span className="tc-total">{r.m.activeCount}</span>
+                      <span className="tc-meta">{r.m.velocity} SP/dev · {r.m.deliveredSP} SP done · {r.m.devCount} devs{r.overdueN > 0 ? ` · ${r.overdueN} overdue` : ''}</span>
+                    </div>
+                    {/* Member breakdown expands inline, directly under the clicked team */}
+                    {capTeam === r.t && sel && (
+                      <div className="cap-member-detail">
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                          <h3 className="section-title" style={{ fontSize: '15px', margin: 0 }}>{capTeam} — member capacity</h3>
+                          <button className="btn btn-secondary" style={{ padding: '5px 11px', fontSize: '12px' }} onClick={(e) => { e.stopPropagation(); setCapTeam(null); }}>Close</button>
+                        </div>
+                        <div className="summary-grid">
+                          {[
+                            { label: 'Active', value: sel.m.activeCount, color: 'var(--color-primary)', icon: 'target' },
+                            { label: 'Velocity', value: `${sel.m.velocity} SP/dev`, color: 'var(--text-primary)', icon: 'zap' },
+                            { label: 'Delivered SP', value: sel.m.deliveredSP, color: 'var(--color-success)', icon: 'check' },
+                            { label: 'Overdue', value: sel.overdueN, color: sel.overdueN > 0 ? 'var(--color-danger)' : 'var(--text-primary)', icon: 'alert' },
+                          ].map(c => (
+                            <MetricCard key={c.label} icon={c.icon} title={c.label} value={c.value} color={c.color} />
+                          ))}
+                        </div>
+                        <div className="capacity-grid">
+                          {members.map(m => {
+                            const level = m.load >= WIP_LIMIT ? 'over' : m.load <= 1 ? 'idle' : 'ok';
+                            return (
+                              <div key={m.name} className={`capacity-row cap-${level}`}>
+                                <span className="mini-avatar">{m.code}</span>
+                                <span className="capacity-name">{m.name}{m.intern ? ' (intern)' : ''}</span>
+                                <span className="capacity-bar-wrap"><span className="capacity-bar" style={{ width: `${Math.min(100, (m.load / 8) * 100)}%` }} /></span>
+                                <span className="capacity-num">{m.load}</span>
+                                {m.overdue > 0 && <span className="vchip vchip-bad">{m.overdue} overdue</span>}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  </React.Fragment>
                 ))}
               </div>
             </div>
-
-            {/* MEMBERS OF SELECTED TEAM */}
-            {capTeam && sel && (
-              <div className="section-panel">
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                  <h2 className="section-title">{capTeam} — member capacity</h2>
-                  <button className="btn btn-secondary" onClick={() => setCapTeam(null)}>Close</button>
-                </div>
-                <div className="summary-grid">
-                  {[
-                    { label: 'Active', value: sel.m.activeCount, color: 'var(--color-primary)', icon: 'target' },
-                    { label: 'Velocity', value: `${sel.m.velocity} SP/dev`, color: 'var(--text-primary)', icon: 'zap' },
-                    { label: 'Delivered SP', value: sel.m.deliveredSP, color: 'var(--color-success)', icon: 'check' },
-                    { label: 'Overdue', value: sel.overdueN, color: sel.overdueN > 0 ? 'var(--color-danger)' : 'var(--text-primary)', icon: 'alert' },
-                  ].map(c => (
-                    <MetricCard key={c.label} icon={c.icon} title={c.label} value={c.value} color={c.color} />
-                  ))}
-                </div>
-                <div className="capacity-grid">
-                  {members.map(m => {
-                    const level = m.load >= WIP_LIMIT ? 'over' : m.load <= 1 ? 'idle' : 'ok';
-                    return (
-                      <div key={m.name} className={`capacity-row cap-${level}`}>
-                        <span className="mini-avatar">{m.code}</span>
-                        <span className="capacity-name">{m.name}{m.intern ? ' (intern)' : ''}</span>
-                        <span className="capacity-bar-wrap"><span className="capacity-bar" style={{ width: `${Math.min(100, (m.load / 8) * 100)}%` }} /></span>
-                        <span className="capacity-num">{m.load}</span>
-                        {m.overdue > 0 && <span className="vchip vchip-bad">{m.overdue} overdue</span>}
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
 
             {/* ALL INDIVIDUALS (when no team selected) */}
             {!capTeam && (
@@ -1963,6 +2026,11 @@ function App() {
             if (s.state === 'flagged') breaches.push({ i, type: 'Dev — over SP budget', owner: i.assignee, sp: i.storyPoints || 0, elapsed: `${s.took}d`, over: `${s.took - s.budget}d over` });
             const q = qaHoursInfo(i, asOfMs);
             if (q && !q.done && q.hours > 24) breaches.push({ i, type: 'QA — over 24h', owner: issueQAs(i).join(', ') || 'QA unassigned', sp: i.storyPoints || 0, elapsed: fmtHours(q.hours), over: `${fmtHours(q.hours - 24)} over` });
+          });
+          // Group dev SP-budget breaches by owner so each flagged row can explain *why*.
+          const devBreachesByOwner = {};
+          breaches.filter(b => b.type === 'Dev — over SP budget').forEach(b => {
+            (devBreachesByOwner[b.owner] = devBreachesByOwner[b.owner] || []).push(b);
           });
           const totOnTime = devRows.reduce((s, r) => s + r.ontime, 0);
           const totMeasured = devRows.reduce((s, r) => s + r.measured, 0);
@@ -2168,7 +2236,20 @@ function App() {
                         <span className="tc-fill" style={{ width: `${r.pct}%`, background: r.pct >= 70 ? 'var(--color-success)' : r.pct >= 40 ? 'var(--color-warning)' : 'var(--color-danger)' }} />
                       </span>
                       <span className="tc-total">{r.pct}%</span>
-                      <span className="tc-meta">{r.ontime}/{r.measured} on time{r.flagged ? ` · ${r.flagged} flagged now` : ''}{r.pending ? ` · ${r.pending} pending` : ''}</span>
+                      <span className="tc-meta">
+                        {r.ontime}/{r.measured} on time
+                        {r.flagged ? <> · <span style={{ color: 'var(--color-danger)', fontWeight: 600 }}>{r.flagged} flagged now</span></> : ''}
+                        {r.flagged && devBreachesByOwner[r.name]?.length ? (
+                          <span
+                            className="flag-info"
+                            title={`Flagged — past story-point budget without reaching QA:\n${devBreachesByOwner[r.name].map(b => `• ${b.i.key} (${b.sp} SP): ${b.elapsed} elapsed, ${b.over}`).join('\n')}`}
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Icon name="info" size={14} />
+                          </span>
+                        ) : null}
+                        {r.pending ? ` · ${r.pending} pending` : ''}
+                      </span>
                     </div>
                   ))}
                   {devBarRows.length === 0 && <p style={{ margin: 0, color: 'var(--text-muted)' }}>No started tickets to measure yet.</p>}
@@ -2388,43 +2469,54 @@ function App() {
                   </div>
 
                   {/* Member filter — narrows the Overdue list below */}
-                  <div className="filter-tabs">
-                    <button
-                      className={`filter-tab ${teamMemberFilter === 'All' ? 'active' : ''}`}
-                      onClick={() => setTeamMemberFilter('All')}
-                    >
-                      All members <span className="filter-tab-count">{teamMembersPresent.length}</span>
-                    </button>
-                    {teamMembersPresent.map(name => {
-                      const wip = metrics.allIssues.filter(i => memberOf(i).includes(name) && !isDone(i.status)).length;
-                      return (
-                        <button
-                          key={name}
-                          className={`filter-tab ${teamMemberFilter === name ? 'active' : ''}`}
-                          onClick={() => setTeamMemberFilter(teamMemberFilter === name ? 'All' : name)}
-                        >
-                          {name} <span className="filter-tab-count">{wip}</span>
-                        </button>
-                      );
-                    })}
+                  <div className="filter-group">
+                    <span className="filter-group-label">Member</span>
+                    <div className="filter-tabs">
+                      <button
+                        className={`filter-tab ${teamMemberFilter === 'All' ? 'active' : ''}`}
+                        onClick={() => setTeamMemberFilter('All')}
+                      >
+                        All members <span className="filter-tab-count">{teamMembersPresent.length}</span>
+                      </button>
+                      {teamMembersPresent.map(name => {
+                        const wip = metrics.allIssues.filter(i => memberOf(i).includes(name) && !isDone(i.status)).length;
+                        return (
+                          <button
+                            key={name}
+                            className={`filter-tab ${teamMemberFilter === name ? 'active' : ''}`}
+                            onClick={() => setTeamMemberFilter(teamMemberFilter === name ? 'All' : name)}
+                          >
+                            {name} <span className="filter-tab-count">{wip}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* Status breakdown — clickable filter, scoped to the selected member */}
-                  <div className="filter-tabs">
-                    {['To Do', 'In Progress', 'Code Review', 'QA Review', 'QA BLOCKED', 'Ready to Release', 'Done', 'Released To Prod'].map(s => {
-                      const n = metrics.allIssues.filter(i => matchesMember(i) && i.status === s).length;
-                      if (!n) return null;
-                      const m = getStatusMeta(s);
-                      return (
-                        <button key={s} className={`filter-tab ${teamStatusFilter === s ? 'active' : ''}`} onClick={() => setTeamStatusFilter(teamStatusFilter === s ? '' : s)}>
-                          <span className="chip-dot" style={{ backgroundColor: m.color }} />{s} <span className="filter-tab-count">{n}</span>
-                        </button>
-                      );
-                    })}
+                  <div className="filter-group">
+                    <span className="filter-group-label">Status</span>
+                    <div className="filter-tabs">
+                      {['To Do', 'In Progress', 'Code Review', 'QA Review', 'QA BLOCKED', 'Ready to Release', 'Done', 'Released To Prod'].map(s => {
+                        const n = metrics.allIssues.filter(i => matchesMember(i) && i.status === s).length;
+                        if (!n) return null;
+                        const m = getStatusMeta(s);
+                        return (
+                          <button key={s} className={`filter-tab ${teamStatusFilter === s ? 'active' : ''}`} onClick={() => setTeamStatusFilter(teamStatusFilter === s ? '' : s)}>
+                            <span className="chip-dot" style={{ backgroundColor: m.color }} />{s} <span className="filter-tab-count">{n}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
 
                   {/* Issue-type breakdown — clickable filter (Stories / Bugs / …), scoped to the selected member */}
-                  <TypeFilterChips scope={metrics.allIssues.filter(matchesMember)} value={teamTypeFilter} onChange={setTeamTypeFilter} />
+                  {(new Set(metrics.allIssues.filter(matchesMember).map(i => i.type)).size > 1 || teamTypeFilter !== 'All') && (
+                    <div className="filter-group">
+                      <span className="filter-group-label">Type</span>
+                      <TypeFilterChips scope={metrics.allIssues.filter(matchesMember)} value={teamTypeFilter} onChange={setTeamTypeFilter} />
+                    </div>
+                  )}
 
                   {/* Member stat cards (when a member is selected) */}
                   {teamMemberFilter !== 'All' && (() => {
@@ -2704,6 +2796,11 @@ function App() {
                   <span className="cycle-stat-val">{issues.filter(i => i.status === 'QA Review').length}</span>
                   <span className="cycle-stat-sub">awaiting sign-off</span>
                 </div>
+                <div className="cycle-stat">
+                  <span className="cycle-stat-lbl">Overdue in QA</span>
+                  <span className="cycle-stat-val" style={{ color: 'var(--color-danger)' }}>{issues.filter(i => i.status === 'QA Review' && overdueInfo(i).overdue).length}</span>
+                  <span className="cycle-stat-sub">&gt; 24h in QA review</span>
+                </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '20px' }}>
                 {qaEngineers.map(qa => {
@@ -2724,7 +2821,7 @@ function App() {
                   return (
                     <div 
                       key={qa} 
-                      onClick={() => { setSelectedQAFilter(isQASelected ? null : qa); setQaFilter('all'); }}
+                      onClick={() => { setSelectedQAFilter(isQASelected ? null : qa); setQaFilter('all'); setQaTypeFilter('All'); }}
                       style={{ 
                         backgroundColor: 'var(--bg-deep)', 
                         border: isQASelected ? '1.5px solid var(--color-primary)' : '1px solid var(--border-color)', 

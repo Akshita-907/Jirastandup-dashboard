@@ -109,6 +109,20 @@ const PATHS = {
     </>
   ),
   bookmark: <path d="M6 3a1 1 0 0 0-1 1v16l7-4 7 4V4a1 1 0 0 0-1-1H6z" />,
+  info: (
+    <>
+      <circle cx="12" cy="12" r="10" />
+      <line x1="12" y1="16" x2="12" y2="12" />
+      <line x1="12" y1="8" x2="12.01" y2="8" />
+    </>
+  ),
+  download: (
+    <>
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </>
+  ),
   bug: (
     <>
       <rect x="8" y="7" width="8" height="11" rx="4" />
