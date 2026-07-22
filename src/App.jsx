@@ -5,47 +5,68 @@ import LAST_SPRINT from './lastSprint.json';
 import DATA_META from './dataMeta.json';
 import { Icon, StatusBadge, PriorityBadge, getStatusMeta, Verdict, TypeIcon } from './Icon.jsx';
 
-// Complete list of G99PRODUCT active board members restructured by teams
+// Complete list of G99PRODUCT active board members restructured by teams.
+// Names must match the Jira display name exactly (that's how tickets attribute).
 const REAL_TEAM = [
   // DevOps Team
   { name: 'Lalit Suryan', code: 'LS', devGroup: 'DevOps' },
   { name: 'Akash Sharma', code: 'AS', devGroup: 'DevOps' },
-  { name: 'Rashmi', code: 'RA', devGroup: 'DevOps' },
+  { name: 'Ankur Singh', code: 'AN', devGroup: 'DevOps' },
   { name: 'abhishek.h', code: 'AH', devGroup: 'DevOps', intern: true },
-  { name: 'Sachin Tripathi', code: 'ST', devGroup: 'DevOps', intern: true },
-  { name: 'Neha', code: 'NE', devGroup: 'DevOps', intern: true },
+  { name: 'Neha Kakkar', code: 'NE', devGroup: 'DevOps', intern: true },
+  { name: 'Sachin Tripathi', code: 'ST', devGroup: 'DevOps' },
 
-  // Dev 1 Team (Pushkar)
-  { name: 'Pushkar Murkute', code: 'PM', devGroup: 'Dev 1 (Pushkar)' },
-  { name: 'Kundan Kumar', code: 'KK', devGroup: 'Dev 1 (Pushkar)' },
-  { name: 'Manish Patidar', code: 'MP', devGroup: 'Dev 1 (Pushkar)' },
-  { name: 'Sai Somanath', code: 'SS', devGroup: 'Dev 1 (Pushkar)' },
-  { name: 'Oam Chora', code: 'OC', devGroup: 'Dev 1 (Pushkar)', intern: true },
+  // Dev 1
+  { name: 'Pushkar Murkute', code: 'PM', devGroup: 'Dev 1' },
+  { name: 'Kundan Kumar', code: 'KK', devGroup: 'Dev 1' },
+  { name: 'Manish Patidar', code: 'MP', devGroup: 'Dev 1' },
+  { name: 'Sai Somanath', code: 'SS', devGroup: 'Dev 1' },
+  { name: 'Omm Chavan', code: 'OC', devGroup: 'Dev 1', intern: true },
 
-  // Dev 2 Team (Mehul/Monika)
-  { name: 'Mehul Kothari', code: 'MK', devGroup: 'Dev 2 (Mehul/Monika)' },
-  { name: 'Monika Desai', code: 'MD', devGroup: 'Dev 2 (Mehul/Monika)' },
-  { name: 'Sujal', code: 'SU', devGroup: 'Dev 2 (Mehul/Monika)', intern: true },
-  { name: 'Sachin Vendor', code: 'SV', devGroup: 'Dev 2 (Mehul/Monika)' },
+  // Dev 2
+  { name: 'Mehul Kothari', code: 'MK', devGroup: 'Dev 2' },
+  { name: 'Monika Desai', code: 'MD', devGroup: 'Dev 2' },
+  { name: 'sujal.rathore', code: 'SU', devGroup: 'Dev 2', intern: true },
 
-  // Dev 3 Team (Somya)
-  { name: 'Somya Mishra', code: 'SM', devGroup: 'Dev 3 (Somya)' },
-  { name: 'Disha', code: 'DI', devGroup: 'Dev 3 (Somya)' },
-  { name: 'gopesh.pandey', code: 'GP', devGroup: 'Dev 3 (Somya)' },
+  // Support
+  { name: 'Yogesh Paygude', code: 'YP', devGroup: 'Support' },
+  { name: 'Akshay Dhole', code: 'AD', devGroup: 'Support' },
+  { name: 'Sachin Tripathi', code: 'ST', devGroup: 'Support' },
 
-  // CRM Support Team
-  { name: 'Yogesh Paygude', code: 'YP', devGroup: 'CRM Support' },
-  { name: 'Akshay Dhole', code: 'AD', devGroup: 'CRM Support' },
-  { name: 'Java Developer I', code: 'J1', devGroup: 'CRM Support' },
-  { name: 'Java Developer II', code: 'J2', devGroup: 'CRM Support' },
+  // TED
+  { name: 'Saumya Mishra', code: 'SM', devGroup: 'TED' },
+  { name: 'gopesh.pandey', code: 'GP', devGroup: 'TED' },
 
-  // QA Team
+  // PM
+  { name: 'akshita.garg', code: 'AG', devGroup: 'PM' },
+  { name: 'Muskan Arora', code: 'MU', devGroup: 'PM' },
+  { name: 'Disha Sil', code: 'DI', devGroup: 'PM' },
+
+  // QA Team (kept so QA turnaround analytics keep working)
   { name: 'Rimsha Riyadh', code: 'RR', devGroup: 'QA Team' },
-  { name: 'Shubhashis Swain', code: 'SS', devGroup: 'QA Team' },
-  { name: 'akshita.garg', code: 'AG', devGroup: 'QA Team' },
+  { name: 'Shubhashis Swain', code: 'SH', devGroup: 'QA Team' },
+  { name: 'Abhishek', code: 'AB', devGroup: 'QA Team' },
+  { name: 'Janhavi Made', code: 'JM', devGroup: 'QA Team' },
   { name: 'Ajay Chafekarande', code: 'AC', devGroup: 'QA Team', intern: true },
-  { name: 'Jahanvi', code: 'JA', devGroup: 'QA Team', intern: true },
-  { name: 'Abhishek', code: 'AB', devGroup: 'QA Team' }
+  { name: 'Kirti Nagesh Waradole', code: 'KW', devGroup: 'QA Team' },
+  { name: 'Suchit Senghani', code: 'SG', devGroup: 'QA Team' }
+];
+// Display / iteration order for the team groupings above.
+const TEAM_ORDER = ['DevOps', 'Dev 1', 'Dev 2', 'Support', 'TED', 'PM', 'QA Team'];
+
+// Themes / epics committed for the current sprint (shown on the Overview).
+const SPRINT_SCOPE = [
+  'MCP write APIs',
+  'HIPAA compliance',
+  'Security fixes',
+  'Import minor enhancement',
+  'Gia minor enhancement (test mode analytics, Gia funnel report)',
+  'Onboarding automation',
+  'Gia voice agent (call forwarding)',
+  'Move the read-only queries to the Reader Database',
+  'Query optimization (Gia usage analytics & health check)',
+  'Multi-RAG and Qdrant',
+  'Smart link login',
 ];
 
 // Primary QA can hold one or more QAs (comma-joined). Split into individual names.
@@ -96,17 +117,47 @@ function workingDaysBetween(startStr, endStr) {
   return count;
 }
 
-// A ticket is "overdue" if it has been in flight (started, not done) longer than its
-// story-point estimate in working days. Unestimated (0 SP) tickets get a 1-day allowance.
-const OVERDUE_STATUSES = ['In Progress', 'Code Review', 'QA Review', 'QA BLOCKED'];
+// A ticket is "overdue" when it has outstayed its allowance:
+//   • Story with NO story points → never overdue (exempt in every status).
+//   • Bug in In Progress → longer than 24 hours since it entered In Progress.
+//   • Story/Task/Epic in In Progress → longer than its story-point budget in working days.
+//   • Any ticket in QA Review → longer than 24 hours.
+// Returns { overdue, approaching, kind, overdueBy (days, fractional so lists sort), label }.
 function overdueInfo(issue) {
-  if (!OVERDUE_STATUSES.includes(issue.status) || !issue.inProgressDate) return { overdue: false, approaching: false };
-  const expected = issue.storyPoints > 0 ? issue.storyPoints : 1;
-  const elapsed = workingDaysBetween(issue.inProgressDate, TODAY);
-  const overdue = elapsed > expected;
-  // approaching = not yet over, but within 1 working day of its estimate
-  const approaching = !overdue && (expected - elapsed) <= 1;
-  return { overdue, approaching, expected, elapsed, overdueBy: elapsed - expected, remaining: expected - elapsed };
+  // Unpointed stories are never overdue, in any status.
+  if (issue.type === 'Story' && !(issue.storyPoints > 0)) return { overdue: false, approaching: false };
+
+  if (issue.status === 'In Progress') {
+    if (issue.type === 'Bug') {
+      // 24-hour rule, measured from the most recent entry into In Progress. Data is
+      // day-granular, so hours are approximated from that entry date (like the QA clock).
+      const ipDate = [...(issue.history || [])].reverse().find(h => h.status === 'In Progress')?.date || issue.inProgressDate;
+      if (!ipDate) return { overdue: false, approaching: false };
+      const hours = Math.max(1, Math.round((Date.now() - new Date(ipDate + 'T00:00:00').getTime()) / 3600000));
+      const overdue = hours > 24;
+      const approaching = !overdue && hours >= 18;
+      const overHours = Math.max(0, hours - 24);
+      return { overdue, approaching, kind: 'dev-bug', hours, overdueBy: overHours / 24, overdueHours: overHours, remaining: (24 - hours) / 24, label: `${fmtHours(overHours)} over` };
+    }
+    // Story / Task / Epic: story-point budget in working days (unpointed non-story = 1-day allowance).
+    if (!issue.inProgressDate) return { overdue: false, approaching: false };
+    const expected = issue.storyPoints > 0 ? issue.storyPoints : 1;
+    const elapsed = workingDaysBetween(issue.inProgressDate, TODAY);
+    const overdue = elapsed > expected;
+    const approaching = !overdue && (expected - elapsed) <= 1;
+    const by = elapsed - expected;
+    return { overdue, approaching, kind: 'dev', expected, elapsed, overdueBy: by, remaining: -by, label: `${by}d over` };
+  }
+  if (issue.status === 'QA Review') {
+    const q = qaHoursInfo(issue);
+    const hours = q ? q.hours : 0;
+    const overdue = hours > 24;
+    // approaching = within ~6h of the 24h QA limit
+    const approaching = !overdue && hours >= 18;
+    const overHours = Math.max(0, hours - 24);
+    return { overdue, approaching, kind: 'qa', hours, overdueBy: overHours / 24, overdueHours: overHours, remaining: (24 - hours) / 24, label: `${fmtHours(overHours)} over` };
+  }
+  return { overdue: false, approaching: false };
 }
 
 // ---- History-derived helpers (all from the changelog `history` array) ----
@@ -114,7 +165,9 @@ const DAY = 86400000;
 const ACTIVE_STATUSES = ['In Progress', 'Code Review', 'QA Review', 'QA BLOCKED'];
 const DEV_WORK = ['In Progress', 'Code Review'];
 const QA_WORK = ['QA Review', 'QA BLOCKED'];
-const dateStr = (d) => d.toISOString().slice(0, 10);
+// Local date string (YYYY-MM-DD) — matches how TODAY is derived, so chart day-axes and
+// day-over-day comparisons don't drift by a day in non-UTC timezones.
+const dateStr = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 const YESTERDAY = dateStr(new Date(new Date(TODAY + 'T00:00:00').getTime() - DAY));
 const calDays = (a, b) => (!a ? 0 : Math.max(0, Math.round((new Date(b + 'T00:00:00') - new Date(a + 'T00:00:00')) / DAY)));
 
@@ -138,10 +191,6 @@ function statusAsOf(issue, day) {
 // did any transition happen on/after `day`?
 function movedSince(issue, day) {
   return (issue.history || []).some(t => t.date >= day);
-}
-// stalled = active work sitting untouched since before yesterday (the "same as yesterday" flag)
-function isStalled(issue) {
-  return ACTIVE_STATUSES.includes(issue.status) && !movedSince(issue, YESTERDAY);
 }
 // split time spent in dev-side vs QA-side statuses (calendar days)
 function devQaSplit(issue) {
@@ -170,10 +219,10 @@ function bounceCount(issue) {
   return Math.max(0, ips - 1);
 }
 
-// ---- Delivery SLA model ----
-// Dev SLA: an N-SP ticket should move from In Progress to QA Review within N working
-// days (unpointed = 1-day allowance). QA SLA: a ticket entering QA Review should be
-// tested (Ready to Release / Done) within 24 hours.
+// ---- Delivery timing model (feeds the Analytics overdue register) ----
+// Dev: an N-SP ticket should move from In Progress to QA Review within N working days
+// (unpointed = 1-day allowance). QA: a ticket entering QA Review should be tested
+// (Ready to Release / Done) within 24 hours.
 function devSlaInfo(i, asOf = TODAY) {
   if (!i.inProgressDate || i.status === 'Rejected') return { state: 'na' };
   const budget = i.storyPoints > 0 ? i.storyPoints : 1;
@@ -233,15 +282,6 @@ function TypeFilterChips({ scope, value, onChange }) {
   );
 }
 
-// SLA "stuck" thresholds — days a ticket can sit in an ACTIVE status without an update
-// before it's flagged. Only statuses where work should be moving are tracked; To Do is
-// deliberately excluded (an unstarted ticket is backlog, not a breach — its risk is
-// spillover near sprint end, handled separately via SPILLOVER_WINDOW).
-const SLA_LIMITS = {
-  'In Progress': 3,
-  'Code Review': 1,
-  'QA Review': 2
-};
 // A To Do ticket is at risk of spilling over when this many days (or fewer) remain in the sprint.
 const SPILLOVER_WINDOW = 3;
 // ---- SmartTable: search + show-20/show-all wrapper for large ticket tables ----
@@ -361,6 +401,78 @@ function Burnup({ issues }) {
   );
 }
 
+// ---- Burndown chart: remaining story points vs the ideal trend across the full sprint ----
+function Burndown({ issues }) {
+  const doneSet = new Set(DONE_STATUSES);
+  const start = new Date(SPRINT_START + 'T00:00:00');
+  const end = new Date(SPRINT_END_DAY + 'T00:00:00');
+  const days = [];
+  for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) days.push(dateStr(new Date(d)));
+  const totalSP = issues.reduce((s, i) => s + (i.storyPoints || 0), 0) || 1;
+  const doneDateOf = (i) => { const t = (i.history || []).find(h => doneSet.has(h.status)); return t ? t.date : null; };
+  const remainingOn = (day) => totalSP - issues.reduce((s, i) => { const dd = doneDateOf(i); return s + ((dd && dd <= day) ? (i.storyPoints || 0) : 0); }, 0);
+  const pts = days.map((day, idx) => ({ day, idx, rem: day > TODAY ? null : remainingOn(day) }));
+  const shown = pts.filter(p => p.rem != null);
+  const last = shown[shown.length - 1];
+  const W = 720, H = 240, PAD = { l: 46, r: 20, t: 26, b: 34 };
+  const x = (idx) => PAD.l + (idx / Math.max(1, days.length - 1)) * (W - PAD.l - PAD.r);
+  const y = (v) => H - PAD.b - (v / totalSP) * (H - PAD.t - PAD.b);
+  const actualLine = shown.map(p => `${x(p.idx)},${y(p.rem)}`).join(' ');
+  const area = shown.length
+    ? `M ${x(shown[0].idx)},${y(0)} L ${shown.map(p => `${x(p.idx)},${y(p.rem)}`).join(' L ')} L ${x(last.idx)},${y(0)} Z`
+    : '';
+  const ticks = [0, 0.25, 0.5, 0.75, 1];
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="burnup" role="img" aria-label="Sprint burndown: remaining story points vs ideal">
+      <defs>
+        <linearGradient id="bd-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.26" />
+          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      {/* y gridlines + SP labels */}
+      {ticks.map(f => {
+        const val = Math.round(totalSP * f);
+        return (
+          <g key={f}>
+            <line x1={PAD.l} x2={W - PAD.r} y1={y(val)} y2={y(val)}
+              style={{ stroke: 'var(--border-color)', strokeWidth: 1, opacity: f === 0 ? 0.8 : 0.35 }} />
+            <text x={PAD.l - 9} y={y(val) + 3.5} textAnchor="end" className="bu-lbl" style={{ opacity: 0.6 }}>{val}</text>
+          </g>
+        );
+      })}
+      {/* ideal guideline: totalSP -> 0 across the full sprint */}
+      <line x1={x(0)} y1={y(totalSP)} x2={x(days.length - 1)} y2={y(0)}
+        style={{ stroke: 'var(--text-muted)', strokeWidth: 1.5, strokeDasharray: '6 5', opacity: 0.5, strokeLinecap: 'round' }} />
+      <text x={x(0) + 4} y={y(totalSP) - 8} className="bu-lbl" style={{ opacity: 0.7 }}>Ideal · {totalSP} SP</text>
+      {/* today marker */}
+      {last && <line x1={x(last.idx)} x2={x(last.idx)} y1={PAD.t - 8} y2={H - PAD.b}
+        style={{ stroke: 'var(--color-primary)', strokeWidth: 1, strokeDasharray: '3 4', opacity: 0.3 }} />}
+      {/* actual: area fill + line + dots */}
+      {area && <path d={area} fill="url(#bd-grad)" />}
+      {actualLine && <polyline points={actualLine}
+        style={{ fill: 'none', stroke: 'var(--color-primary)', strokeWidth: 3, strokeLinejoin: 'round', strokeLinecap: 'round' }} />}
+      {shown.map(p => (
+        <circle key={p.day} cx={x(p.idx)} cy={y(p.rem)} r={p === last ? 5 : 3.5}
+          style={{ fill: 'var(--color-primary)', stroke: '#fff', strokeWidth: p === last ? 2 : 1.25 }}>
+          <title>{p.day}: {p.rem} SP remaining</title>
+        </circle>
+      ))}
+      {/* last value badge */}
+      {last && (
+        <g transform={`translate(${x(last.idx)}, ${y(last.rem) - 22})`}>
+          <rect x={-34} y={-16} width={68} height={22} rx={11} style={{ fill: 'var(--color-primary)' }} />
+          <text x={0} y={-1} textAnchor="middle" style={{ fill: '#fff', fontSize: '11.5px', fontWeight: 700 }}>{last.rem} SP left</text>
+        </g>
+      )}
+      {/* x labels */}
+      <text x={x(0)} y={H - 10} className="bu-lbl">{days[0]?.slice(5)}</text>
+      {last && <text x={x(last.idx)} y={H - 10} textAnchor="middle" className="bu-lbl" style={{ fill: 'var(--color-primary)', fontWeight: 700 }}>today</text>}
+      <text x={x(days.length - 1)} y={H - 10} textAnchor="end" className="bu-lbl">{days[days.length - 1]?.slice(5)}</text>
+    </svg>
+  );
+}
+
 // ---- Donut: two-segment share (estimated vs not) ----
 function Donut({ value, total, color, label }) {
   const pct = total ? value / total : 0;
@@ -388,7 +500,7 @@ function DevStatsTable({ rows, onPick, showSpill }) {
     { k: 'sp', l: 'Total SP' },
     { k: 'doneT', l: 'Completed' },
     { k: 'doneSP', l: 'Completed SP' },
-    { k: 'flagged', l: 'SLA breaches' },
+    { k: 'flagged', l: 'Overdue' },
     { k: 'pending', l: 'Pending' },
     ...(showSpill ? [{ k: 'spill', l: 'Spillover' }] : []),
     { k: 'pct', l: 'Success rate' },
@@ -471,10 +583,10 @@ function computeDeliveryStats(ds, asOf, asOfMs) {
   };
 }
 
-// ---- Aging WIP: dots per WIP lane, y = % of that ticket's OWN SLA budget consumed.
+// ---- Aging WIP: dots per WIP lane, y = % of that ticket's OWN time allowance consumed.
 // Dev lanes use the SP-day rule; QA lanes use the 24-hour rule — normalizing both to a
 // percentage means one axis and one color rule apply consistently everywhere, and the
-// dot's color always matches its position (100% line = the actual breach point).
+// dot's color always matches its position (100% line = the overdue point).
 function AgingWIP({ issues, onPick }) {
   const lanes = ['In Progress', 'Code Review', 'QA Review', 'QA BLOCKED'];
   const isQaLane = (status) => status === 'QA Review' || status === 'QA BLOCKED';
@@ -483,11 +595,12 @@ function AgingWIP({ issues, onPick }) {
     if (isQaLane(i.status)) {
       const q = qaHoursInfo(i);
       pct = q ? (q.hours / 24) * 100 : 0;
-      detail = q ? `${fmtHours(q.hours)} of 24h QA SLA` : 'no QA-entry recorded';
+      detail = q ? `${fmtHours(q.hours)} of 24h QA allowance` : 'no QA-entry recorded';
     } else {
-      const od = overdueInfo(i);
-      pct = od.expected ? (od.elapsed / od.expected) * 100 : 0;
-      detail = od.expected ? `${od.elapsed}d of ${od.expected}d budget (${i.storyPoints || 0} SP)` : 'not started';
+      const budget = i.storyPoints > 0 ? i.storyPoints : 1;
+      const elapsed = i.inProgressDate ? workingDaysBetween(i.inProgressDate, TODAY) : 0;
+      pct = i.inProgressDate ? (elapsed / budget) * 100 : 0;
+      detail = i.inProgressDate ? `${elapsed}d of ${budget}d budget (${i.storyPoints || 0} SP)` : 'not started';
     }
     return { i, pct, detail };
   });
@@ -499,8 +612,8 @@ function AgingWIP({ issues, onPick }) {
   const dotColor = (pct) => pct > 100 ? 'var(--color-danger)' : pct >= 70 ? 'var(--color-warning)' : 'var(--color-primary)';
   const gridVals = [0, 50, 100, ...(maxPct > 150 ? [150] : [])];
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} className="aging-wip" role="img" aria-label="Aging work in progress, by % of SLA budget consumed">
-      {/* breach reference line at 100% */}
+    <svg viewBox={`0 0 ${W} ${H}`} className="aging-wip" role="img" aria-label="Aging work in progress, by % of time allowance consumed">
+      {/* overdue reference line at 100% */}
       <rect className="wip-band-bad" x={PAD.l} width={plotW} y={PAD.t} height={Math.max(0, y(100) - PAD.t)} />
       {gridVals.map(t => (
         <g key={t}>
@@ -508,7 +621,7 @@ function AgingWIP({ issues, onPick }) {
           <text className="wip-axis" x={PAD.l - 6} y={y(t) + 3} textAnchor="end">{t}%</text>
         </g>
       ))}
-      <text className="wip-lane-lbl" x={W - PAD.r} y={y(100) - 5} textAnchor="end" style={{ fill: 'var(--color-danger)' }}>SLA breached above this line</text>
+      <text className="wip-lane-lbl" x={W - PAD.r} y={y(100) - 5} textAnchor="end" style={{ fill: 'var(--color-danger)' }}>Overdue above this line</text>
       {lanes.map((l, idx) => {
         const laneItems = items.filter(x => x.i.status === l);
         return (
@@ -542,13 +655,11 @@ function TicketModal({ issue, onClose }) {
   const split = devQaSplit(issue);
   const od = overdueInfo(issue);
   const wait = waitingOn(issue.status);
-  const stalled = isStalled(issue);
   const bounces = bounceCount(issue);
   const chips = [];
   chips.push({ label: `Waiting: ${wait}`, tone: wait === 'Blocked' ? 'bad' : wait === 'QA' ? 'qa' : wait === 'Dev' ? 'dev' : 'muted' });
-  if (od.overdue) chips.push({ label: `Overdue ${od.overdueBy}d`, tone: 'bad' });
-  if (od.approaching) chips.push({ label: `Due ${od.remaining <= 0 ? 'today' : 'soon'}`, tone: 'warn' });
-  if (stalled) chips.push({ label: `No movement since ${lastMoveDate(issue)}`, tone: 'warn' });
+  if (od.overdue) chips.push({ label: `Overdue ${od.label}`, tone: 'bad' });
+  if (od.approaching) chips.push({ label: 'Due soon', tone: 'warn' });
   if (bounces > 0) chips.push({ label: `${bounces}× reopened`, tone: 'warn' });
 
   return (
@@ -618,14 +729,14 @@ function App() {
   const [actions, setActions] = useState(INITIAL_ACTIONS);
   const [selectedAssignee, setSelectedAssignee] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview'); // 'overview', 'risks', 'standup', 'team-workload', 'release', 'settings'
-  const [selectedTeam, setSelectedTeam] = useState('Dev 1 (Pushkar)');
+  const [selectedTeam, setSelectedTeam] = useState('Dev 1');
   const [selectedDevFilter, setSelectedDevFilter] = useState(null);
   const [selectedQAFilter, setSelectedQAFilter] = useState(null);
 
   const [selectedIntern, setSelectedIntern] = useState(null);
   const [selectedTicket, setSelectedTicket] = useState(null);
-  const [showTeamSla, setShowTeamSla] = useState(false);
   const [showTeamOverdue, setShowTeamOverdue] = useState(false);
+  const [showAllMembers, setShowAllMembers] = useState(false); // Overview "Teams" — expand member lists
   const [teamMemberFilter, setTeamMemberFilter] = useState('All');
   const [teamStatusFilter, setTeamStatusFilter] = useState('');
   const [teamTypeFilter, setTeamTypeFilter] = useState('All'); // 'All' | 'Bug' | 'Story' | …
@@ -655,17 +766,14 @@ function App() {
   const [standupPerson, setStandupPerson] = useState('all');
   const [standupCat, setStandupCat] = useState('focus');
 
-  // SLA Violations Register filters
-  const [slaStatusFilter, setSlaStatusFilter] = useState('All');
-  const [slaTeamFilter, setSlaTeamFilter] = useState('All');
-  const [slaDevFilter, setSlaDevFilter] = useState('All');
-
   // Action Tracker inputs
   const [newActionText, setNewActionText] = useState('');
   const [newActionOwner, setNewActionOwner] = useState('Mehul Kothari');
 
-  // Dynamic calculations
-  const teamMembers = REAL_TEAM.map(member => {
+  // Dynamic calculations. Dedupe by name for GLOBAL per-person rollups — a person on
+  // two teams (e.g. Sachin Tripathi in DevOps + Support) should count once here; the
+  // per-team views use REAL_TEAM.filter directly and still credit both teams.
+  const teamMembers = [...new Map(REAL_TEAM.map(m => [m.name, m])).values()].map(member => {
     const activeTickets = issues.filter(i => i.assignee === member.name && !isDone(i.status));
     return {
       ...member,
@@ -684,22 +792,10 @@ function App() {
   const avgLifecycle = lifecycleValues.length ? (lifecycleValues.reduce((a, b) => a + b, 0) / lifecycleValues.length).toFixed(1) : null;
 
   const blockedIssues = issues.filter(i => i.blocked);
-  const slaBreachedIssues = issues.filter(i => i.staleDays > (SLA_LIMITS[i.status] || 99));
   const overloadedMembers = teamMembers.filter(m => m.tickets >= 3);
 
-  // ---- SLA Violations Register filtering (status tabs + team -> developer) ----
-  const DEV_TEAMS = ['DevOps', 'Dev 1 (Pushkar)', 'Dev 2 (Mehul/Monika)', 'Dev 3 (Somya)', 'CRM Support', 'QA Team'];
+  const DEV_TEAMS = TEAM_ORDER;
   const teamOf = (name) => REAL_TEAM.find(m => m.name === name)?.devGroup || 'Other';
-  const STATUS_ORDER = ['To Do', 'In Progress', 'Code Review', 'QA Review', 'QA BLOCKED', 'Ready to Release', 'Done', 'Released To Prod', 'Rejected'];
-  const slaStatusTabs = ['All', ...STATUS_ORDER.filter(s => slaBreachedIssues.some(i => i.status === s))];
-  const slaTeamDevs = slaTeamFilter === 'All'
-    ? []
-    : [...new Set(slaBreachedIssues.filter(i => teamOf(i.assignee) === slaTeamFilter).map(i => i.assignee))].sort();
-  const filteredSlaIssues = slaBreachedIssues.filter(i =>
-    (slaStatusFilter === 'All' || i.status === slaStatusFilter) &&
-    (slaTeamFilter === 'All' || teamOf(i.assignee) === slaTeamFilter) &&
-    (slaDevFilter === 'All' || i.assignee === slaDevFilter)
-  ).sort((a, b) => b.staleDays - a.staleDays);
 
   // ---- Interns ----
   const interns = REAL_TEAM.filter(m => m.intern);
@@ -736,9 +832,8 @@ function App() {
     text: `Sprint is ${completionPct}% complete (${doneCount}/${issues.length} done or ready) with ${daysLeft} day${daysLeft === 1 ? '' : 's'} left.` });
   if (blockedIssues.length) insights.push({ tone: 'bad', text: `${blockedIssues.length} ticket${blockedIssues.length === 1 ? ' is' : 's are'} QA-blocked and need unblocking today.` });
   if (spilloverRiskIssues.length) insights.push({ tone: 'warn', text: `${spilloverRiskIssues.length} tickets are still in To Do with ${daysLeft} day${daysLeft === 1 ? '' : 's'} left — likely to spill over to next sprint.` });
-  if (overdueIssues.length) insights.push({ tone: 'bad', text: `${overdueIssues.length} in-flight tickets are overdue — open longer than their story-point estimate and need a status update.` });
-  if (approachingIssues.length) insights.push({ tone: 'warn', text: `${approachingIssues.length} tickets are approaching their estimate (due today/tomorrow) — watch these before they slip.` });
-  if (slaBreachedIssues.length) insights.push({ tone: 'warn', text: `${slaBreachedIssues.length} active tickets are stuck past their aging limit (no movement) — see the Risks tab.` });
+  if (overdueIssues.length) insights.push({ tone: 'bad', text: `${overdueIssues.length} tickets are overdue — In Progress past their story-point budget, or in QA Review over 24h. They need a status update.` });
+  if (approachingIssues.length) insights.push({ tone: 'warn', text: `${approachingIssues.length} tickets are close to their limit (dev budget or the 24h QA rule) — watch these before they slip.` });
   if (oldestStale) insights.push({ tone: 'warn', text: `Oldest active ticket: ${oldestStale.key} (${oldestStale.assignee}) untouched for ${oldestStale.staleDays} days in ${oldestStale.status}.` });
   if (inQACount) insights.push({ tone: qaUnassigned ? 'warn' : 'ok', text: `${inQACount} tickets in QA${qaUnassigned ? `, ${qaUnassigned} with no QA assigned` : ''}; avg QA cycle ${avgQaCycle ?? 'N/A'}d.` });
   if (topLoaded && topLoaded.tickets >= 3) insights.push({ tone: 'warn', text: `${topLoaded.name} is the most loaded with ${topLoaded.tickets} active tickets.` });
@@ -750,10 +845,6 @@ function App() {
   // ---- Waiting-on breakdown (where the sprint is jammed) ----
   const waitingCounts = { Dev: 0, QA: 0, Blocked: 0, Unstarted: 0 };
   issues.forEach(i => { if (!isDone(i.status)) { const w = waitingOn(i.status); if (waitingCounts[w] != null) waitingCounts[w]++; } });
-
-  // ---- Stalled: active tickets with no movement since yesterday (anti-false-update) ----
-  const stalledIssues = issues.filter(isStalled).sort((a, b) => daysInStatus(b) - daysInStatus(a));
-
 
   // ---- Per-person standup briefs ----
   const personBriefs = [...new Set(issues.filter(i => !isDone(i.status) && i.assignee !== 'Unassigned').map(i => i.assignee))]
@@ -769,7 +860,6 @@ function App() {
         movedYesterday: its.filter(i => i.status !== 'To Do' && movedSince(i, YESTERDAY)),
         overdue: active.filter(i => overdueInfo(i).overdue),
         blocked: active.filter(i => i.status === 'QA BLOCKED'),
-        stalled: active.filter(isStalled),
       };
     })
     .sort((a, b) => b.active.length - a.active.length);
@@ -895,13 +985,11 @@ function App() {
       { key: 'all', label: 'All active', n: active.length, tone: 'dev' },
       { key: 'moved', label: 'Moved', n: p.movedYesterday.length, tone: 'good' },
       { key: 'overdue', label: 'Overdue', n: p.overdue.length, tone: 'bad' },
-      { key: 'stalled', label: 'Stalled', n: p.stalled.length, tone: 'warn' },
     ];
     let list;
     if (personFilter === 'all') list = active;
     else if (personFilter === 'moved') list = p.movedYesterday;
     else if (personFilter === 'overdue') list = p.overdue;
-    else if (personFilter === 'stalled') list = p.stalled;
     else if (personFilter === 'blocked') list = p.blocked;
     else list = active.filter(i => i.status === personFilter);
     if (personTypeFilter !== 'All') list = list.filter(i => i.type === personTypeFilter);
@@ -935,7 +1023,6 @@ function App() {
                 <td>
                   {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
                   {overdueInfo(i).approaching && <span className="vchip vchip-warn">due soon</span>}
-                  {isStalled(i) && <span className="vchip vchip-warn">stalled</span>}
                   <QAOwnerTag issue={i} />
                 </td>
               </tr>
@@ -951,24 +1038,24 @@ function App() {
   const totalToDo = issues.filter(i => i.status === 'To Do').length;
 
   // Board Health Index formula: less sensitive to avoid flat 0% with standard team sizing
-  const calculatedBHI = Math.max(10, Math.round(100 - (10 * blockedIssues.length) - (1.5 * slaBreachedIssues.length) - (2.5 * overloadedMembers.length)));
+  const calculatedBHI = Math.max(10, Math.round(100 - (10 * blockedIssues.length) - (1.5 * overdueIssues.length) - (2.5 * overloadedMembers.length)));
 
   // Release safety metrics
   const totalDefects = issues.filter(i => i.type === 'Bug' && !isDone(i.status)).length;
   const criticalDefects = issues.filter(i => i.type === 'Bug' && i.priority === 'Highest' && !isDone(i.status)).length;
   const releaseConfidence = Math.max(15, Math.round(100 - (10 * criticalDefects) - (1.2 * totalDefects) - (3 * blockedIssues.length)));
 
-  // Spillover forecasting (Active items with aging > SLA or In Progress near end of sprint)
+  // Spillover forecasting (blocked items, or active items sitting 3+ days without an update)
   const likelySpillovers = issues.filter(i => !isDone(i.status) && (i.blocked || i.staleDays >= 3));
 
-  // Focus list (Top Risks for Standup)
+  // Focus list (Top Risks for Standup) — blocked first, then most-overdue, then stalest
   const focusList = [...issues]
     .sort((a, b) => {
       if (a.blocked && !b.blocked) return -1;
       if (!a.blocked && b.blocked) return 1;
-      const aSlaGap = a.staleDays - (SLA_LIMITS[a.status] || 0);
-      const bSlaGap = b.staleDays - (SLA_LIMITS[b.status] || 0);
-      if (aSlaGap !== bSlaGap) return bSlaGap - aSlaGap;
+      const aOver = overdueInfo(a).overdueBy || 0;
+      const bOver = overdueInfo(b).overdueBy || 0;
+      if (aOver !== bOver) return bOver - aOver;
       return b.staleDays - a.staleDays;
     })
     .slice(0, 5);
@@ -1063,7 +1150,7 @@ function App() {
     const completed = teamIssues.filter(i => isDone(i.status));
     const total = teamIssues.length;
     const successRate = total > 0 ? Math.round((completed.length / total) * 100) : 100;
-    const slaBreachedList = active.filter(i => i.staleDays > (SLA_LIMITS[i.status] || 99)).sort((a, b) => b.staleDays - a.staleDays);
+    const overdueList = active.filter(i => overdueInfo(i).overdue).sort((a, b) => overdueInfo(b).overdueBy - overdueInfo(a).overdueBy);
     const deliveredSP = completed.reduce((sum, i) => sum + (i.storyPoints || 0), 0);
     const pendingSP = active.reduce((sum, i) => sum + (i.storyPoints || 0), 0);
     const devCount = REAL_TEAM.filter(m => m.devGroup === teamName).length;
@@ -1072,8 +1159,8 @@ function App() {
       activeCount: active.length,
       completedCount: completed.length,
       successRate,
-      slaBreaches: slaBreachedList.length,
-      slaBreachedList,
+      overdueCount: overdueList.length,
+      overdueList,
       deliveredSP,
       pendingSP,
       devCount,
@@ -1162,13 +1249,13 @@ function App() {
         <div className="summary-grid">
           <MetricCard icon="chart" title="Sprint Health Score" value={`${calculatedBHI}/100`}
             color={calculatedBHI >= 85 ? 'var(--color-success)' : calculatedBHI >= 70 ? 'var(--color-warning)' : 'var(--color-danger)'}
-            desc="Heuristic — blockers, SLA & WIP" />
+            desc="Heuristic — blockers, overdue & WIP" />
           <MetricCard icon="rocket" title="Release Confidence" value={`${releaseConfidence}%`} color="var(--color-primary)"
             desc="Heuristic — open & critical defects" />
           <MetricCard icon="ban" title="Active Blockers" value={blockedIssues.length}
             color={blockedIssues.length > 0 ? 'var(--color-danger)' : 'var(--text-primary)'} desc="High risk critical path items" />
-          <MetricCard icon="clock" title="Stuck Tickets" value={slaBreachedIssues.length} color="var(--color-warning)"
-            desc="No movement past aging limit" />
+          <MetricCard icon="clock" title="Overdue Tickets" value={overdueIssues.length} color="var(--color-warning)"
+            desc="Bugs & QA > 24h · pointed stories > SP budget" />
         </div>
         )}
 
@@ -1196,31 +1283,7 @@ function App() {
           return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
 
-            {/* DATA HEALTH */}
-            <div className="section-panel">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                <h2 className="section-title">Data health</h2>
-                <span className={`freshness-pill ${daysStale >= 2 ? 'fp-bad' : daysStale === 1 ? 'fp-warn' : 'fp-ok'}`}>
-                  <Icon name="clock" size={13} /> Synced {daysStale === 0 ? 'today' : `${daysStale}d ago`} · {DATA_META.sprint}
-                </span>
-              </div>
-              {healthChecks.length === 0
-                ? <p style={{ margin: 0, color: 'var(--color-success)' }}>All reconciliation checks pass — no gaps found in the synced dataset.</p>
-                : (
-                  <div className="insights-list">
-                    {healthChecks.map((c, idx) => (
-                      <div key={idx} className={`insight-item insight-${c.level}`}>
-                        <span className="insight-dot" /><span>{c.text}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--text-muted)' }}>
-                This checks the synced dataset for internal gaps — it can't reach live Jira from the browser. For an authoritative refresh, run <code>npm run sync</code> or ask Claude to re-pull via the Jira MCP.
-              </p>
-            </div>
-
-            {/* SPRINT PROGRESS + INSIGHTS */}
+            {/* SPRINT PROGRESS */}
             <div className="section-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
                 <h2 className="section-title">Sprint Progress</h2>
@@ -1256,15 +1319,96 @@ function App() {
                   </>
                 );
               })()}
+            </div>
 
-              <div className="insights-list">
-                {insights.map((ins, idx) => (
-                  <div key={idx} className={`insight-item insight-${ins.tone}`}>
-                    <span className="insight-dot" />
-                    <span>{ins.text}</span>
-                  </div>
+            {/* SPRINT SCOPE */}
+            <div className="section-panel">
+              <h2 className="section-title">Sprint scope</h2>
+              <p>Themes committed for this sprint.</p>
+              <ol style={{ margin: 0, paddingLeft: '22px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '8px 28px' }}>
+                {SPRINT_SCOPE.map((s, i) => (
+                  <li key={i} style={{ fontSize: '14px', color: 'var(--text-primary)', lineHeight: 1.55 }}>{s}</li>
                 ))}
+              </ol>
+            </div>
+
+            {/* TEAM LIST */}
+            <div className="section-panel">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <h2 className="section-title">Teams</h2>
+                <button className="btn btn-secondary" onClick={() => setShowAllMembers(v => !v)}>
+                  {showAllMembers ? 'Hide members' : 'View all members'}
+                </button>
               </div>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                {TEAM_ORDER.map(team => {
+                  const members = REAL_TEAM.filter(m => m.devGroup === team);
+                  if (!members.length) return null;
+                  return (
+                    <span key={team} className="vchip vchip-muted" style={{ fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      {team} <span className="filter-tab-count">{members.length}</span>
+                    </span>
+                  );
+                })}
+              </div>
+              {showAllMembers && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', marginTop: '18px', borderTop: '1px solid var(--border-color)', paddingTop: '16px' }}>
+                  {TEAM_ORDER.map(team => {
+                    const members = REAL_TEAM.filter(m => m.devGroup === team);
+                    if (!members.length) return null;
+                    return (
+                      <div key={team} style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ minWidth: '110px', fontSize: '12px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px', color: 'var(--text-secondary)' }}>{team}</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', flex: 1 }}>
+                          {members.map(m => {
+                            const load = issues.filter(i => (team === 'QA Team' ? issueQAs(i).includes(m.name) : i.assignee === m.name) && !isDone(i.status)).length;
+                            return (
+                              <span key={m.name} className="vchip vchip-muted" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }} title={`${m.name} — ${load} active`}>
+                                <span className="mini-avatar" style={{ width: '20px', height: '20px', fontSize: '9px' }}>{m.code}</span>
+                                {m.name}{m.intern ? ' (intern)' : ''}
+                                {load > 0 && <strong style={{ color: 'var(--color-primary)' }}>· {load}</strong>}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* CURRENT SPRINT BURNDOWN */}
+            <div className="section-panel">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                <h2 className="section-title">Current sprint burndown</h2>
+                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Remaining story points vs the ideal trend · Jul 16–30</span>
+              </div>
+              <Burndown issues={issues} />
+            </div>
+
+            {/* DATA HEALTH */}
+            <div className="section-panel">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <h2 className="section-title">Data health</h2>
+                <span className={`freshness-pill ${daysStale >= 2 ? 'fp-bad' : daysStale === 1 ? 'fp-warn' : 'fp-ok'}`}>
+                  <Icon name="clock" size={13} /> Synced {daysStale === 0 ? 'today' : `${daysStale}d ago`} · {DATA_META.sprint}
+                </span>
+              </div>
+              {healthChecks.length === 0
+                ? <p style={{ margin: 0, color: 'var(--color-success)' }}>All reconciliation checks pass — no gaps found in the synced dataset.</p>
+                : (
+                  <div className="insights-list">
+                    {healthChecks.map((c, idx) => (
+                      <div key={idx} className={`insight-item insight-${c.level}`}>
+                        <span className="insight-dot" /><span>{c.text}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--text-muted)' }}>
+                This checks the synced dataset for internal gaps — it can't reach live Jira from the browser. For an authoritative refresh, run <code>npm run sync</code> or ask Claude to re-pull via the Jira MCP.
+              </p>
             </div>
 
             {/* WHERE THE SPRINT IS WAITING */}
@@ -1284,15 +1428,6 @@ function App() {
                   </div>
                 ))}
               </div>
-            </div>
-
-            {/* SPRINT BURNUP */}
-            <div className="section-panel">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
-                <h2 className="section-title">Sprint burnup</h2>
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Completed (Done / Ready) vs total scope, by day · Jul 16 – {reportEndLabel}</span>
-              </div>
-              <Burnup issues={issues} />
             </div>
 
             {/* ESTIMATION COVERAGE */}
@@ -1383,40 +1518,6 @@ function App() {
               </div>
             </div>
 
-            {/* REWORK & RECURRING BLOCKERS */}
-            <div className="section-panel">
-              <h2 className="section-title">Rework & recurring blockers</h2>
-              <p>{reopened.length} tickets were reopened (sent back to In Progress after moving on), {qaBlockedNow.length} are currently QA-blocked.</p>
-              {reopened.length > 0 && (
-                <table className="aging-table">
-                  <thead><tr><th>Key</th><th>Summary</th><th>Status</th><th>Assignee</th><th>Times reopened</th></tr></thead>
-                  <tbody>
-                    {reopened.slice(0, 10).map(({ issue, bounces }) => (
-                      <tr key={issue.key} className="clickable-card" onClick={() => setSelectedTicket(issue)}>
-                        <td style={{ fontWeight: 600 }}>{issue.key}</td>
-                        <td>{issue.summary}</td>
-                        <td><StatusBadge status={issue.status} /></td>
-                        <td>{issue.assignee}</td>
-                        <td><span className="vchip vchip-warn">{bounces}×</span></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-
-            {/* AGING WIP */}
-            <div className="section-panel">
-              <h2 className="section-title">Aging work in progress</h2>
-              <p>Every ticket in a work lane, plotted by % of its own SLA budget consumed — SP-day budget for Dev/Code Review, the 24-hour rule for QA lanes. Above the red line means breached, regardless of lane. Click a dot for the ticket.</p>
-              <AgingWIP issues={issues} onPick={(i) => setSelectedTicket(i)} />
-              <div className="progress-legend">
-                <span className="progress-legend-item"><span className="status-dot" style={{ backgroundColor: 'var(--color-danger)' }} />&gt;100% — breached</span>
-                <span className="progress-legend-item"><span className="status-dot" style={{ backgroundColor: 'var(--color-warning)' }} />70–100% — due soon</span>
-                <span className="progress-legend-item"><span className="status-dot" style={{ backgroundColor: 'var(--color-primary)' }} />&lt;70% — on track</span>
-              </div>
-            </div>
-
             {/* SPRINT-OVER-SPRINT COMPARISON */}
             {LAST_SPRINT.length > 0 && (() => {
               const cur = computeDeliveryStats(issues, TODAY, Date.now());
@@ -1464,6 +1565,42 @@ function App() {
                 </div>
               );
             })()}
+
+            {/* STORY POINTS & BUGS PER PERSON (kept last) */}
+            <div className="section-panel">
+              <h2 className="section-title">Story points & bugs per person</h2>
+              <p>Assigned this sprint — total story points and bug count per assignee.</p>
+              {(() => {
+                const names = [...new Set(issues.map(i => i.assignee).filter(n => n && n !== 'Unassigned'))];
+                const rows = names.map(name => {
+                  const mine = issues.filter(i => i.assignee === name);
+                  const sp = mine.reduce((s, i) => s + (i.storyPoints || 0), 0);
+                  const doneSp = mine.filter(i => isDone(i.status)).reduce((s, i) => s + (i.storyPoints || 0), 0);
+                  const bugs = mine.filter(i => i.type === 'Bug').length;
+                  // Active (not-done) ticket count — same definition used everywhere else in the app.
+                  const tickets = mine.filter(i => !isDone(i.status)).length;
+                  return { name, team: teamOf(name), tickets, sp, doneSp, bugs };
+                }).sort((a, b) => b.sp - a.sp || b.bugs - a.bugs);
+                return (
+                  <table className="aging-table">
+                    <thead>
+                      <tr><th>Person</th><th>Team</th><th>Tickets</th><th>Story points (done/total)</th><th>Bugs</th></tr>
+                    </thead>
+                    <tbody>
+                      {rows.map(r => (
+                        <tr key={r.name}>
+                          <td style={{ fontWeight: 600 }}>{r.name}</td>
+                          <td style={{ color: 'var(--text-muted)' }}>{r.team}</td>
+                          <td>{r.tickets}</td>
+                          <td style={{ fontFeatureSettings: '"tnum"' }}><span style={{ color: 'var(--color-success)' }}>{r.doneSp}</span> / {r.sp}</td>
+                          <td style={{ fontWeight: 600, color: r.bugs > 0 ? 'var(--color-danger)' : 'var(--text-muted)' }}>{r.bugs}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                );
+              })()}
+            </div>
           </div>
           );
         })()}
@@ -1474,7 +1611,6 @@ function App() {
             { key: 'focus', label: 'Focus now', tone: 'dev' },
             { key: 'moved', label: 'Moved today', tone: 'good' },
             { key: 'overdue', label: 'Overdue', tone: 'bad' },
-            { key: 'stalled', label: 'Stalled', tone: 'warn' },
             { key: 'blocked', label: 'Blocked', tone: 'bad' },
             { key: 'inqa', label: 'In QA', tone: 'qa' },
             { key: 'todo', label: 'To Do', tone: 'muted' },
@@ -1483,7 +1619,6 @@ function App() {
             focus: i => !isDone(i.status) && i.status !== 'To Do',
             moved: i => i.status !== 'To Do' && movedSince(i, YESTERDAY),
             overdue: i => overdueInfo(i).overdue,
-            stalled: i => isStalled(i),
             blocked: i => i.status === 'QA BLOCKED',
             inqa: i => i.status === 'QA Review',
             todo: i => i.status === 'To Do',
@@ -1578,7 +1713,6 @@ function App() {
                         <td>
                           {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
                           {overdueInfo(i).approaching && <span className="vchip vchip-warn">due soon</span>}
-                          {isStalled(i) && <span className="vchip vchip-warn">stalled</span>}
                           <QAOwnerTag issue={i} />
                         </td>
                       </tr>
@@ -1593,7 +1727,7 @@ function App() {
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                   <input type="text" placeholder="Action description..." value={newActionText} onChange={(e) => setNewActionText(e.target.value)} style={{ flexGrow: 1, minWidth: '200px', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-primary)' }} />
                   <select value={newActionOwner} onChange={(e) => setNewActionOwner(e.target.value)} className="filter-select">
-                    {REAL_TEAM.map(m => <option key={m.name} value={m.name}>{m.name}</option>)}
+                    {[...new Set(REAL_TEAM.map(m => m.name))].map(name => <option key={name} value={name}>{name}</option>)}
                   </select>
                   <button className="btn btn-primary" onClick={handleAddAction}>Add Action</button>
                 </div>
@@ -1761,7 +1895,7 @@ function App() {
           })()
         )}
 
-        {/* TAB: ANALYTICS — delivery SLA performance */}
+        {/* TAB: ANALYTICS — delivery / overdue performance */}
         {currentTab === 'analytics' && (() => {
           // ---- Range selection ----
           const weekAgo = dateStr(new Date(new Date(TODAY + 'T00:00:00').getTime() - 7 * DAY));
@@ -1783,7 +1917,7 @@ function App() {
           const lastByDev = {};
           LAST_SPRINT.forEach(i => { if (i.assignee !== 'Unassigned' && i.status !== 'Rejected') lastByDev[i.assignee] = (lastByDev[i.assignee] || 0) + 1; });
 
-          // Per-developer dev-SLA scores + workload stats
+          // Per-developer dev timing scores + workload stats
           const devMap = {};
           ds.forEach(i => {
             if (i.assignee === 'Unassigned') return;
@@ -1822,7 +1956,7 @@ function App() {
           }).sort((a, b) => (b.pct ?? -1) - (a.pct ?? -1) || b.assigned - a.assigned);
           const qaBarRows = qaRows.filter(r => r.measured + r.pendingOk > 0);
 
-          // SLA breach register (dev flagged + QA over 24h)
+          // Overdue register (dev over SP-budget + QA over 24h)
           const breaches = [];
           ds.forEach(i => {
             const s = devSlaInfo(i, asOf);
@@ -1912,7 +2046,7 @@ function App() {
                     <SmartTable
                       key={'devdetail' + analyticsDev + analyticsDevStatus + analyticsDevType}
                       rows={shown}
-                      columns={['Key', 'Summary', 'Status', 'SP', 'In status', 'Dev SLA', 'QA time', 'Flags']}
+                      columns={['Key', 'Summary', 'Status', 'SP', 'In status', 'Dev timing', 'QA time', 'Flags']}
                       searchText={(i) => `${i.key} ${i.summary} ${i.status}`}
                       renderRow={(i) => {
                         const s = devSlaInfo(i, asOf);
@@ -1997,7 +2131,7 @@ function App() {
                             <td>{i.assignee}</td>
                             <td>{i.storyPoints || 0}</td>
                             <td>{daysInStatus(i)}d</td>
-                            <td style={{ fontFeatureSettings: '"tnum"', fontWeight: 600 }}>{q ? `${fmtHours(q.hours)}${q.done ? ' (tested)' : q.hours > 24 ? ' (over SLA)' : ' (in QA)'}` : '—'}</td>
+                            <td style={{ fontFeatureSettings: '"tnum"', fontWeight: 600 }}>{q ? `${fmtHours(q.hours)}${q.done ? ' (tested)' : q.hours > 24 ? ' (overdue)' : ' (in QA)'}` : '—'}</td>
                             <td>
                               {isSpill(i) && <span className="vchip vchip-warn">spilled over</span>}
                               {q && !q.done && q.hours > 24 && <span className="vchip vchip-bad">over 24h</span>}
@@ -2011,13 +2145,13 @@ function App() {
               })()}
 
               <div className="summary-grid">
-                <MetricCard icon="zap" title="Dev SLA compliance" value={totMeasured ? `${Math.round((totOnTime / totMeasured) * 100)}%` : 'N/A'}
+                <MetricCard icon="zap" title="On-time to QA" value={totMeasured ? `${Math.round((totOnTime / totMeasured) * 100)}%` : 'N/A'}
                   color="var(--color-primary)" desc={`${totOnTime}/${totMeasured} tickets within SP budget`} />
                 <MetricCard icon="check" title="QA within 24h" value={qaMeasured ? `${Math.round((qaWithin / qaMeasured) * 100)}%` : 'N/A'}
                   color="#7c3aed" desc={`${qaWithin}/${qaMeasured} tested inside a day`} />
                 <MetricCard icon="clock" title="Avg QA turnaround" value={avgTurnH != null ? fmtHours(avgTurnH) : 'N/A'}
                   color="var(--text-primary)" desc={`across ${allCycles.length} tested tickets`} />
-                <MetricCard icon="alert" title="Active SLA breaches" value={breaches.length}
+                <MetricCard icon="alert" title="Overdue now" value={breaches.length}
                   color={breaches.length ? 'var(--color-danger)' : 'var(--color-success)'} desc="Dev over budget + QA over 24h" />
               </div>
 
@@ -2043,10 +2177,10 @@ function App() {
                 <DevStatsTable key={'devstats' + analyticsRange} rows={devRows} showSpill={analyticsRange !== 'last'} onPick={(name) => { setAnalyticsDev(name); setAnalyticsDevStatus('all'); setAnalyticsDevType('All'); setAnalyticsQA(null); scrollToDetail(); }} />
               </div>
 
-              {/* SLA BREACHES PER DEVELOPER */}
+              {/* OVERDUE PER DEVELOPER */}
               {devBreachRows.length > 0 && (
                 <div className="section-panel">
-                  <h2 className="section-title">SLA breaches per developer</h2>
+                  <h2 className="section-title">Overdue per developer</h2>
                   <p>Tickets currently past their story-point budget without reaching QA, by assignee.</p>
                   <div className="team-chart">
                     {devBreachRows.map(r => (
@@ -2065,7 +2199,7 @@ function App() {
 
               {/* QA TURNAROUND */}
               <div className="section-panel">
-                <h2 className="section-title">QA turnaround — 24-hour SLA</h2>
+                <h2 className="section-title">QA turnaround — 24-hour rule</h2>
                 <p>Rule: once a ticket enters QA Review it should be tested within 24 hours. Ranked best first.</p>
                 <div className="team-chart">
                   {qaBarRows.map(r => (
@@ -2111,7 +2245,7 @@ function App() {
                 <SmartTable
                   key={'inqa' + analyticsRange}
                   rows={[...inQaNow].sort((a, b) => (qaHoursInfo(b, asOfMs)?.hours || 0) - (qaHoursInfo(a, asOfMs)?.hours || 0))}
-                  columns={['Key', 'Summary', 'Primary QA', 'Developer', 'Time in QA', 'SLA']}
+                  columns={['Key', 'Summary', 'Primary QA', 'Developer', 'Time in QA', '24h rule']}
                   searchText={(i) => `${i.key} ${i.summary} ${i.assignee} ${i.primaryQA}`}
                   renderRow={(i) => {
                     const q = qaHoursInfo(i, asOfMs);
@@ -2129,14 +2263,14 @@ function App() {
                 />
               </div>
 
-              {/* SLA BREACH REGISTER */}
+              {/* OVERDUE REGISTER */}
               <div className="section-panel">
-                <h2 className="section-title">SLA breaches ({breaches.length})</h2>
+                <h2 className="section-title">Overdue tickets ({breaches.length})</h2>
                 <p>Dev tickets past their story-point budget without reaching QA, and QA tickets held longer than 24 hours.</p>
                 <SmartTable
                   key={'breach' + analyticsRange}
                   rows={breaches}
-                  columns={['Key', 'Summary', 'Type', 'Owner', 'SP', 'Elapsed', 'Breached by', 'Status']}
+                  columns={['Key', 'Summary', 'Type', 'Owner', 'SP', 'Elapsed', 'Overdue by', 'Status']}
                   searchText={(b) => `${b.i.key} ${b.i.summary} ${b.owner} ${b.type}`}
                   renderRow={(b) => (
                     <tr key={b.i.key + b.type} className="clickable-card" onClick={() => setSelectedTicket(b.i)}>
@@ -2162,15 +2296,15 @@ function App() {
 
             {/* TEAMS MATRIX GRID */}
             <div className="teams-workload-grid">
-              {['DevOps', 'Dev 1 (Pushkar)', 'Dev 2 (Mehul/Monika)', 'Dev 3 (Somya)', 'CRM Support', 'QA Team'].map(teamName => {
+              {TEAM_ORDER.map(teamName => {
                 const metrics = getTeamMetrics(teamName);
-                const isTeamAtRisk = metrics.slaBreaches > 0 || metrics.activeCount >= 10;
+                const isTeamAtRisk = metrics.overdueCount > 0 || metrics.activeCount >= 10;
                 
                 return (
                   <div 
                     key={teamName} 
                     className={`team-card ${selectedTeam === teamName ? 'active' : ''}`}
-                    onClick={() => { setSelectedTeam(teamName); setShowTeamSla(false); setShowTeamOverdue(false); setSelectedDevFilter(null); setTeamMemberFilter('All'); setTeamStatusFilter(''); setTeamTypeFilter('All'); }}
+                    onClick={() => { setSelectedTeam(teamName); setShowTeamOverdue(false); setSelectedDevFilter(null); setTeamMemberFilter('All'); setTeamStatusFilter(''); setTeamTypeFilter('All'); }}
                     style={{ 
                       borderColor: selectedTeam === teamName ? 'var(--color-primary)' : 'var(--border-color)',
                       boxShadow: selectedTeam === teamName ? '0 0 10px var(--color-primary-glow)' : 'none'
@@ -2193,9 +2327,9 @@ function App() {
                         <span className="team-metric-val">{metrics.successRate}%</span>
                       </div>
                       <div className="team-metric-box">
-                        <span className="team-metric-lbl">SLA BREACH</span>
-                        <span className="team-metric-val" style={{ color: metrics.slaBreaches > 0 ? 'var(--color-danger)' : 'var(--text-primary)' }}>
-                          {metrics.slaBreaches}
+                        <span className="team-metric-lbl">OVERDUE</span>
+                        <span className="team-metric-val" style={{ color: metrics.overdueCount > 0 ? 'var(--color-danger)' : 'var(--text-primary)' }}>
+                          {metrics.overdueCount}
                         </span>
                       </div>
                     </div>
@@ -2230,7 +2364,6 @@ function App() {
               // distinct members present in this team's tickets (for the filter chips)
               const teamMembersPresent = [...new Set(metrics.allIssues.flatMap(memberOf).filter(n => n && n !== 'Unassigned'))].sort();
               const teamOverdue = teamOverdueAll.filter(x => matchesMember(x.issue)).sort((a, b) => b.info.overdueBy - a.info.overdueBy);
-              const teamSlaFiltered = metrics.slaBreachedList.filter(i => matchesMember(i));
 
               return (
                 <div className="team-deep-dive-panel">
@@ -2247,19 +2380,14 @@ function App() {
                       desc={`${metrics.deliveredSP} SP delivered across ${metrics.devCount} devs`} />
                     <MetricCard icon="check" title="Done / Ready" value={metrics.completedCount} color="var(--color-success)"
                       desc={`of ${metrics.allIssues.length} team tickets`} />
-                    <MetricCard icon="alert" title="SLA Breaches" value={metrics.slaBreaches}
-                      color={metrics.slaBreaches > 0 ? 'var(--color-danger)' : 'var(--text-primary)'}
-                      desc={metrics.slaBreaches > 0 ? (showTeamSla ? 'Click to hide tickets' : 'Click to view tickets') : 'No breaches'}
-                      onClick={() => metrics.slaBreaches > 0 && setShowTeamSla(v => !v)}
-                      active={showTeamSla && metrics.slaBreaches > 0} />
                     <MetricCard icon="clock" title="Overdue" value={teamOverdueAll.length}
                       color={teamOverdueAll.length > 0 ? 'var(--color-danger)' : 'var(--text-primary)'}
-                      desc={teamOverdueAll.length > 0 ? (showTeamOverdue ? 'Click to hide tickets' : 'Past estimate — click to view') : 'None overdue'}
+                      desc={teamOverdueAll.length > 0 ? (showTeamOverdue ? 'Click to hide tickets' : 'In Progress > SP · QA > 24h — click to view') : 'None overdue'}
                       onClick={() => teamOverdueAll.length > 0 && setShowTeamOverdue(v => !v)}
                       active={showTeamOverdue && teamOverdueAll.length > 0} />
                   </div>
 
-                  {/* Member filter — narrows the SLA & Overdue lists below */}
+                  {/* Member filter — narrows the Overdue list below */}
                   <div className="filter-tabs">
                     <button
                       className={`filter-tab ${teamMemberFilter === 'All' ? 'active' : ''}`}
@@ -2381,7 +2509,6 @@ function App() {
                                 <td>{daysInStatus(i)}d</td>
                                 <td>
                                   {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
-                                  {isStalled(i) && <span className="vchip vchip-warn">stalled</span>}
                                   <QAOwnerTag issue={i} />
                                 </td>
                               </tr>
@@ -2419,45 +2546,11 @@ function App() {
                                 <td><StatusBadge status={issue.status} /></td>
                                 <td>{selectedTeam === 'QA Team' ? (issueQAs(issue).join(', ') || 'Unassigned') : issue.assignee}</td>
                                 <td>{issue.storyPoints || 0}</td>
-                                <td><span className="overdue-badge">{info.overdueBy}d over</span></td>
+                                <td><span className="overdue-badge">{info.label}</span></td>
                               </tr>
                             ))}
                           </tbody>
                         </table>
-                      )}
-                    </div>
-                  )}
-
-                  {/* SLA breach ticket list (toggled) */}
-                  {showTeamSla && metrics.slaBreaches > 0 && (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      <h4 style={{ margin: 0, fontSize: '14px', color: 'var(--color-danger)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        SLA-Breached Tickets — {selectedTeam}{teamMemberFilter !== 'All' ? ` · ${teamMemberFilter}` : ''} ({teamSlaFiltered.length})
-                      </h4>
-                      {teamSlaFiltered.length === 0 && <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-muted)' }}>None for {teamMemberFilter}.</p>}
-                      {teamSlaFiltered.length > 0 && (
-                      <table className="aging-table">
-                        <thead>
-                          <tr>
-                            <th>Key</th>
-                            <th>Summary</th>
-                            <th>Status</th>
-                            <th>Assignee</th>
-                            <th>Aging</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {teamSlaFiltered.map(i => (
-                            <tr key={i.key}>
-                              <td style={{ fontWeight: 600 }}>{i.key}</td>
-                              <td>{i.summary}</td>
-                              <td><StatusBadge status={i.status} /></td>
-                              <td>{i.assignee}</td>
-                              <td style={{ color: 'var(--color-warning)', fontWeight: 600 }}>{i.staleDays} days</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
                       )}
                     </div>
                   )}
@@ -2512,8 +2605,7 @@ function App() {
 
                     <div className="kanban-cards">
                       {columnIssues.map(issue => {
-                        const limit = SLA_LIMITS[issue.status] || 999;
-                        const isBreached = issue.staleDays > limit;
+                        const isOverdue = overdueInfo(issue).overdue;
                         const hasQA = issue.primaryQA && issue.primaryQA !== 'Unassigned';
 
                         const statusMeta = getStatusMeta(issue.status);
@@ -2544,7 +2636,7 @@ function App() {
                             )}
 
                             <div className="card-footer">
-                              <span className="card-meta-item" style={{ color: isBreached ? 'var(--color-danger)' : 'var(--text-muted)' }}>
+                              <span className="card-meta-item" style={{ color: isOverdue ? 'var(--color-danger)' : 'var(--text-muted)' }}>
                                 <Icon name="clock" size={12} /> {issue.staleDays}d
                               </span>
                               <span className="card-meta-item" style={{ color: 'var(--text-secondary)' }}>
@@ -2805,7 +2897,7 @@ function App() {
         {currentTab === 'release' && (
           <div className="section-panel">
             <h2 className="section-title">Release Safety Checklists</h2>
-            <p>Evaluating defect density, blockers, and SLA compliance on G99PRODUCT.</p>
+            <p>Evaluating defect density, blockers, and overdue tickets on G99PRODUCT.</p>
             <table className="aging-table">
               <thead>
                 <tr>
