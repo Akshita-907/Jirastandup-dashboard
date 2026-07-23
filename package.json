@@ -8,6 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
+    "serve": "node server.js",
     "sync": "node scripts/fetch-sprint.js"
   },
   "dependencies": {
