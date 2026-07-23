@@ -1436,3 +1436,119 @@ input[type="checkbox"] {
   height: 15px;
   cursor: pointer;
 }
+
+/* ---- Reload loading skeleton ---- */
+.skeleton-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  animation: skel-fade 0.2s ease;
+}
+
+@keyframes skel-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.skel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px 15px;
+  box-shadow: var(--shadow-sm);
+}
+
+.skel-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px 26px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Shimmering block — the base look of every skeleton element */
+.skel-line {
+  border-radius: 6px;
+  background: linear-gradient(
+    100deg,
+    var(--bg-subtle) 30%,
+    #eef0f4 50%,
+    var(--bg-subtle) 70%
+  );
+  background-size: 200% 100%;
+  animation: skel-shimmer 1.3s ease-in-out infinite;
+  height: 12px;
+}
+
+@keyframes skel-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+.skel-icon { width: 30px; height: 30px; border-radius: 8px; }
+.skel-sm { height: 12px; }
+.skel-md { height: 18px; }
+.skel-lg { height: 30px; }
+.skel-bar { height: 26px; border-radius: 8px; width: 100%; }
+
+.skel-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+.skel-chip { height: 22px; width: 92px; border-radius: 999px; }
+
+.skel-row {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  padding: 6px 0;
+}
+
+/* Respect users who prefer no motion */
+@media (prefers-reduced-motion: reduce) {
+  .skel-line { animation: none; }
+  .skeleton-wrap { animation: none; }
+}
+
+/* ---- Dev Activity (Bitbucket) ---- */
+.bb-daybars {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 180px;
+  padding-top: 8px;
+}
+.bb-daybar {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  min-width: 0;
+}
+.bb-daybar-track {
+  width: 100%;
+  max-width: 34px;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-end;
+  background: var(--bg-subtle);
+  border-radius: 6px 6px 0 0;
+}
+.bb-daybar-fill {
+  width: 100%;
+  min-height: 2px;
+  background: var(--color-primary);
+  border-radius: 6px 6px 0 0;
+  transition: height 0.3s ease;
+}
+.bb-daybar-num { font-size: 0.72rem; font-weight: 700; color: var(--text-secondary); min-height: 14px; }
+.bb-daybar-label { font-size: 0.68rem; color: var(--text-muted); white-space: nowrap; }
+
+.bb-table th, .bb-table td { text-align: center; white-space: nowrap; }
+.bb-table .bb-day-col { padding-left: 6px; padding-right: 6px; font-size: 0.78rem; }
+.bb-table th.bb-day-col { color: var(--text-muted); font-weight: 600; }

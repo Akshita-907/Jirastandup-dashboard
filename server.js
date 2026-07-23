@@ -15,7 +15,7 @@ import { createServer } from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
-import { handleSync } from './scripts/sync-endpoint.js';
+import { handleSync, handleBitbucket } from './scripts/sync-endpoint.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, 'dist');
@@ -65,6 +65,12 @@ const server = createServer(async (req, res) => {
     if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
     const force = /[?&]force=1\b/.test(url);
     return handleSync(res, { force });
+  }
+  if (url === '/api/bitbucket' || url.startsWith('/api/bitbucket?')) {
+    if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
+    const force = /[?&]force=1\b/.test(url);
+    const m = /[?&]days=(\d+)/.exec(url);
+    return handleBitbucket(res, { force, days: m ? Number(m[1]) : undefined });
   }
   return serveStatic(res, url);
 });

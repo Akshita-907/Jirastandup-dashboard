@@ -774,6 +774,35 @@ function App() {
   const [syncError, setSyncError] = useState('');
   const [lastSynced, setLastSynced] = useState(null);
 
+  // ---- Bitbucket dev-activity report (commits + PRs per developer) ----
+  const [bbData, setBbData] = useState(null);
+  const [bbLoading, setBbLoading] = useState(false);
+  const [bbError, setBbError] = useState('');
+  const [bbDays, setBbDays] = useState(14);
+
+  const loadBitbucket = async (days = bbDays, force = false) => {
+    setBbLoading(true);
+    setBbError('');
+    try {
+      const res = await fetch(`/api/bitbucket?days=${days}${force ? '&force=1' : ''}`);
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.ok) throw new Error(body.error || `Fetch failed (${res.status})`);
+      setBbData(body);
+    } catch (e) {
+      setBbError(e.message || 'Could not reach the Bitbucket service.');
+    } finally {
+      setBbLoading(false);
+    }
+  };
+
+  // Auto-load the report the first time the tab is opened (or when window changes).
+  useEffect(() => {
+    if (currentTab !== 'dev-activity') return;
+    if (bbData && bbData.days === bbDays) return;
+    loadBitbucket(bbDays);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab, bbDays]);
+
   // Pull fresh data from Jira via the /api/sync endpoint (token stays server-side).
   // Falls back gracefully if the endpoint isn't available (e.g. `vite preview`
   // without the server) — the bundled issues.json keeps working.
@@ -1296,6 +1325,7 @@ function App() {
               { id: 'kanban', label: 'Kanban Board', icon: 'kanban' },
               { id: 'metrics', label: 'QA Performance', icon: 'chart' },
               { id: 'team-workload', label: 'Team Workload', icon: 'users' },
+              { id: 'dev-activity', label: 'Dev Activity', icon: 'git' },
               { id: 'analytics', label: 'Analytics', icon: 'zap' },
               { id: 'capacity', label: 'Capacity', icon: 'target2' },
               { id: 'interns', label: 'Interns', icon: 'grad' },
@@ -2026,6 +2056,121 @@ function App() {
             );
           })()
         )}
+
+        {/* TAB: DEV ACTIVITY — Bitbucket commits + PRs per developer */}
+        {currentTab === 'dev-activity' && (() => {
+          const short = (d) => {
+            const dt = new Date(d + 'T00:00:00');
+            return dt.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+          };
+          const totalCommits = bbData ? Object.values(bbData.commitsByDay || {}).reduce((a, b) => a + b, 0) : 0;
+          const totalPRs = bbData ? bbData.developers.reduce((a, d) => a + d.prsOpen + d.prsMerged, 0) : 0;
+          const maxDay = bbData ? Math.max(1, ...Object.values(bbData.commitsByDay || {})) : 1;
+          return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+            <div className="section-panel" style={{ gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <h2 className="section-title">Dev Activity</h2>
+                  <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                    Commits &amp; pull requests per developer{bbData ? ` · ${bbData.repoCount} repo(s) in ${bbData.workspace}` : ''} · last {bbDays} days
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="filter-tabs">
+                    {[7, 14, 30].map(d => (
+                      <button key={d} className={`filter-tab ${bbDays === d ? 'active' : ''}`} onClick={() => setBbDays(d)}>
+                        {d}d
+                      </button>
+                    ))}
+                  </div>
+                  <button className="btn btn-secondary" onClick={() => loadBitbucket(bbDays, true)} disabled={bbLoading}>
+                    <Icon name="refresh" size={15} /> {bbLoading ? 'Loading…' : 'Refresh'}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {bbError && (
+              <div className="section-panel" style={{ borderColor: 'var(--color-danger, #dc2626)' }}>
+                <h2 className="section-title" style={{ color: 'var(--color-danger, #dc2626)' }}>Couldn't load Bitbucket data</h2>
+                <p style={{ margin: '4px 0', color: 'var(--text-muted)' }}>{bbError}</p>
+                <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
+                  Set <code>BITBUCKET_WORKSPACE</code> and <code>BITBUCKET_TOKEN</code> (an Access Token with repository &amp; pull-request read) in <code>.env</code>, then restart the dev server.
+                </p>
+              </div>
+            )}
+
+            {bbLoading && !bbData && (
+              <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>Fetching commits &amp; PRs across the workspace…</p></div>
+            )}
+
+            {bbData && !bbError && (
+              <>
+                <div className="summary-grid">
+                  <MetricCard icon="git" title="Total Commits" value={totalCommits} desc={`last ${bbData.days} days`} />
+                  <MetricCard icon="users" title="Contributors" value={bbData.developers.length} desc="with activity" />
+                  <MetricCard icon="bookmark" title="Pull Requests" value={totalPRs} desc="open + merged" />
+                  <MetricCard icon="kanban" title="Active Repos" value={bbData.repoCount} desc={`in ${bbData.workspace}`} />
+                </div>
+
+                {/* Daily commit trend */}
+                <div className="section-panel">
+                  <h2 className="section-title">Commits per day</h2>
+                  <div className="bb-daybars">
+                    {bbData.dates.map(d => {
+                      const n = bbData.commitsByDay[d] || 0;
+                      return (
+                        <div key={d} className="bb-daybar" title={`${d}: ${n} commit(s)`}>
+                          <span className="bb-daybar-num">{n || ''}</span>
+                          <div className="bb-daybar-track">
+                            <div className="bb-daybar-fill" style={{ height: `${Math.round((n / maxDay) * 100)}%` }} />
+                          </div>
+                          <span className="bb-daybar-label">{short(d)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Per-developer table with daily breakdown */}
+                <div className="section-panel" style={{ overflowX: 'auto' }}>
+                  <h2 className="section-title">Per developer</h2>
+                  {bbData.developers.length === 0 ? (
+                    <p style={{ margin: 0, color: 'var(--text-muted)' }}>No commits or PRs in this window.</p>
+                  ) : (
+                    <table className="aging-table bb-table">
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: 'left' }}>Developer</th>
+                          <th>Commits</th>
+                          <th>PRs open</th>
+                          <th>PRs merged</th>
+                          {bbData.dates.map(d => <th key={d} className="bb-day-col">{short(d)}</th>)}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bbData.developers.map(dev => (
+                          <tr key={dev.name}>
+                            <td style={{ textAlign: 'left', fontWeight: 600 }}>{dev.name}</td>
+                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{dev.commits}</td>
+                            <td style={{ textAlign: 'center' }}>{dev.prsOpen || ''}</td>
+                            <td style={{ textAlign: 'center' }}>{dev.prsMerged || ''}</td>
+                            {bbData.dates.map(d => {
+                              const n = dev.commitsByDay[d] || 0;
+                              return <td key={d} className="bb-day-col" style={n ? { background: 'var(--color-primary-soft, #eef2ff)', fontWeight: 700 } : { opacity: 0.3 }}>{n || '·'}</td>;
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+          );
+        })()}
 
         {/* TAB: ANALYTICS — delivery / overdue performance */}
         {currentTab === 'analytics' && (() => {
