@@ -732,6 +732,30 @@ function TicketModal({ issue, onClose }) {
 function App() {
   const [issues, setIssues] = useState(INITIAL_ISSUES);
   const [actions, setActions] = useState(INITIAL_ACTIONS);
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState('');
+  const [lastSynced, setLastSynced] = useState(null);
+
+  // Pull fresh data from Jira via the /api/sync endpoint (token stays server-side).
+  // Falls back gracefully if the endpoint isn't available (e.g. `vite preview`
+  // without the server) — the bundled issues.json keeps working.
+  const reloadData = async () => {
+    setSyncing(true);
+    setSyncError('');
+    try {
+      const res = await fetch('/api/sync');
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.ok) throw new Error(body.error || `Sync failed (${res.status})`);
+      if (Array.isArray(body.issues)) {
+        setIssues(body.issues);
+        setLastSynced(new Date());
+      }
+    } catch (e) {
+      setSyncError(e.message || 'Could not reach the sync service.');
+    } finally {
+      setSyncing(false);
+    }
+  };
   const [selectedAssignee, setSelectedAssignee] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview'); // 'overview', 'risks', 'standup', 'team-workload', 'release', 'settings'
   const [selectedTeam, setSelectedTeam] = useState('Dev 1');
@@ -1267,8 +1291,13 @@ function App() {
           </div>
           <div className="header-actions">
             <GlobalSearch issues={issues} onPick={(i) => setSelectedTicket(i)} />
-            <button className="btn btn-secondary" onClick={() => window.location.reload()} title="Reloads the page — data updates when npm run sync has run">
-              <Icon name="refresh" size={15} /> Reload
+            <button
+              className="btn btn-secondary"
+              onClick={reloadData}
+              disabled={syncing}
+              title={syncError ? `Last reload failed: ${syncError}` : lastSynced ? `Last updated ${lastSynced.toLocaleTimeString()}` : 'Pull the latest data live from Jira'}
+            >
+              <Icon name="refresh" size={15} /> {syncing ? 'Reloading…' : 'Reload'}
             </button>
             <button className="btn btn-primary" onClick={() => setCurrentTab('standup')}>
               <Icon name="zap" size={15} /> Start Meeting Mode
