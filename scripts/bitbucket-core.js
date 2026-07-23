@@ -165,10 +165,10 @@ export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
   log(`  ${repos.length} repo(s) with activity in the last ${days}d.`);
 
   // Per-person accumulator
-  const people = new Map(); // name -> { commits, commitsByDay, prsOpen, prsMerged }
+  const people = new Map(); // name -> { commits, commitsByDay, byRepo, prsOpen, prsMerged }
   const bump = (name) => {
     if (!people.has(name)) {
-      people.set(name, { name, commits: 0, commitsByDay: {}, prsOpen: 0, prsMerged: 0 });
+      people.set(name, { name, commits: 0, commitsByDay: {}, byRepo: {}, prsOpen: 0, prsMerged: 0 });
     }
     return people.get(name);
   };
@@ -193,6 +193,7 @@ export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
             const p = bump(who);
             p.commits += 1;
             p.commitsByDay[day] = (p.commitsByDay[day] || 0) + 1;
+            p.byRepo[repo] = (p.byRepo[repo] || 0) + 1;
             if (day in byDay) byDay[day] += 1;
           }
           return false;

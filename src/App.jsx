@@ -778,7 +778,8 @@ function App() {
   const [bbData, setBbData] = useState(null);
   const [bbLoading, setBbLoading] = useState(false);
   const [bbError, setBbError] = useState('');
-  const [bbDays, setBbDays] = useState(14);
+  const [bbDays, setBbDays] = useState(7);
+  const [commitSearch, setCommitSearch] = useState('');
 
   const loadBitbucket = async (days = bbDays, force = false) => {
     setBbLoading(true);
@@ -794,14 +795,6 @@ function App() {
       setBbLoading(false);
     }
   };
-
-  // Auto-load the report the first time the tab is opened (or when window changes).
-  useEffect(() => {
-    if (currentTab !== 'dev-activity') return;
-    if (bbData && bbData.days === bbDays) return;
-    loadBitbucket(bbDays);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTab, bbDays]);
 
   // Pull fresh data from Jira via the /api/sync endpoint (token stays server-side).
   // Falls back gracefully if the endpoint isn't available (e.g. `vite preview`
@@ -825,6 +818,15 @@ function App() {
   };
   const [selectedAssignee, setSelectedAssignee] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview'); // 'overview', 'risks', 'standup', 'team-workload', 'release', 'settings'
+
+  // Auto-load the Bitbucket report the first time a Bitbucket tab is opened (or when window changes).
+  useEffect(() => {
+    if (currentTab !== 'dev-activity' && currentTab !== 'commit-tracker') return;
+    if (bbData && bbData.days === bbDays) return;
+    loadBitbucket(bbDays);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab, bbDays]);
+
   const [selectedTeam, setSelectedTeam] = useState('Dev 1');
   const [selectedDevFilter, setSelectedDevFilter] = useState(null);
   const [selectedQAFilter, setSelectedQAFilter] = useState(null);
@@ -1326,6 +1328,7 @@ function App() {
               { id: 'metrics', label: 'QA Performance', icon: 'chart' },
               { id: 'team-workload', label: 'Team Workload', icon: 'users' },
               { id: 'dev-activity', label: 'Dev Activity', icon: 'git' },
+              { id: 'commit-tracker', label: 'Commit Tracker', icon: 'kanban' },
               { id: 'analytics', label: 'Analytics', icon: 'zap' },
               { id: 'capacity', label: 'Capacity', icon: 'target2' },
               { id: 'interns', label: 'Interns', icon: 'grad' },
@@ -2167,6 +2170,115 @@ function App() {
                   )}
                 </div>
               </>
+            )}
+          </div>
+          );
+        })()}
+
+        {/* TAB: COMMIT TRACKER — per-developer commits by repo + by day */}
+        {currentTab === 'commit-tracker' && (() => {
+          const short = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+          const q = commitSearch.trim().toLowerCase();
+          const devs = bbData
+            ? bbData.developers
+                .filter(d => d.commits > 0)
+                .filter(d => !q || d.name.toLowerCase().includes(q) || Object.keys(d.byRepo || {}).some(r => r.toLowerCase().includes(q)))
+            : [];
+          return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+            <div className="section-panel" style={{ gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <h2 className="section-title">Commit Tracker</h2>
+                  <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                    Every developer's commits by repo and by day{bbData ? ` · ${bbData.repoCount} repo(s) in ${bbData.workspace}` : ''} · last {bbDays} days
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                  <div className="filter-tabs">
+                    {[7, 14, 30].map(d => (
+                      <button key={d} className={`filter-tab ${bbDays === d ? 'active' : ''}`} onClick={() => setBbDays(d)}>{d}d</button>
+                    ))}
+                  </div>
+                  <button className="btn btn-secondary" onClick={() => loadBitbucket(bbDays, true)} disabled={bbLoading}>
+                    <Icon name="refresh" size={15} /> {bbLoading ? 'Loading…' : 'Refresh'}
+                  </button>
+                </div>
+              </div>
+              <input
+                className="st-search"
+                placeholder="Filter by developer or repo…"
+                value={commitSearch}
+                onChange={e => setCommitSearch(e.target.value)}
+              />
+            </div>
+
+            {bbError && (
+              <div className="section-panel" style={{ borderColor: 'var(--color-danger, #dc2626)' }}>
+                <h2 className="section-title" style={{ color: 'var(--color-danger, #dc2626)' }}>Couldn't load Bitbucket data</h2>
+                <p style={{ margin: '4px 0', color: 'var(--text-muted)' }}>{bbError}</p>
+              </div>
+            )}
+            {bbLoading && !bbData && (
+              <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>Fetching commits across the workspace…</p></div>
+            )}
+
+            {bbData && !bbError && devs.map(dev => {
+              const maxDay = Math.max(1, ...bbData.dates.map(d => dev.commitsByDay[d] || 0));
+              const repos = Object.entries(dev.byRepo || {}).sort((a, b) => b[1] - a[1]);
+              return (
+                <div key={dev.name} className="section-panel">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                    <h2 className="section-title">{dev.name}</h2>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      <strong style={{ color: 'var(--color-primary)', fontSize: '1.05rem' }}>{dev.commits}</strong> commits · {repos.length} repo(s)
+                      {(dev.prsOpen || dev.prsMerged) ? ` · ${dev.prsMerged} PR merged, ${dev.prsOpen} open` : ''}
+                    </span>
+                  </div>
+
+                  {/* Per-day mini bars */}
+                  <div className="bb-daybars" style={{ height: 110 }}>
+                    {bbData.dates.map(d => {
+                      const n = dev.commitsByDay[d] || 0;
+                      return (
+                        <div key={d} className="bb-daybar" title={`${d}: ${n} commit(s)`}>
+                          <span className="bb-daybar-num">{n || ''}</span>
+                          <div className="bb-daybar-track"><div className="bb-daybar-fill" style={{ height: `${Math.round((n / maxDay) * 100)}%` }} /></div>
+                          <span className="bb-daybar-label">{short(d)}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Repo breakdown */}
+                  <table className="aging-table bb-table" style={{ marginTop: 12 }}>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}>Repository</th>
+                        <th>Commits</th>
+                        <th style={{ textAlign: 'left', width: '45%' }}>Share</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {repos.map(([repo, n]) => (
+                        <tr key={repo}>
+                          <td style={{ textAlign: 'left', fontWeight: 600 }}>{repo}</td>
+                          <td style={{ textAlign: 'center', fontWeight: 700 }}>{n}</td>
+                          <td style={{ textAlign: 'left' }}>
+                            <div style={{ background: 'var(--bg-subtle)', borderRadius: 5, height: 10, width: '100%', overflow: 'hidden' }}>
+                              <div style={{ background: 'var(--color-primary)', height: '100%', width: `${Math.round((n / dev.commits) * 100)}%` }} />
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })}
+
+            {bbData && !bbError && devs.length === 0 && (
+              <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>No commits{q ? ' match your filter' : ' in this window'}.</p></div>
             )}
           </div>
           );
