@@ -1262,7 +1262,7 @@ function App() {
         {/* TOP HEADER SECTION */}
         <div className="top-header">
           <div className="header-title">
-            <h1>Engineering Control Tower</h1>
+            <h1>SprintHub</h1>
             <p>{new Date(TODAY + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} • Sprint #38 • Jul 16 – {reportEndLabel} elapsed (day {sprintDayNum} of {sprintTotalDays}) • {daysLeft === 0 ? 'Final day' : `${daysLeft} days remaining`}</p>
           </div>
           <div className="header-actions">
@@ -2479,14 +2479,13 @@ function App() {
                         All members <span className="filter-tab-count">{teamMembersPresent.length}</span>
                       </button>
                       {teamMembersPresent.map(name => {
-                        const wip = metrics.allIssues.filter(i => memberOf(i).includes(name) && !isDone(i.status)).length;
                         return (
                           <button
                             key={name}
                             className={`filter-tab ${teamMemberFilter === name ? 'active' : ''}`}
                             onClick={() => setTeamMemberFilter(teamMemberFilter === name ? 'All' : name)}
                           >
-                            {name} <span className="filter-tab-count">{wip}</span>
+                            {name}
                           </button>
                         );
                       })}
