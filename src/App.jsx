@@ -2077,6 +2077,7 @@ function App() {
                   <h2 className="section-title">Dev Activity</h2>
                   <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                     Commits &amp; pull requests per developer{bbData ? ` · ${bbData.repoCount} repo(s) in ${bbData.workspace}` : ''} · last {bbDays} days
+                    {bbLoading && bbData ? <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}> · Updating…</span> : ''}
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -2109,7 +2110,7 @@ function App() {
             )}
 
             {bbData && !bbError && (
-              <>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', opacity: bbLoading ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: bbLoading ? 'none' : 'auto' }}>
                 <div className="summary-grid">
                   <MetricCard icon="git" title="Total Commits" value={totalCommits} desc={`last ${bbData.days} days`} />
                   <MetricCard icon="users" title="Contributors" value={bbData.developers.length} desc="with activity" />
@@ -2169,7 +2170,7 @@ function App() {
                     </table>
                   )}
                 </div>
-              </>
+              </div>
             )}
           </div>
           );
@@ -2192,6 +2193,7 @@ function App() {
                   <h2 className="section-title">Commit Tracker</h2>
                   <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                     Every developer's commits by repo and by day{bbData ? ` · ${bbData.repoCount} repo(s) in ${bbData.workspace}` : ''} · last {bbDays} days
+                    {bbLoading && bbData ? <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}> · Updating…</span> : ''}
                   </p>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -2223,7 +2225,9 @@ function App() {
               <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>Fetching commits across the workspace…</p></div>
             )}
 
-            {bbData && !bbError && devs.map(dev => {
+            {bbData && !bbError && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', opacity: bbLoading ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: bbLoading ? 'none' : 'auto' }}>
+            {devs.map(dev => {
               const maxDay = Math.max(1, ...bbData.dates.map(d => dev.commitsByDay[d] || 0));
               const repos = Object.entries(dev.byRepo || {}).sort((a, b) => b[1] - a[1]);
               return (
@@ -2276,9 +2280,10 @@ function App() {
                 </div>
               );
             })}
-
-            {bbData && !bbError && devs.length === 0 && (
+            {devs.length === 0 && (
               <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>No commits{q ? ' match your filter' : ' in this window'}.</p></div>
+            )}
+            </div>
             )}
           </div>
           );
