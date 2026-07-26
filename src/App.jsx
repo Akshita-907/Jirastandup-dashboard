@@ -122,6 +122,26 @@ function workingDaysBetween(startStr, endStr) {
   return count;
 }
 
+// Elapsed hours since `startStr` (a YYYY-MM-DD date) up to `nowMs`, EXCLUDING
+// weekend days (Sat/Sun). Used by the 24h Bug/QA overdue clocks so a ticket that
+// only sat across a weekend isn't counted as overdue. Data is day-granular, so we
+// subtract a full 24h for each Sat/Sun that has passed since the start day.
+function businessHoursSince(startStr, nowMs) {
+  if (!startStr) return 0;
+  const startMs = new Date(startStr + 'T00:00:00').getTime();
+  const rawHours = Math.max(0, (nowMs - startMs) / 3600000);
+  let weekendDays = 0;
+  const cur = new Date(startStr + 'T00:00:00');
+  const end = new Date(nowMs);
+  cur.setDate(cur.getDate() + 1); // days strictly after the start day
+  while (cur <= end) {
+    const d = cur.getDay();
+    if (d === 0 || d === 6) weekendDays++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return Math.max(1, Math.round(rawHours - weekendDays * 24));
+}
+
 // A ticket is "overdue" when it has outstayed its allowance:
 //   • Story with NO story points → never overdue (exempt in every status).
 //   • Bug in In Progress → longer than 24 hours since it entered In Progress.
@@ -138,7 +158,8 @@ function overdueInfo(issue) {
       // day-granular, so hours are approximated from that entry date (like the QA clock).
       const ipDate = [...(issue.history || [])].reverse().find(h => h.status === 'In Progress')?.date || issue.inProgressDate;
       if (!ipDate) return { overdue: false, approaching: false };
-      const hours = Math.max(1, Math.round((Date.now() - new Date(ipDate + 'T00:00:00').getTime()) / 3600000));
+      const hours = businessHoursSince(ipDate, Date.now()); // excludes weekend hours
+
       const overdue = hours > 24;
       const approaching = !overdue && hours >= 18;
       const overHours = Math.max(0, hours - 24);
@@ -164,6 +185,12 @@ function overdueInfo(issue) {
   }
   return { overdue: false, approaching: false };
 }
+
+// Responsibility-scoped overdue. Once a ticket is in QA Review the dev's work is
+// done, so a QA-clock breach is QA's responsibility — not the developer's. Dev
+// views use devOverdue(); QA views use qaOverdue().
+function devOverdue(issue) { const o = overdueInfo(issue); return !!o.overdue && o.kind !== 'qa'; }
+function qaOverdue(issue) { const o = overdueInfo(issue); return !!o.overdue && o.kind === 'qa'; }
 
 // ---- History-derived helpers (all from the changelog `history` array) ----
 const DAY = 86400000;
@@ -247,7 +274,7 @@ function qaHoursInfo(i, asOfMs = Date.now()) {
     // most RECENT entry into QA (a bounced ticket restarts its QA clock)
     const lastQa = [...(i.history || [])].reverse().find(h => h.status === 'QA Review')?.date || i.qaEnteredDate;
     if (!lastQa) return null;
-    const hours = Math.max(1, Math.round((asOfMs - new Date(lastQa + 'T00:00:00').getTime()) / 3600000));
+    const hours = businessHoursSince(lastQa, asOfMs); // excludes weekend hours
     return { done: false, hours };
   }
   return null;
@@ -548,11 +575,12 @@ function DevStatsTable({ rows, onPick, showSpill }) {
 }
 
 // ---- Compact metric card with icon ----
-function MetricCard({ icon, title, value, desc, color, onClick, active }) {
+function MetricCard({ icon, title, value, desc, color, onClick, active, tooltip }) {
   return (
     <div
       className={`metric-card ${onClick ? 'clickable-card' : ''}`}
       onClick={onClick}
+      title={tooltip}
       style={active ? { borderColor: color || 'var(--color-primary)' } : undefined}
     >
       {icon && <span className="mc-icon" style={{ color: color || 'var(--color-primary)' }}><Icon name={icon} size={15} /></span>}
@@ -562,6 +590,75 @@ function MetricCard({ icon, title, value, desc, color, onClick, active }) {
         {desc && <span className="metric-desc">{desc}</span>}
       </span>
     </div>
+  );
+}
+
+// Categorical palette for the commit-by-repo pie charts.
+const PIE_COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#06b6d4', '#a855f7', '#ec4899', '#14b8a6', '#f97316', '#84cc16', '#3b82f6', '#eab308', '#8b5cf6', '#10b981'];
+
+// Lightweight SVG donut chart (no dependencies). segments: [{ label, value, color }].
+function DonutChart({ segments, size = 132, stroke = 24 }) {
+  const total = segments.reduce((a, s) => a + s.value, 0) || 1;
+  const r = (size - stroke) / 2;
+  const C = 2 * Math.PI * r;
+  let offset = 0;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Commits by repository">
+      <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--bg-subtle)" strokeWidth={stroke} />
+        {segments.map((s, i) => {
+          const len = (s.value / total) * C;
+          const el = (
+            <circle
+              key={i} cx={size / 2} cy={size / 2} r={r} fill="none"
+              stroke={s.color} strokeWidth={stroke}
+              strokeDasharray={`${len} ${C - len}`} strokeDashoffset={-offset}
+            >
+              <title>{`${s.label}: ${s.value}`}</title>
+            </circle>
+          );
+          offset += len;
+          return el;
+        })}
+      </g>
+      <text x="50%" y="46%" textAnchor="middle" dominantBaseline="central" fontSize="22" fontWeight="700" fill="var(--text-primary)">{total}</text>
+      <text x="50%" y="60%" textAnchor="middle" dominantBaseline="central" fontSize="10" fill="var(--text-muted)">commits</text>
+    </svg>
+  );
+}
+
+// Lightweight SVG area+line chart for a daily series. points: [{ label, value }].
+function DayLineChart({ points }) {
+  const W = 720, H = 170;
+  const pad = { l: 14, r: 14, t: 22, b: 26 };
+  const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+  const max = Math.max(1, ...points.map(p => p.value));
+  const n = points.length;
+  const x = (i) => pad.l + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw);
+  const y = (v) => pad.t + ih - (v / max) * ih;
+  const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ');
+  const area = n ? `${line} L${x(n - 1).toFixed(1)},${(pad.t + ih).toFixed(1)} L${x(0).toFixed(1)},${(pad.t + ih).toFixed(1)} Z` : '';
+  const gid = `cg-${Math.round(x(0))}-${n}-${max}`;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style={{ display: 'block' }}>
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.32" />
+          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* baseline */}
+      <line x1={pad.l} y1={pad.t + ih} x2={W - pad.r} y2={pad.t + ih} stroke="var(--border-color)" strokeWidth="1" />
+      {area && <path d={area} fill={`url(#${gid})`} />}
+      <path d={line} fill="none" stroke="var(--color-primary)" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+      {points.map((p, i) => (
+        <g key={i}>
+          <circle cx={x(i)} cy={y(p.value)} r="3.5" fill="var(--bg-card)" stroke="var(--color-primary)" strokeWidth="2" />
+          <text x={x(i)} y={y(p.value) - 9} textAnchor="middle" fontSize="12" fontWeight="700" fill="var(--text-primary)">{p.value || ''}</text>
+          <text x={x(i)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--text-muted)">{p.label}</text>
+        </g>
+      ))}
+    </svg>
   );
 }
 
@@ -774,6 +871,38 @@ function App() {
   const [syncError, setSyncError] = useState('');
   const [lastSynced, setLastSynced] = useState(null);
 
+  // ---- Bitbucket dev-activity report (commits + PRs per developer) ----
+  const [bbData, setBbData] = useState(null);
+  const [bbLoading, setBbLoading] = useState(false);
+  const [bbError, setBbError] = useState('');
+  const [commitSearch, setCommitSearch] = useState('');
+  // Date filter: preset 'today' | 'yesterday' | '7d' | 'custom' (+ custom from/to).
+  const [commitPreset, setCommitPreset] = useState('today');
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
+  const [expandedDevs, setExpandedDevs] = useState(() => new Set());
+  const toggleDev = (name) => setExpandedDevs(prev => {
+    const s = new Set(prev);
+    s.has(name) ? s.delete(name) : s.add(name);
+    return s;
+  });
+
+  const loadBitbucket = async (from, to, force = false) => {
+    if (!from || !to) return;
+    setBbLoading(true);
+    setBbError('');
+    try {
+      const res = await fetch(`/api/bitbucket?from=${from}&to=${to}${force ? '&force=1' : ''}`);
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || !body.ok) throw new Error(body.error || `Fetch failed (${res.status})`);
+      setBbData(body);
+    } catch (e) {
+      setBbError(e.message || 'Could not reach the Bitbucket service.');
+    } finally {
+      setBbLoading(false);
+    }
+  };
+
   // Pull fresh data from Jira via the /api/sync endpoint (token stays server-side).
   // Falls back gracefully if the endpoint isn't available (e.g. `vite preview`
   // without the server) — the bundled issues.json keeps working.
@@ -796,6 +925,27 @@ function App() {
   };
   const [selectedAssignee, setSelectedAssignee] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview'); // 'overview', 'risks', 'standup', 'team-workload', 'release', 'settings'
+
+  // Resolve the active date filter to an explicit { from, to } (local calendar dates).
+  const commitRange = React.useMemo(() => {
+    const fmt = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+    const now = new Date();
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (commitPreset === 'today') return { from: fmt(d), to: fmt(d) };
+    if (commitPreset === 'yesterday') { const y = new Date(d); y.setDate(d.getDate() - 1); return { from: fmt(y), to: fmt(y) }; }
+    if (commitPreset === '7d') { const s = new Date(d); s.setDate(d.getDate() - 6); return { from: fmt(s), to: fmt(d) }; }
+    return { from: customFrom, to: customTo }; // custom
+  }, [commitPreset, customFrom, customTo]);
+
+  // Auto-load the report when the Commit Tracker is open or the date window changes.
+  useEffect(() => {
+    if (currentTab !== 'commit-tracker') return;
+    if (!commitRange.from || !commitRange.to) return;
+    if (bbData && bbData.from === commitRange.from && bbData.to === commitRange.to) return;
+    loadBitbucket(commitRange.from, commitRange.to);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTab, commitRange.from, commitRange.to]);
+
   const [selectedTeam, setSelectedTeam] = useState('Dev 1');
   const [selectedDevFilter, setSelectedDevFilter] = useState(null);
   const [selectedQAFilter, setSelectedQAFilter] = useState(null);
@@ -928,7 +1078,7 @@ function App() {
         // "moved" = a REAL status transition on/after yesterday. To Do tickets carry only a
         // seeded (non-transition) history entry, so they're excluded — they haven't progressed.
         movedYesterday: its.filter(i => i.status !== 'To Do' && movedSince(i, YESTERDAY)),
-        overdue: active.filter(i => overdueInfo(i).overdue),
+        overdue: active.filter(devOverdue),
         blocked: active.filter(i => i.status === 'QA BLOCKED'),
       };
     })
@@ -972,7 +1122,7 @@ function App() {
   // ---- Capacity: per-member active load (overloaded vs idle) ----
   const WIP_LIMIT = 4;
   const capacity = teamMembers
-    .map(m => ({ ...m, overdue: issues.filter(i => i.assignee === m.name && overdueInfo(i).overdue).length }))
+    .map(m => ({ ...m, overdue: issues.filter(i => i.assignee === m.name && devOverdue(i)).length }))
     .filter(m => m.tickets > 0 || !m.intern)
     .sort((a, b) => b.tickets - a.tickets);
   const overloaded = capacity.filter(m => m.tickets >= WIP_LIMIT);
@@ -1115,7 +1265,7 @@ function App() {
                 <td><StatusBadge status={i.status} /></td>
                 <td>{daysInStatus(i)}d</td>
                 <td>
-                  {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
+                  {devOverdue(i) && <span className="vchip vchip-bad">overdue</span>}
                   {overdueInfo(i).approaching && <span className="vchip vchip-warn">due soon</span>}
                   <QAOwnerTag issue={i} />
                 </td>
@@ -1131,8 +1281,28 @@ function App() {
   const totalInQA = issues.filter(i => i.status === 'QA Review').length;
   const totalToDo = issues.filter(i => i.status === 'To Do').length;
 
-  // Board Health Index formula: less sensitive to avoid flat 0% with standard team sizing
-  const calculatedBHI = Math.max(10, Math.round(100 - (10 * blockedIssues.length) - (1.5 * overdueIssues.length) - (2.5 * overloadedMembers.length)));
+  // Story-point completion for the sprint
+  const totalSprintSP = issues.reduce((s, i) => s + (i.storyPoints || 0), 0);
+  const doneSprintSP = issues.filter(i => isDone(i.status)).reduce((s, i) => s + (i.storyPoints || 0), 0);
+  const spCompletePct = totalSprintSP > 0 ? Math.round((doneSprintSP / totalSprintSP) * 100) : 0;
+
+  // Sprint Health Score — a balanced 0–100 blend of PROGRESS (are we on pace?)
+  // and RISK (blockers / overdue / overload, as proportions of the board), so it
+  // moves as the sprint progresses instead of saturating at a floor.
+  const clamp01 = (x) => Math.max(0, Math.min(1, x));
+  const elapsedFrac = clamp01(sprintDayNum / sprintTotalDays) || 0.01;
+  const spDoneFrac = totalSprintSP > 0 ? doneSprintSP / totalSprintSP : 0;
+  const pace = spDoneFrac / Math.max(elapsedFrac, 0.01);          // 1 = exactly on pace
+  const progressScore = clamp01(pace) * 100;                       // on-pace or ahead → 100
+  const totalTix = issues.length || 1;
+  const teamSize = Math.max(teamMembers.length, 1);
+  const riskPct = Math.min(100, 100 * (
+    1.5 * (blockedIssues.length / totalTix) +
+    1.0 * (overdueIssues.length / totalTix) +
+    0.8 * (overloadedMembers.length / teamSize)
+  ));
+  const calculatedBHI = Math.max(0, Math.min(100, Math.round(0.6 * progressScore + 0.4 * (100 - riskPct))));
+  const healthTip = `Progress ${Math.round(progressScore)}/100 (${spCompletePct}% SP done vs ${Math.round(elapsedFrac * 100)}% time elapsed) · Risk drag −${Math.round(riskPct)} (${blockedIssues.length} blocked, ${overdueIssues.length} overdue, ${overloadedMembers.length} overloaded)`;
 
   // Release safety metrics
   const totalDefects = issues.filter(i => i.type === 'Bug' && !isDone(i.status)).length;
@@ -1244,7 +1414,10 @@ function App() {
     const completed = teamIssues.filter(i => isDone(i.status));
     const total = teamIssues.length;
     const successRate = total > 0 ? Math.round((completed.length / total) * 100) : 100;
-    const overdueList = active.filter(i => overdueInfo(i).overdue).sort((a, b) => overdueInfo(b).overdueBy - overdueInfo(a).overdueBy);
+    // QA Team owns QA-Review breaches; dev teams own only dev-side overdue (a ticket
+    // in QA Review is QA's responsibility, not the developer's).
+    const isOverdueForTeam = teamName === 'QA Team' ? qaOverdue : devOverdue;
+    const overdueList = active.filter(isOverdueForTeam).sort((a, b) => overdueInfo(b).overdueBy - overdueInfo(a).overdueBy);
     const deliveredSP = completed.reduce((sum, i) => sum + (i.storyPoints || 0), 0);
     const pendingSP = active.reduce((sum, i) => sum + (i.storyPoints || 0), 0);
     const devCount = REAL_TEAM.filter(m => m.devGroup === teamName).length;
@@ -1296,6 +1469,7 @@ function App() {
               { id: 'kanban', label: 'Kanban Board', icon: 'kanban' },
               { id: 'metrics', label: 'QA Performance', icon: 'chart' },
               { id: 'team-workload', label: 'Team Workload', icon: 'users' },
+              { id: 'commit-tracker', label: 'Commit Tracker', icon: 'git' },
               { id: 'analytics', label: 'Analytics', icon: 'zap' },
               { id: 'capacity', label: 'Capacity', icon: 'target2' },
               { id: 'interns', label: 'Interns', icon: 'grad' },
@@ -1348,15 +1522,20 @@ function App() {
         {/* METRICS ROW SUMMARY — Overview only */}
         {currentTab === 'overview' && (
         <div className="summary-grid">
+          <MetricCard icon="target" title="Story Points Completed" value={`${spCompletePct}%`}
+            color={spCompletePct >= 70 ? 'var(--color-success)' : spCompletePct >= 40 ? 'var(--color-warning)' : 'var(--color-danger)'}
+            desc={`${doneSprintSP} of ${totalSprintSP} SP done`} />
           <MetricCard icon="chart" title="Sprint Health Score" value={`${calculatedBHI}/100`}
-            color={calculatedBHI >= 85 ? 'var(--color-success)' : calculatedBHI >= 70 ? 'var(--color-warning)' : 'var(--color-danger)'}
-            desc="Heuristic — blockers, overdue & WIP" />
+            color={calculatedBHI >= 70 ? 'var(--color-success)' : calculatedBHI >= 45 ? 'var(--color-warning)' : 'var(--color-danger)'}
+            tooltip={healthTip}
+            desc="Progress vs. pace, minus blocker/overdue/overload risk" />
           <MetricCard icon="rocket" title="Release Confidence" value={`${releaseConfidence}%`} color="var(--color-primary)"
             desc="Heuristic — open & critical defects" />
           <MetricCard icon="ban" title="Active Blockers" value={blockedIssues.length}
             color={blockedIssues.length > 0 ? 'var(--color-danger)' : 'var(--text-primary)'} desc="High risk critical path items" />
           <MetricCard icon="clock" title="Overdue Tickets" value={overdueIssues.length} color="var(--color-warning)"
-            desc="Bugs & QA > 24h · pointed stories > SP budget" />
+            tooltip="Weekends (Sat/Sun) are excluded from every overdue clock — a ticket that only sat across a weekend is not counted as overdue."
+            desc="Bugs & QA > 24h · pointed stories > SP budget · excl. weekends" />
         </div>
         )}
 
@@ -1886,7 +2065,7 @@ function App() {
             // team-level rollups
             const teamRows = DEV_TEAMS.map(t => {
               const m = getTeamMetrics(t);
-              const overdueN = m.allIssues.filter(i => overdueInfo(i).overdue).length;
+              const overdueN = m.overdueCount; // responsibility-scoped (dev vs QA) in getTeamMetrics
               return { t, m, overdueN };
             });
             const maxActive = Math.max(1, ...teamRows.map(r => r.m.activeCount));
@@ -1896,7 +2075,7 @@ function App() {
               : issues.filter(i => i.assignee === name && !isDone(i.status)).length;
             const members = capTeam
               ? REAL_TEAM.filter(mm => mm.devGroup === capTeam)
-                  .map(mm => ({ ...mm, load: memberLoad(mm.name), overdue: issues.filter(i => (capTeam === 'QA Team' ? issueQAs(i).includes(mm.name) : i.assignee === mm.name) && overdueInfo(i).overdue).length }))
+                  .map(mm => ({ ...mm, load: memberLoad(mm.name), overdue: issues.filter(i => (capTeam === 'QA Team' ? issueQAs(i).includes(mm.name) && qaOverdue(i) : i.assignee === mm.name && devOverdue(i))).length }))
                   .sort((a, b) => b.load - a.load)
               : [];
             const sel = capTeam ? teamRows.find(r => r.t === capTeam) : null;
@@ -2026,6 +2205,155 @@ function App() {
             );
           })()
         )}
+
+        {/* TAB: COMMIT TRACKER — per-developer commits by repo + by day */}
+        {currentTab === 'commit-tracker' && (() => {
+          const short = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
+          const q = commitSearch.trim().toLowerCase();
+          const devs = bbData
+            ? bbData.developers
+                .filter(d => d.commits > 0)
+                .filter(d => !q || d.name.toLowerCase().includes(q) || Object.keys(d.byRepo || {}).some(r => r.toLowerCase().includes(q)))
+            : [];
+          const fmtNice = (s) => new Date(s + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+          const rangeLabel = bbData
+            ? (bbData.from === bbData.to ? fmtNice(bbData.from) : `${new Date(bbData.from + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} → ${new Date(bbData.to + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`)
+            : '';
+          const totalCommits = devs.reduce((a, d) => a + d.commits, 0);
+          return (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+            <div className="section-panel" style={{ gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                <div>
+                  <h2 className="section-title">Commit Tracker</h2>
+                  <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                    {bbData ? `${totalCommits} commits · ${devs.length} developer(s) · ${bbData.repoCount} repo(s)` : 'Commits by developer, repo and day'}
+                    {rangeLabel ? ` · ${rangeLabel}` : ''}
+                    {bbLoading && bbData ? <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}> · Updating…</span> : ''}
+                  </p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <div className="filter-tabs">
+                    {[['today', 'Today'], ['yesterday', 'Yesterday'], ['7d', 'Last 7 days'], ['custom', 'Custom']].map(([key, label]) => (
+                      <button key={key} className={`filter-tab ${commitPreset === key ? 'active' : ''}`} onClick={() => setCommitPreset(key)}>{label}</button>
+                    ))}
+                  </div>
+                  <button className="btn btn-secondary" onClick={() => loadBitbucket(commitRange.from, commitRange.to, true)} disabled={bbLoading || !commitRange.from || !commitRange.to}>
+                    <Icon name="refresh" size={15} /> {bbLoading ? 'Loading…' : 'Refresh'}
+                  </button>
+                </div>
+              </div>
+              {commitPreset === 'custom' && (
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    From <input type="date" className="st-search" style={{ maxWidth: 170 }} value={customFrom} max={customTo || undefined} onChange={e => setCustomFrom(e.target.value)} />
+                  </label>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    To <input type="date" className="st-search" style={{ maxWidth: 170 }} value={customTo} min={customFrom || undefined} onChange={e => setCustomTo(e.target.value)} />
+                  </label>
+                  {(!customFrom || !customTo) && <span style={{ fontSize: '0.78rem', color: 'var(--color-warning, #d97706)' }}>Pick both dates to load.</span>}
+                </div>
+              )}
+              <input
+                className="st-search"
+                placeholder="Filter by developer or repo…"
+                value={commitSearch}
+                onChange={e => setCommitSearch(e.target.value)}
+              />
+            </div>
+
+            {bbError && (
+              <div className="section-panel" style={{ borderColor: 'var(--color-danger, #dc2626)' }}>
+                <h2 className="section-title" style={{ color: 'var(--color-danger, #dc2626)' }}>Couldn't load Bitbucket data</h2>
+                <p style={{ margin: '4px 0', color: 'var(--text-muted)' }}>{bbError}</p>
+              </div>
+            )}
+            {bbLoading && !bbData && (
+              <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>Fetching commits across the workspace…</p></div>
+            )}
+
+            {bbData && !bbError && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', opacity: bbLoading ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: bbLoading ? 'none' : 'auto' }}>
+            {devs.map(dev => {
+              const repos = Object.entries(dev.byRepo || {}).sort((a, b) => b[1] - a[1]);
+              const colorFor = (repo) => PIE_COLORS[repos.findIndex(([r]) => r === repo) % PIE_COLORS.length];
+              const segments = repos.map(([label, value]) => ({ label, value, color: colorFor(label) }));
+              const multiDay = bbData.dates.length > 1;
+              const expanded = expandedDevs.has(dev.name);
+              return (
+                <div key={dev.name} className="section-panel">
+                  <div
+                    onClick={() => toggleDev(dev.name)}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ display: 'inline-block', transition: 'transform 0.15s', transform: expanded ? 'rotate(90deg)' : 'none', color: 'var(--text-muted)', fontSize: '0.8em' }}>▶</span>
+                      {dev.name}
+                    </h2>
+                    <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      <strong style={{ color: 'var(--color-primary)', fontSize: '1.05rem' }}>{dev.commits}</strong> commits · {repos.length} repo(s)
+                      {(dev.prsOpen || dev.prsMerged) ? ` · ${dev.prsMerged} PR merged, ${dev.prsOpen} open` : ''}
+                    </span>
+                  </div>
+
+                  {expanded && (<>
+                  {/* Charts row: bar (by day) + pie (by repo) */}
+                  <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center', marginTop: 8 }}>
+                    <div style={{ flex: '1 1 320px', minWidth: 280 }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600 }}>{multiDay ? 'COMMITS BY DAY' : 'COMMITS'}</div>
+                      {multiDay ? (
+                        <DayLineChart points={bbData.dates.map(d => ({ label: short(d), value: dev.commitsByDay[d] || 0 }))} />
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '12px 0' }}>
+                          <span style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--color-primary)' }}>{dev.commits}</span>
+                          <span style={{ color: 'var(--text-muted)' }}>commit{dev.commits === 1 ? '' : 's'} on {short(bbData.dates[0])}</span>
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600 }}>BY REPOSITORY</div>
+                      <DonutChart segments={segments} />
+                    </div>
+                  </div>
+
+                  {/* Repo breakdown */}
+                  <table className="aging-table bb-table" style={{ marginTop: 14 }}>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: 'left' }}>Repository</th>
+                        <th>Commits</th>
+                        <th style={{ textAlign: 'left', width: '45%' }}>Share</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {repos.map(([repo, n]) => (
+                        <tr key={repo}>
+                          <td style={{ textAlign: 'left', fontWeight: 600 }}>
+                            <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 3, background: colorFor(repo), marginRight: 8, verticalAlign: 'middle' }} />
+                            {repo}
+                          </td>
+                          <td style={{ textAlign: 'center', fontWeight: 700 }}>{n}</td>
+                          <td style={{ textAlign: 'left' }}>
+                            <div style={{ background: 'var(--bg-subtle)', borderRadius: 5, height: 10, width: '100%', overflow: 'hidden' }}>
+                              <div style={{ background: colorFor(repo), height: '100%', width: `${Math.round((n / dev.commits) * 100)}%` }} />
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  </>)}
+                </div>
+              );
+            })}
+            {devs.length === 0 && (
+              <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>No commits{q ? ' match your filter' : ' in this window'}.</p></div>
+            )}
+            </div>
+            )}
+          </div>
+          );
+        })()}
 
         {/* TAB: ANALYTICS — delivery / overdue performance */}
         {currentTab === 'analytics' && (() => {
@@ -2205,7 +2533,7 @@ function App() {
                             <td>{q ? `${fmtHours(q.hours)}${q.done ? ' (tested)' : ' (in QA)'}` : '—'}</td>
                             <td>
                               {isSpill(i) && <span className="vchip vchip-warn">spilled over</span>}
-                              {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
+                              {devOverdue(i) && <span className="vchip vchip-bad">overdue</span>}
                               <QAOwnerTag issue={i} />
                             </td>
                           </tr>
@@ -2599,7 +2927,7 @@ function App() {
                       { label: 'In QA', value: cnt(i => i.status === 'QA Review'), color: '#7c3aed', icon: 'chart' },
                       { label: 'Done / Ready', value: doneT.length, color: 'var(--color-success)', icon: 'check' },
                       { label: 'Success rate', value: `${success}%`, color: 'var(--color-primary)', icon: 'zap' },
-                      { label: 'Overdue', value: cnt(i => overdueInfo(i).overdue), color: 'var(--color-danger)', icon: 'alert' },
+                      { label: 'Overdue', value: cnt(selectedTeam === 'QA Team' ? qaOverdue : devOverdue), color: 'var(--color-danger)', icon: 'alert' },
                     ];
                     return (
                       <div className="summary-grid">
@@ -2668,7 +2996,7 @@ function App() {
                                 <td style={{ fontWeight: 600, color: i.storyPoints ? 'var(--text-primary)' : 'var(--text-muted)' }}>{i.storyPoints || '—'}</td>
                                 <td>{daysInStatus(i)}d</td>
                                 <td>
-                                  {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
+                                  {(selectedTeam === 'QA Team' ? qaOverdue(i) : devOverdue(i)) && <span className="vchip vchip-bad">overdue</span>}
                                   <QAOwnerTag issue={i} />
                                 </td>
                               </tr>
