@@ -1256,6 +1256,11 @@ function App() {
   // Board Health Index formula: less sensitive to avoid flat 0% with standard team sizing
   const calculatedBHI = Math.max(10, Math.round(100 - (10 * blockedIssues.length) - (1.5 * overdueIssues.length) - (2.5 * overloadedMembers.length)));
 
+  // Story-point completion for the sprint
+  const totalSprintSP = issues.reduce((s, i) => s + (i.storyPoints || 0), 0);
+  const doneSprintSP = issues.filter(i => isDone(i.status)).reduce((s, i) => s + (i.storyPoints || 0), 0);
+  const spCompletePct = totalSprintSP > 0 ? Math.round((doneSprintSP / totalSprintSP) * 100) : 0;
+
   // Release safety metrics
   const totalDefects = issues.filter(i => i.type === 'Bug' && !isDone(i.status)).length;
   const criticalDefects = issues.filter(i => i.type === 'Bug' && i.priority === 'Highest' && !isDone(i.status)).length;
@@ -1471,6 +1476,9 @@ function App() {
         {/* METRICS ROW SUMMARY — Overview only */}
         {currentTab === 'overview' && (
         <div className="summary-grid">
+          <MetricCard icon="target" title="Story Points Completed" value={`${spCompletePct}%`}
+            color={spCompletePct >= 70 ? 'var(--color-success)' : spCompletePct >= 40 ? 'var(--color-warning)' : 'var(--color-danger)'}
+            desc={`${doneSprintSP} of ${totalSprintSP} SP done`} />
           <MetricCard icon="chart" title="Sprint Health Score" value={`${calculatedBHI}/100`}
             color={calculatedBHI >= 85 ? 'var(--color-success)' : calculatedBHI >= 70 ? 'var(--color-warning)' : 'var(--color-danger)'}
             desc="Heuristic — blockers, overdue & WIP" />
