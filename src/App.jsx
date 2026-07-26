@@ -852,6 +852,12 @@ function App() {
   const [commitPreset, setCommitPreset] = useState('today');
   const [customFrom, setCustomFrom] = useState('');
   const [customTo, setCustomTo] = useState('');
+  const [expandedDevs, setExpandedDevs] = useState(() => new Set());
+  const toggleDev = (name) => setExpandedDevs(prev => {
+    const s = new Set(prev);
+    s.has(name) ? s.delete(name) : s.add(name);
+    return s;
+  });
 
   const loadBitbucket = async (from, to, force = false) => {
     if (!from || !to) return;
@@ -2217,16 +2223,24 @@ function App() {
               const colorFor = (repo) => PIE_COLORS[repos.findIndex(([r]) => r === repo) % PIE_COLORS.length];
               const segments = repos.map(([label, value]) => ({ label, value, color: colorFor(label) }));
               const multiDay = bbData.dates.length > 1;
+              const expanded = expandedDevs.has(dev.name);
               return (
                 <div key={dev.name} className="section-panel">
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
-                    <h2 className="section-title">{dev.name}</h2>
+                  <div
+                    onClick={() => toggleDev(dev.name)}
+                    style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px', cursor: 'pointer', userSelect: 'none' }}
+                  >
+                    <h2 className="section-title" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span style={{ display: 'inline-block', transition: 'transform 0.15s', transform: expanded ? 'rotate(90deg)' : 'none', color: 'var(--text-muted)', fontSize: '0.8em' }}>▶</span>
+                      {dev.name}
+                    </h2>
                     <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>
                       <strong style={{ color: 'var(--color-primary)', fontSize: '1.05rem' }}>{dev.commits}</strong> commits · {repos.length} repo(s)
                       {(dev.prsOpen || dev.prsMerged) ? ` · ${dev.prsMerged} PR merged, ${dev.prsOpen} open` : ''}
                     </span>
                   </div>
 
+                  {expanded && (<>
                   {/* Charts row: bar (by day) + pie (by repo) */}
                   <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center', marginTop: 8 }}>
                     <div style={{ flex: '1 1 320px', minWidth: 280 }}>
@@ -2272,6 +2286,7 @@ function App() {
                       ))}
                     </tbody>
                   </table>
+                  </>)}
                 </div>
               );
             })}
