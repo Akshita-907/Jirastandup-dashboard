@@ -186,6 +186,12 @@ function overdueInfo(issue) {
   return { overdue: false, approaching: false };
 }
 
+// Responsibility-scoped overdue. Once a ticket is in QA Review the dev's work is
+// done, so a QA-clock breach is QA's responsibility — not the developer's. Dev
+// views use devOverdue(); QA views use qaOverdue().
+function devOverdue(issue) { const o = overdueInfo(issue); return !!o.overdue && o.kind !== 'qa'; }
+function qaOverdue(issue) { const o = overdueInfo(issue); return !!o.overdue && o.kind === 'qa'; }
+
 // ---- History-derived helpers (all from the changelog `history` array) ----
 const DAY = 86400000;
 const ACTIVE_STATUSES = ['In Progress', 'Code Review', 'QA Review', 'QA BLOCKED'];
@@ -1072,7 +1078,7 @@ function App() {
         // "moved" = a REAL status transition on/after yesterday. To Do tickets carry only a
         // seeded (non-transition) history entry, so they're excluded — they haven't progressed.
         movedYesterday: its.filter(i => i.status !== 'To Do' && movedSince(i, YESTERDAY)),
-        overdue: active.filter(i => overdueInfo(i).overdue),
+        overdue: active.filter(devOverdue),
         blocked: active.filter(i => i.status === 'QA BLOCKED'),
       };
     })
@@ -1116,7 +1122,7 @@ function App() {
   // ---- Capacity: per-member active load (overloaded vs idle) ----
   const WIP_LIMIT = 4;
   const capacity = teamMembers
-    .map(m => ({ ...m, overdue: issues.filter(i => i.assignee === m.name && overdueInfo(i).overdue).length }))
+    .map(m => ({ ...m, overdue: issues.filter(i => i.assignee === m.name && devOverdue(i)).length }))
     .filter(m => m.tickets > 0 || !m.intern)
     .sort((a, b) => b.tickets - a.tickets);
   const overloaded = capacity.filter(m => m.tickets >= WIP_LIMIT);
@@ -1259,7 +1265,7 @@ function App() {
                 <td><StatusBadge status={i.status} /></td>
                 <td>{daysInStatus(i)}d</td>
                 <td>
-                  {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
+                  {devOverdue(i) && <span className="vchip vchip-bad">overdue</span>}
                   {overdueInfo(i).approaching && <span className="vchip vchip-warn">due soon</span>}
                   <QAOwnerTag issue={i} />
                 </td>
@@ -1408,7 +1414,10 @@ function App() {
     const completed = teamIssues.filter(i => isDone(i.status));
     const total = teamIssues.length;
     const successRate = total > 0 ? Math.round((completed.length / total) * 100) : 100;
-    const overdueList = active.filter(i => overdueInfo(i).overdue).sort((a, b) => overdueInfo(b).overdueBy - overdueInfo(a).overdueBy);
+    // QA Team owns QA-Review breaches; dev teams own only dev-side overdue (a ticket
+    // in QA Review is QA's responsibility, not the developer's).
+    const isOverdueForTeam = teamName === 'QA Team' ? qaOverdue : devOverdue;
+    const overdueList = active.filter(isOverdueForTeam).sort((a, b) => overdueInfo(b).overdueBy - overdueInfo(a).overdueBy);
     const deliveredSP = completed.reduce((sum, i) => sum + (i.storyPoints || 0), 0);
     const pendingSP = active.reduce((sum, i) => sum + (i.storyPoints || 0), 0);
     const devCount = REAL_TEAM.filter(m => m.devGroup === teamName).length;
@@ -2056,7 +2065,7 @@ function App() {
             // team-level rollups
             const teamRows = DEV_TEAMS.map(t => {
               const m = getTeamMetrics(t);
-              const overdueN = m.allIssues.filter(i => overdueInfo(i).overdue).length;
+              const overdueN = m.overdueCount; // responsibility-scoped (dev vs QA) in getTeamMetrics
               return { t, m, overdueN };
             });
             const maxActive = Math.max(1, ...teamRows.map(r => r.m.activeCount));
@@ -2066,7 +2075,7 @@ function App() {
               : issues.filter(i => i.assignee === name && !isDone(i.status)).length;
             const members = capTeam
               ? REAL_TEAM.filter(mm => mm.devGroup === capTeam)
-                  .map(mm => ({ ...mm, load: memberLoad(mm.name), overdue: issues.filter(i => (capTeam === 'QA Team' ? issueQAs(i).includes(mm.name) : i.assignee === mm.name) && overdueInfo(i).overdue).length }))
+                  .map(mm => ({ ...mm, load: memberLoad(mm.name), overdue: issues.filter(i => (capTeam === 'QA Team' ? issueQAs(i).includes(mm.name) && qaOverdue(i) : i.assignee === mm.name && devOverdue(i))).length }))
                   .sort((a, b) => b.load - a.load)
               : [];
             const sel = capTeam ? teamRows.find(r => r.t === capTeam) : null;
@@ -2524,7 +2533,7 @@ function App() {
                             <td>{q ? `${fmtHours(q.hours)}${q.done ? ' (tested)' : ' (in QA)'}` : '—'}</td>
                             <td>
                               {isSpill(i) && <span className="vchip vchip-warn">spilled over</span>}
-                              {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
+                              {devOverdue(i) && <span className="vchip vchip-bad">overdue</span>}
                               <QAOwnerTag issue={i} />
                             </td>
                           </tr>
@@ -2918,7 +2927,7 @@ function App() {
                       { label: 'In QA', value: cnt(i => i.status === 'QA Review'), color: '#7c3aed', icon: 'chart' },
                       { label: 'Done / Ready', value: doneT.length, color: 'var(--color-success)', icon: 'check' },
                       { label: 'Success rate', value: `${success}%`, color: 'var(--color-primary)', icon: 'zap' },
-                      { label: 'Overdue', value: cnt(i => overdueInfo(i).overdue), color: 'var(--color-danger)', icon: 'alert' },
+                      { label: 'Overdue', value: cnt(selectedTeam === 'QA Team' ? qaOverdue : devOverdue), color: 'var(--color-danger)', icon: 'alert' },
                     ];
                     return (
                       <div className="summary-grid">
@@ -2987,7 +2996,7 @@ function App() {
                                 <td style={{ fontWeight: 600, color: i.storyPoints ? 'var(--text-primary)' : 'var(--text-muted)' }}>{i.storyPoints || '—'}</td>
                                 <td>{daysInStatus(i)}d</td>
                                 <td>
-                                  {overdueInfo(i).overdue && <span className="vchip vchip-bad">overdue</span>}
+                                  {(selectedTeam === 'QA Team' ? qaOverdue(i) : devOverdue(i)) && <span className="vchip vchip-bad">overdue</span>}
                                   <QAOwnerTag issue={i} />
                                 </td>
                               </tr>
