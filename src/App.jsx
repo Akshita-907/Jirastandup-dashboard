@@ -599,6 +599,41 @@ function DonutChart({ segments, size = 132, stroke = 24 }) {
   );
 }
 
+// Lightweight SVG area+line chart for a daily series. points: [{ label, value }].
+function DayLineChart({ points }) {
+  const W = 720, H = 170;
+  const pad = { l: 14, r: 14, t: 22, b: 26 };
+  const iw = W - pad.l - pad.r, ih = H - pad.t - pad.b;
+  const max = Math.max(1, ...points.map(p => p.value));
+  const n = points.length;
+  const x = (i) => pad.l + (n <= 1 ? iw / 2 : (i / (n - 1)) * iw);
+  const y = (v) => pad.t + ih - (v / max) * ih;
+  const line = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${x(i).toFixed(1)},${y(p.value).toFixed(1)}`).join(' ');
+  const area = n ? `${line} L${x(n - 1).toFixed(1)},${(pad.t + ih).toFixed(1)} L${x(0).toFixed(1)},${(pad.t + ih).toFixed(1)} Z` : '';
+  const gid = `cg-${Math.round(x(0))}-${n}-${max}`;
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} width="100%" height="auto" preserveAspectRatio="xMidYMid meet" style={{ display: 'block' }}>
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.32" />
+          <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      {/* baseline */}
+      <line x1={pad.l} y1={pad.t + ih} x2={W - pad.r} y2={pad.t + ih} stroke="var(--border-color)" strokeWidth="1" />
+      {area && <path d={area} fill={`url(#${gid})`} />}
+      <path d={line} fill="none" stroke="var(--color-primary)" strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
+      {points.map((p, i) => (
+        <g key={i}>
+          <circle cx={x(i)} cy={y(p.value)} r="3.5" fill="var(--bg-card)" stroke="var(--color-primary)" strokeWidth="2" />
+          <text x={x(i)} y={y(p.value) - 9} textAnchor="middle" fontSize="12" fontWeight="700" fill="var(--text-primary)">{p.value || ''}</text>
+          <text x={x(i)} y={H - 8} textAnchor="middle" fontSize="11" fill="var(--text-muted)">{p.label}</text>
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 // ---- Aggregate delivery stats for a dataset (used by sprint-over-sprint) ----
 function computeDeliveryStats(ds, asOf, asOfMs) {
   let onTime = 0, measured = 0, qaWithin = 0, qaMeasured = 0, done = 0, totalSP = 0, doneSP = 0;
@@ -2178,7 +2213,6 @@ function App() {
             {bbData && !bbError && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', opacity: bbLoading ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: bbLoading ? 'none' : 'auto' }}>
             {devs.map(dev => {
-              const maxDay = Math.max(1, ...bbData.dates.map(d => dev.commitsByDay[d] || 0));
               const repos = Object.entries(dev.byRepo || {}).sort((a, b) => b[1] - a[1]);
               const colorFor = (repo) => PIE_COLORS[repos.findIndex(([r]) => r === repo) % PIE_COLORS.length];
               const segments = repos.map(([label, value]) => ({ label, value, color: colorFor(label) }));
@@ -2195,20 +2229,16 @@ function App() {
 
                   {/* Charts row: bar (by day) + pie (by repo) */}
                   <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center', marginTop: 8 }}>
-                    <div style={{ flex: '1 1 300px', minWidth: 260 }}>
+                    <div style={{ flex: '1 1 320px', minWidth: 280 }}>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600 }}>{multiDay ? 'COMMITS BY DAY' : 'COMMITS'}</div>
-                      <div className="bb-daybars" style={{ height: 120 }}>
-                        {bbData.dates.map(d => {
-                          const n = dev.commitsByDay[d] || 0;
-                          return (
-                            <div key={d} className="bb-daybar" title={`${d}: ${n} commit(s)`}>
-                              <span className="bb-daybar-num">{n || ''}</span>
-                              <div className="bb-daybar-track"><div className="bb-daybar-fill" style={{ height: `${Math.round((n / maxDay) * 100)}%` }} /></div>
-                              <span className="bb-daybar-label">{short(d)}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
+                      {multiDay ? (
+                        <DayLineChart points={bbData.dates.map(d => ({ label: short(d), value: dev.commitsByDay[d] || 0 }))} />
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, padding: '12px 0' }}>
+                          <span style={{ fontSize: '2.4rem', fontWeight: 700, color: 'var(--color-primary)' }}>{dev.commits}</span>
+                          <span style={{ color: 'var(--text-muted)' }}>commit{dev.commits === 1 ? '' : 's'} on {short(bbData.dates[0])}</span>
+                        </div>
+                      )}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                       <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600 }}>BY REPOSITORY</div>
