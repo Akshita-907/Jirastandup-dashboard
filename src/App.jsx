@@ -548,11 +548,12 @@ function DevStatsTable({ rows, onPick, showSpill }) {
 }
 
 // ---- Compact metric card with icon ----
-function MetricCard({ icon, title, value, desc, color, onClick, active }) {
+function MetricCard({ icon, title, value, desc, color, onClick, active, tooltip }) {
   return (
     <div
       className={`metric-card ${onClick ? 'clickable-card' : ''}`}
       onClick={onClick}
+      title={tooltip}
       style={active ? { borderColor: color || 'var(--color-primary)' } : undefined}
     >
       {icon && <span className="mc-icon" style={{ color: color || 'var(--color-primary)' }}><Icon name={icon} size={15} /></span>}
@@ -1253,13 +1254,28 @@ function App() {
   const totalInQA = issues.filter(i => i.status === 'QA Review').length;
   const totalToDo = issues.filter(i => i.status === 'To Do').length;
 
-  // Board Health Index formula: less sensitive to avoid flat 0% with standard team sizing
-  const calculatedBHI = Math.max(10, Math.round(100 - (10 * blockedIssues.length) - (1.5 * overdueIssues.length) - (2.5 * overloadedMembers.length)));
-
   // Story-point completion for the sprint
   const totalSprintSP = issues.reduce((s, i) => s + (i.storyPoints || 0), 0);
   const doneSprintSP = issues.filter(i => isDone(i.status)).reduce((s, i) => s + (i.storyPoints || 0), 0);
   const spCompletePct = totalSprintSP > 0 ? Math.round((doneSprintSP / totalSprintSP) * 100) : 0;
+
+  // Sprint Health Score — a balanced 0–100 blend of PROGRESS (are we on pace?)
+  // and RISK (blockers / overdue / overload, as proportions of the board), so it
+  // moves as the sprint progresses instead of saturating at a floor.
+  const clamp01 = (x) => Math.max(0, Math.min(1, x));
+  const elapsedFrac = clamp01(sprintDayNum / sprintTotalDays) || 0.01;
+  const spDoneFrac = totalSprintSP > 0 ? doneSprintSP / totalSprintSP : 0;
+  const pace = spDoneFrac / Math.max(elapsedFrac, 0.01);          // 1 = exactly on pace
+  const progressScore = clamp01(pace) * 100;                       // on-pace or ahead → 100
+  const totalTix = issues.length || 1;
+  const teamSize = Math.max(teamMembers.length, 1);
+  const riskPct = Math.min(100, 100 * (
+    1.5 * (blockedIssues.length / totalTix) +
+    1.0 * (overdueIssues.length / totalTix) +
+    0.8 * (overloadedMembers.length / teamSize)
+  ));
+  const calculatedBHI = Math.max(0, Math.min(100, Math.round(0.6 * progressScore + 0.4 * (100 - riskPct))));
+  const healthTip = `Progress ${Math.round(progressScore)}/100 (${spCompletePct}% SP done vs ${Math.round(elapsedFrac * 100)}% time elapsed) · Risk drag −${Math.round(riskPct)} (${blockedIssues.length} blocked, ${overdueIssues.length} overdue, ${overloadedMembers.length} overloaded)`;
 
   // Release safety metrics
   const totalDefects = issues.filter(i => i.type === 'Bug' && !isDone(i.status)).length;
@@ -1480,8 +1496,9 @@ function App() {
             color={spCompletePct >= 70 ? 'var(--color-success)' : spCompletePct >= 40 ? 'var(--color-warning)' : 'var(--color-danger)'}
             desc={`${doneSprintSP} of ${totalSprintSP} SP done`} />
           <MetricCard icon="chart" title="Sprint Health Score" value={`${calculatedBHI}/100`}
-            color={calculatedBHI >= 85 ? 'var(--color-success)' : calculatedBHI >= 70 ? 'var(--color-warning)' : 'var(--color-danger)'}
-            desc="Heuristic — blockers, overdue & WIP" />
+            color={calculatedBHI >= 70 ? 'var(--color-success)' : calculatedBHI >= 45 ? 'var(--color-warning)' : 'var(--color-danger)'}
+            tooltip={healthTip}
+            desc="Progress vs. pace, minus blocker/overdue/overload risk" />
           <MetricCard icon="rocket" title="Release Confidence" value={`${releaseConfidence}%`} color="var(--color-primary)"
             desc="Heuristic — open & critical defects" />
           <MetricCard icon="ban" title="Active Blockers" value={blockedIssues.length}
