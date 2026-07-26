@@ -122,6 +122,26 @@ function workingDaysBetween(startStr, endStr) {
   return count;
 }
 
+// Elapsed hours since `startStr` (a YYYY-MM-DD date) up to `nowMs`, EXCLUDING
+// weekend days (Sat/Sun). Used by the 24h Bug/QA overdue clocks so a ticket that
+// only sat across a weekend isn't counted as overdue. Data is day-granular, so we
+// subtract a full 24h for each Sat/Sun that has passed since the start day.
+function businessHoursSince(startStr, nowMs) {
+  if (!startStr) return 0;
+  const startMs = new Date(startStr + 'T00:00:00').getTime();
+  const rawHours = Math.max(0, (nowMs - startMs) / 3600000);
+  let weekendDays = 0;
+  const cur = new Date(startStr + 'T00:00:00');
+  const end = new Date(nowMs);
+  cur.setDate(cur.getDate() + 1); // days strictly after the start day
+  while (cur <= end) {
+    const d = cur.getDay();
+    if (d === 0 || d === 6) weekendDays++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return Math.max(1, Math.round(rawHours - weekendDays * 24));
+}
+
 // A ticket is "overdue" when it has outstayed its allowance:
 //   • Story with NO story points → never overdue (exempt in every status).
 //   • Bug in In Progress → longer than 24 hours since it entered In Progress.
@@ -138,7 +158,8 @@ function overdueInfo(issue) {
       // day-granular, so hours are approximated from that entry date (like the QA clock).
       const ipDate = [...(issue.history || [])].reverse().find(h => h.status === 'In Progress')?.date || issue.inProgressDate;
       if (!ipDate) return { overdue: false, approaching: false };
-      const hours = Math.max(1, Math.round((Date.now() - new Date(ipDate + 'T00:00:00').getTime()) / 3600000));
+      const hours = businessHoursSince(ipDate, Date.now()); // excludes weekend hours
+
       const overdue = hours > 24;
       const approaching = !overdue && hours >= 18;
       const overHours = Math.max(0, hours - 24);
@@ -247,7 +268,7 @@ function qaHoursInfo(i, asOfMs = Date.now()) {
     // most RECENT entry into QA (a bounced ticket restarts its QA clock)
     const lastQa = [...(i.history || [])].reverse().find(h => h.status === 'QA Review')?.date || i.qaEnteredDate;
     if (!lastQa) return null;
-    const hours = Math.max(1, Math.round((asOfMs - new Date(lastQa + 'T00:00:00').getTime()) / 3600000));
+    const hours = businessHoursSince(lastQa, asOfMs); // excludes weekend hours
     return { done: false, hours };
   }
   return null;
@@ -1504,7 +1525,8 @@ function App() {
           <MetricCard icon="ban" title="Active Blockers" value={blockedIssues.length}
             color={blockedIssues.length > 0 ? 'var(--color-danger)' : 'var(--text-primary)'} desc="High risk critical path items" />
           <MetricCard icon="clock" title="Overdue Tickets" value={overdueIssues.length} color="var(--color-warning)"
-            desc="Bugs & QA > 24h · pointed stories > SP budget" />
+            tooltip="Weekends (Sat/Sun) are excluded from every overdue clock — a ticket that only sat across a weekend is not counted as overdue."
+            desc="Bugs & QA > 24h · pointed stories > SP budget · excl. weekends" />
         </div>
         )}
 
