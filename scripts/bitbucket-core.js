@@ -129,23 +129,47 @@ function resolveAuthor(authorMap, { displayName, email }) {
   return displayName || email || 'Unknown';
 }
 
-const iso = (d) => new Date(d).toISOString().slice(0, 10);
+// Calendar date (local time) as YYYY-MM-DD — used for day bucketing so "today"
+// means today in the viewer's timezone, not UTC.
+const localDay = (d) => {
+  const x = new Date(d);
+  return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+};
 
 /**
  * Fetch per-developer commit + PR activity for the workspace.
- * @param {{ days?: number }} [opts]
+ * Pass an explicit { from, to } (YYYY-MM-DD, inclusive) or a { days } window.
+ * @param {{ from?: string, to?: string, days?: number }} [opts]
  * @param {(msg: string) => void} [log]
  */
 export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
   const { WORKSPACE, authHeader } = getCreds();
   const authorMap = loadAuthorMap();
-  const days = Math.max(1, Math.min(90, opts.days || DEFAULT_DAYS));
-  const since = new Date(Date.now() - days * DAY_MS);
+
+  // Resolve the window to [since, until] as absolute instants (local day boundaries).
+  let since, until, fromStr, toStr;
+  if (opts.from && opts.to) {
+    fromStr = opts.from;
+    toStr = opts.to;
+    since = new Date(`${opts.from}T00:00:00`);
+    until = new Date(`${opts.to}T23:59:59.999`);
+  } else {
+    const days = Math.max(1, Math.min(90, opts.days || DEFAULT_DAYS));
+    const now = new Date();
+    until = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999);
+    since = new Date(until.getTime() - (days - 1) * DAY_MS);
+    since.setHours(0, 0, 0, 0);
+    fromStr = localDay(since);
+    toStr = localDay(until);
+  }
   const sinceIso = since.toISOString();
+  const untilIso = until.toISOString();
 
   // Build the list of dates in the window (oldest → newest) for the report grid.
   const dateList = [];
-  for (let k = days - 1; k >= 0; k--) dateList.push(iso(Date.now() - k * DAY_MS));
+  for (let t = new Date(since.getFullYear(), since.getMonth(), since.getDate()); t <= until; t.setDate(t.getDate() + 1)) {
+    dateList.push(localDay(t));
+  }
 
   // ---- 1. List repos, keep only those updated within the window ----
   log(`Listing repos in ${WORKSPACE} ...`);
@@ -162,7 +186,7 @@ export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
       return false;
     }
   );
-  log(`  ${repos.length} repo(s) with activity in the last ${days}d.`);
+  log(`  ${repos.length} repo(s) with activity in ${fromStr}..${toStr}.`);
 
   // Per-person accumulator
   const people = new Map(); // name -> { commits, commitsByDay, byRepo, prsOpen, prsMerged }
@@ -185,11 +209,12 @@ export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
           for (const c of values) {
             const ts = c.date ? new Date(c.date) : null;
             if (!ts) continue;
-            if (ts < since) return true; // reached older commits
+            if (ts < since) return true;   // reached commits older than the window — stop
+            if (ts > until) continue;      // newer than the window end — skip, keep scanning older
             const raw = parseRawAuthor(c.author?.raw);
             const displayName = c.author?.user?.display_name || raw.name;
             const who = resolveAuthor(authorMap, { displayName, email: raw.email });
-            const day = iso(ts);
+            const day = localDay(ts);
             const p = bump(who);
             p.commits += 1;
             p.commitsByDay[day] = (p.commitsByDay[day] || 0) + 1;
@@ -205,7 +230,7 @@ export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
 
     // Pull requests — open + merged, updated within the window.
     try {
-      const q = encodeURIComponent(`updated_on >= ${sinceIso}`);
+      const q = encodeURIComponent(`updated_on >= ${sinceIso} AND updated_on <= ${untilIso}`);
       await paginate(
         authHeader,
         `/repositories/${WORKSPACE}/${repo}/pullrequests?state=OPEN&state=MERGED&pagelen=50&q=${q}&fields=next,values.state,values.author.display_name,values.author.nickname,values.updated_on`,
@@ -230,7 +255,8 @@ export async function fetchBitbucketActivity(opts = {}, log = () => {}) {
 
   return {
     workspace: WORKSPACE,
-    days,
+    from: fromStr,
+    to: toStr,
     dates: dateList,
     developers,
     commitsByDay: byDay,

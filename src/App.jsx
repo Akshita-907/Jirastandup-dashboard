@@ -565,6 +565,40 @@ function MetricCard({ icon, title, value, desc, color, onClick, active }) {
   );
 }
 
+// Categorical palette for the commit-by-repo pie charts.
+const PIE_COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#ef4444', '#06b6d4', '#a855f7', '#ec4899', '#14b8a6', '#f97316', '#84cc16', '#3b82f6', '#eab308', '#8b5cf6', '#10b981'];
+
+// Lightweight SVG donut chart (no dependencies). segments: [{ label, value, color }].
+function DonutChart({ segments, size = 132, stroke = 24 }) {
+  const total = segments.reduce((a, s) => a + s.value, 0) || 1;
+  const r = (size - stroke) / 2;
+  const C = 2 * Math.PI * r;
+  let offset = 0;
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Commits by repository">
+      <g transform={`rotate(-90 ${size / 2} ${size / 2})`}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--bg-subtle)" strokeWidth={stroke} />
+        {segments.map((s, i) => {
+          const len = (s.value / total) * C;
+          const el = (
+            <circle
+              key={i} cx={size / 2} cy={size / 2} r={r} fill="none"
+              stroke={s.color} strokeWidth={stroke}
+              strokeDasharray={`${len} ${C - len}`} strokeDashoffset={-offset}
+            >
+              <title>{`${s.label}: ${s.value}`}</title>
+            </circle>
+          );
+          offset += len;
+          return el;
+        })}
+      </g>
+      <text x="50%" y="46%" textAnchor="middle" dominantBaseline="central" fontSize="22" fontWeight="700" fill="var(--text-primary)">{total}</text>
+      <text x="50%" y="60%" textAnchor="middle" dominantBaseline="central" fontSize="10" fill="var(--text-muted)">commits</text>
+    </svg>
+  );
+}
+
 // ---- Aggregate delivery stats for a dataset (used by sprint-over-sprint) ----
 function computeDeliveryStats(ds, asOf, asOfMs) {
   let onTime = 0, measured = 0, qaWithin = 0, qaMeasured = 0, done = 0, totalSP = 0, doneSP = 0;
@@ -778,14 +812,18 @@ function App() {
   const [bbData, setBbData] = useState(null);
   const [bbLoading, setBbLoading] = useState(false);
   const [bbError, setBbError] = useState('');
-  const [bbDays, setBbDays] = useState(7);
   const [commitSearch, setCommitSearch] = useState('');
+  // Date filter: preset 'today' | 'yesterday' | '7d' | 'custom' (+ custom from/to).
+  const [commitPreset, setCommitPreset] = useState('today');
+  const [customFrom, setCustomFrom] = useState('');
+  const [customTo, setCustomTo] = useState('');
 
-  const loadBitbucket = async (days = bbDays, force = false) => {
+  const loadBitbucket = async (from, to, force = false) => {
+    if (!from || !to) return;
     setBbLoading(true);
     setBbError('');
     try {
-      const res = await fetch(`/api/bitbucket?days=${days}${force ? '&force=1' : ''}`);
+      const res = await fetch(`/api/bitbucket?from=${from}&to=${to}${force ? '&force=1' : ''}`);
       const body = await res.json().catch(() => ({}));
       if (!res.ok || !body.ok) throw new Error(body.error || `Fetch failed (${res.status})`);
       setBbData(body);
@@ -819,13 +857,25 @@ function App() {
   const [selectedAssignee, setSelectedAssignee] = useState(null);
   const [currentTab, setCurrentTab] = useState('overview'); // 'overview', 'risks', 'standup', 'team-workload', 'release', 'settings'
 
-  // Auto-load the Bitbucket report the first time a Bitbucket tab is opened (or when window changes).
+  // Resolve the active date filter to an explicit { from, to } (local calendar dates).
+  const commitRange = React.useMemo(() => {
+    const fmt = (x) => `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}-${String(x.getDate()).padStart(2, '0')}`;
+    const now = new Date();
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    if (commitPreset === 'today') return { from: fmt(d), to: fmt(d) };
+    if (commitPreset === 'yesterday') { const y = new Date(d); y.setDate(d.getDate() - 1); return { from: fmt(y), to: fmt(y) }; }
+    if (commitPreset === '7d') { const s = new Date(d); s.setDate(d.getDate() - 6); return { from: fmt(s), to: fmt(d) }; }
+    return { from: customFrom, to: customTo }; // custom
+  }, [commitPreset, customFrom, customTo]);
+
+  // Auto-load the report when the Commit Tracker is open or the date window changes.
   useEffect(() => {
-    if (currentTab !== 'dev-activity' && currentTab !== 'commit-tracker') return;
-    if (bbData && bbData.days === bbDays) return;
-    loadBitbucket(bbDays);
+    if (currentTab !== 'commit-tracker') return;
+    if (!commitRange.from || !commitRange.to) return;
+    if (bbData && bbData.from === commitRange.from && bbData.to === commitRange.to) return;
+    loadBitbucket(commitRange.from, commitRange.to);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTab, bbDays]);
+  }, [currentTab, commitRange.from, commitRange.to]);
 
   const [selectedTeam, setSelectedTeam] = useState('Dev 1');
   const [selectedDevFilter, setSelectedDevFilter] = useState(null);
@@ -1327,8 +1377,7 @@ function App() {
               { id: 'kanban', label: 'Kanban Board', icon: 'kanban' },
               { id: 'metrics', label: 'QA Performance', icon: 'chart' },
               { id: 'team-workload', label: 'Team Workload', icon: 'users' },
-              { id: 'dev-activity', label: 'Dev Activity', icon: 'git' },
-              { id: 'commit-tracker', label: 'Commit Tracker', icon: 'kanban' },
+              { id: 'commit-tracker', label: 'Commit Tracker', icon: 'git' },
               { id: 'analytics', label: 'Analytics', icon: 'zap' },
               { id: 'capacity', label: 'Capacity', icon: 'target2' },
               { id: 'interns', label: 'Interns', icon: 'grad' },
@@ -2060,122 +2109,6 @@ function App() {
           })()
         )}
 
-        {/* TAB: DEV ACTIVITY — Bitbucket commits + PRs per developer */}
-        {currentTab === 'dev-activity' && (() => {
-          const short = (d) => {
-            const dt = new Date(d + 'T00:00:00');
-            return dt.toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
-          };
-          const totalCommits = bbData ? Object.values(bbData.commitsByDay || {}).reduce((a, b) => a + b, 0) : 0;
-          const totalPRs = bbData ? bbData.developers.reduce((a, d) => a + d.prsOpen + d.prsMerged, 0) : 0;
-          const maxDay = bbData ? Math.max(1, ...Object.values(bbData.commitsByDay || {})) : 1;
-          return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
-            <div className="section-panel" style={{ gap: '10px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <div>
-                  <h2 className="section-title">Dev Activity</h2>
-                  <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                    Commits &amp; pull requests per developer{bbData ? ` · ${bbData.repoCount} repo(s) in ${bbData.workspace}` : ''} · last {bbDays} days
-                    {bbLoading && bbData ? <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}> · Updating…</span> : ''}
-                  </p>
-                </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                  <div className="filter-tabs">
-                    {[7, 14, 30].map(d => (
-                      <button key={d} className={`filter-tab ${bbDays === d ? 'active' : ''}`} onClick={() => setBbDays(d)}>
-                        {d}d
-                      </button>
-                    ))}
-                  </div>
-                  <button className="btn btn-secondary" onClick={() => loadBitbucket(bbDays, true)} disabled={bbLoading}>
-                    <Icon name="refresh" size={15} /> {bbLoading ? 'Loading…' : 'Refresh'}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {bbError && (
-              <div className="section-panel" style={{ borderColor: 'var(--color-danger, #dc2626)' }}>
-                <h2 className="section-title" style={{ color: 'var(--color-danger, #dc2626)' }}>Couldn't load Bitbucket data</h2>
-                <p style={{ margin: '4px 0', color: 'var(--text-muted)' }}>{bbError}</p>
-                <p style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.82rem' }}>
-                  Set <code>BITBUCKET_WORKSPACE</code> and <code>BITBUCKET_TOKEN</code> (an Access Token with repository &amp; pull-request read) in <code>.env</code>, then restart the dev server.
-                </p>
-              </div>
-            )}
-
-            {bbLoading && !bbData && (
-              <div className="section-panel"><p style={{ margin: 0, color: 'var(--text-muted)' }}>Fetching commits &amp; PRs across the workspace…</p></div>
-            )}
-
-            {bbData && !bbError && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '22px', opacity: bbLoading ? 0.4 : 1, transition: 'opacity 0.2s', pointerEvents: bbLoading ? 'none' : 'auto' }}>
-                <div className="summary-grid">
-                  <MetricCard icon="git" title="Total Commits" value={totalCommits} desc={`last ${bbData.days} days`} />
-                  <MetricCard icon="users" title="Contributors" value={bbData.developers.length} desc="with activity" />
-                  <MetricCard icon="bookmark" title="Pull Requests" value={totalPRs} desc="open + merged" />
-                  <MetricCard icon="kanban" title="Active Repos" value={bbData.repoCount} desc={`in ${bbData.workspace}`} />
-                </div>
-
-                {/* Daily commit trend */}
-                <div className="section-panel">
-                  <h2 className="section-title">Commits per day</h2>
-                  <div className="bb-daybars">
-                    {bbData.dates.map(d => {
-                      const n = bbData.commitsByDay[d] || 0;
-                      return (
-                        <div key={d} className="bb-daybar" title={`${d}: ${n} commit(s)`}>
-                          <span className="bb-daybar-num">{n || ''}</span>
-                          <div className="bb-daybar-track">
-                            <div className="bb-daybar-fill" style={{ height: `${Math.round((n / maxDay) * 100)}%` }} />
-                          </div>
-                          <span className="bb-daybar-label">{short(d)}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                {/* Per-developer table with daily breakdown */}
-                <div className="section-panel" style={{ overflowX: 'auto' }}>
-                  <h2 className="section-title">Per developer</h2>
-                  {bbData.developers.length === 0 ? (
-                    <p style={{ margin: 0, color: 'var(--text-muted)' }}>No commits or PRs in this window.</p>
-                  ) : (
-                    <table className="aging-table bb-table">
-                      <thead>
-                        <tr>
-                          <th style={{ textAlign: 'left' }}>Developer</th>
-                          <th>Commits</th>
-                          <th>PRs open</th>
-                          <th>PRs merged</th>
-                          {bbData.dates.map(d => <th key={d} className="bb-day-col">{short(d)}</th>)}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {bbData.developers.map(dev => (
-                          <tr key={dev.name}>
-                            <td style={{ textAlign: 'left', fontWeight: 600 }}>{dev.name}</td>
-                            <td style={{ textAlign: 'center', fontWeight: 700 }}>{dev.commits}</td>
-                            <td style={{ textAlign: 'center' }}>{dev.prsOpen || ''}</td>
-                            <td style={{ textAlign: 'center' }}>{dev.prsMerged || ''}</td>
-                            {bbData.dates.map(d => {
-                              const n = dev.commitsByDay[d] || 0;
-                              return <td key={d} className="bb-day-col" style={n ? { background: 'var(--color-primary-soft, #eef2ff)', fontWeight: 700 } : { opacity: 0.3 }}>{n || '·'}</td>;
-                            })}
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-          );
-        })()}
-
         {/* TAB: COMMIT TRACKER — per-developer commits by repo + by day */}
         {currentTab === 'commit-tracker' && (() => {
           const short = (d) => new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' });
@@ -2185,6 +2118,11 @@ function App() {
                 .filter(d => d.commits > 0)
                 .filter(d => !q || d.name.toLowerCase().includes(q) || Object.keys(d.byRepo || {}).some(r => r.toLowerCase().includes(q)))
             : [];
+          const fmtNice = (s) => new Date(s + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+          const rangeLabel = bbData
+            ? (bbData.from === bbData.to ? fmtNice(bbData.from) : `${new Date(bbData.from + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} → ${new Date(bbData.to + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`)
+            : '';
+          const totalCommits = devs.reduce((a, d) => a + d.commits, 0);
           return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
             <div className="section-panel" style={{ gap: '10px' }}>
@@ -2192,21 +2130,33 @@ function App() {
                 <div>
                   <h2 className="section-title">Commit Tracker</h2>
                   <p style={{ margin: '4px 0 0', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
-                    Every developer's commits by repo and by day{bbData ? ` · ${bbData.repoCount} repo(s) in ${bbData.workspace}` : ''} · last {bbDays} days
+                    {bbData ? `${totalCommits} commits · ${devs.length} developer(s) · ${bbData.repoCount} repo(s)` : 'Commits by developer, repo and day'}
+                    {rangeLabel ? ` · ${rangeLabel}` : ''}
                     {bbLoading && bbData ? <span style={{ color: 'var(--color-primary)', fontWeight: 600 }}> · Updating…</span> : ''}
                   </p>
                 </div>
-                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
                   <div className="filter-tabs">
-                    {[7, 14, 30].map(d => (
-                      <button key={d} className={`filter-tab ${bbDays === d ? 'active' : ''}`} onClick={() => setBbDays(d)}>{d}d</button>
+                    {[['today', 'Today'], ['yesterday', 'Yesterday'], ['7d', 'Last 7 days'], ['custom', 'Custom']].map(([key, label]) => (
+                      <button key={key} className={`filter-tab ${commitPreset === key ? 'active' : ''}`} onClick={() => setCommitPreset(key)}>{label}</button>
                     ))}
                   </div>
-                  <button className="btn btn-secondary" onClick={() => loadBitbucket(bbDays, true)} disabled={bbLoading}>
+                  <button className="btn btn-secondary" onClick={() => loadBitbucket(commitRange.from, commitRange.to, true)} disabled={bbLoading || !commitRange.from || !commitRange.to}>
                     <Icon name="refresh" size={15} /> {bbLoading ? 'Loading…' : 'Refresh'}
                   </button>
                 </div>
               </div>
+              {commitPreset === 'custom' && (
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    From <input type="date" className="st-search" style={{ maxWidth: 170 }} value={customFrom} max={customTo || undefined} onChange={e => setCustomFrom(e.target.value)} />
+                  </label>
+                  <label style={{ fontSize: '0.8rem', color: 'var(--text-muted)', display: 'flex', gap: '6px', alignItems: 'center' }}>
+                    To <input type="date" className="st-search" style={{ maxWidth: 170 }} value={customTo} min={customFrom || undefined} onChange={e => setCustomTo(e.target.value)} />
+                  </label>
+                  {(!customFrom || !customTo) && <span style={{ fontSize: '0.78rem', color: 'var(--color-warning, #d97706)' }}>Pick both dates to load.</span>}
+                </div>
+              )}
               <input
                 className="st-search"
                 placeholder="Filter by developer or repo…"
@@ -2230,6 +2180,9 @@ function App() {
             {devs.map(dev => {
               const maxDay = Math.max(1, ...bbData.dates.map(d => dev.commitsByDay[d] || 0));
               const repos = Object.entries(dev.byRepo || {}).sort((a, b) => b[1] - a[1]);
+              const colorFor = (repo) => PIE_COLORS[repos.findIndex(([r]) => r === repo) % PIE_COLORS.length];
+              const segments = repos.map(([label, value]) => ({ label, value, color: colorFor(label) }));
+              const multiDay = bbData.dates.length > 1;
               return (
                 <div key={dev.name} className="section-panel">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
@@ -2240,22 +2193,31 @@ function App() {
                     </span>
                   </div>
 
-                  {/* Per-day mini bars */}
-                  <div className="bb-daybars" style={{ height: 110 }}>
-                    {bbData.dates.map(d => {
-                      const n = dev.commitsByDay[d] || 0;
-                      return (
-                        <div key={d} className="bb-daybar" title={`${d}: ${n} commit(s)`}>
-                          <span className="bb-daybar-num">{n || ''}</span>
-                          <div className="bb-daybar-track"><div className="bb-daybar-fill" style={{ height: `${Math.round((n / maxDay) * 100)}%` }} /></div>
-                          <span className="bb-daybar-label">{short(d)}</span>
-                        </div>
-                      );
-                    })}
+                  {/* Charts row: bar (by day) + pie (by repo) */}
+                  <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', alignItems: 'center', marginTop: 8 }}>
+                    <div style={{ flex: '1 1 300px', minWidth: 260 }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600 }}>{multiDay ? 'COMMITS BY DAY' : 'COMMITS'}</div>
+                      <div className="bb-daybars" style={{ height: 120 }}>
+                        {bbData.dates.map(d => {
+                          const n = dev.commitsByDay[d] || 0;
+                          return (
+                            <div key={d} className="bb-daybar" title={`${d}: ${n} commit(s)`}>
+                              <span className="bb-daybar-num">{n || ''}</span>
+                              <div className="bb-daybar-track"><div className="bb-daybar-fill" style={{ height: `${Math.round((n / maxDay) * 100)}%` }} /></div>
+                              <span className="bb-daybar-label">{short(d)}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600 }}>BY REPOSITORY</div>
+                      <DonutChart segments={segments} />
+                    </div>
                   </div>
 
                   {/* Repo breakdown */}
-                  <table className="aging-table bb-table" style={{ marginTop: 12 }}>
+                  <table className="aging-table bb-table" style={{ marginTop: 14 }}>
                     <thead>
                       <tr>
                         <th style={{ textAlign: 'left' }}>Repository</th>
@@ -2266,11 +2228,14 @@ function App() {
                     <tbody>
                       {repos.map(([repo, n]) => (
                         <tr key={repo}>
-                          <td style={{ textAlign: 'left', fontWeight: 600 }}>{repo}</td>
+                          <td style={{ textAlign: 'left', fontWeight: 600 }}>
+                            <span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 3, background: colorFor(repo), marginRight: 8, verticalAlign: 'middle' }} />
+                            {repo}
+                          </td>
                           <td style={{ textAlign: 'center', fontWeight: 700 }}>{n}</td>
                           <td style={{ textAlign: 'left' }}>
                             <div style={{ background: 'var(--bg-subtle)', borderRadius: 5, height: 10, width: '100%', overflow: 'hidden' }}>
-                              <div style={{ background: 'var(--color-primary)', height: '100%', width: `${Math.round((n / dev.commits) * 100)}%` }} />
+                              <div style={{ background: colorFor(repo), height: '100%', width: `${Math.round((n / dev.commits) * 100)}%` }} />
                             </div>
                           </td>
                         </tr>

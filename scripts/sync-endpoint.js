@@ -15,10 +15,10 @@ const CACHE_MS = 30_000; // serve a cached result for 30s
 let cache = { at: 0, data: null };
 let inflight = null;
 
-// Bitbucket is heavier (many repos) — cache longer and key by day-window.
+// Bitbucket is heavier (many repos) — cache longer and key by date window.
 const BB_CACHE_MS = 5 * 60_000;
-const bbCache = new Map(); // days -> { at, data }
-const bbInflight = new Map(); // days -> Promise
+const bbCache = new Map(); // key -> { at, data }
+const bbInflight = new Map(); // key -> Promise
 
 /**
  * Handle a /api/sync request. Node http-style (req, res).
@@ -59,7 +59,7 @@ export async function handleSync(res, opts = {}) {
 /**
  * Handle a /api/bitbucket request. Returns per-developer commit + PR activity.
  * @param {import('node:http').ServerResponse} res
- * @param {{ days?: number, force?: boolean }} [opts]
+ * @param {{ from?: string, to?: string, days?: number, force?: boolean }} [opts]
  */
 export async function handleBitbucket(res, opts = {}) {
   const send = (code, obj) => {
@@ -69,22 +69,25 @@ export async function handleBitbucket(res, opts = {}) {
     res.end(JSON.stringify(obj));
   };
 
-  const days = Math.max(1, Math.min(90, opts.days || 14));
+  const fetchOpts = (opts.from && opts.to)
+    ? { from: opts.from, to: opts.to }
+    : { days: Math.max(1, Math.min(90, opts.days || 7)) };
+  const key = fetchOpts.from ? `${fetchOpts.from}|${fetchOpts.to}` : `d${fetchOpts.days}`;
   try {
-    const cached = bbCache.get(days);
+    const cached = bbCache.get(key);
     if (!opts.force && cached && Date.now() - cached.at < BB_CACHE_MS) {
       return send(200, { ok: true, cached: true, ...cached.data });
     }
-    if (!bbInflight.has(days)) {
-      const p = fetchBitbucketActivity({ days }, (msg) => console.log('[bitbucket]', msg))
+    if (!bbInflight.has(key)) {
+      const p = fetchBitbucketActivity(fetchOpts, (msg) => console.log('[bitbucket]', msg))
         .then((data) => {
-          bbCache.set(days, { at: Date.now(), data });
+          bbCache.set(key, { at: Date.now(), data });
           return data;
         })
-        .finally(() => { bbInflight.delete(days); });
-      bbInflight.set(days, p);
+        .finally(() => { bbInflight.delete(key); });
+      bbInflight.set(key, p);
     }
-    const data = await bbInflight.get(days);
+    const data = await bbInflight.get(key);
     return send(200, { ok: true, cached: false, ...data });
   } catch (e) {
     console.error('[bitbucket] failed:', e.message);
@@ -92,9 +95,12 @@ export async function handleBitbucket(res, opts = {}) {
   }
 }
 
-function parseDays(url) {
-  const m = /[?&]days=(\d+)/.exec(url || '');
-  return m ? Number(m[1]) : undefined;
+const DATE_RE = /[?&]from=(\d{4}-\d{2}-\d{2})[^&]*&to=(\d{4}-\d{2}-\d{2})/;
+function parseRange(url) {
+  const m = DATE_RE.exec(url || '');
+  if (m) return { from: m[1], to: m[2] };
+  const d = /[?&]days=(\d+)/.exec(url || '');
+  return { days: d ? Number(d[1]) : undefined };
 }
 
 /**
@@ -112,7 +118,7 @@ export function syncApiPlugin() {
       server.middlewares.use('/api/bitbucket', (req, res, next) => {
         if (req.method !== 'GET') return next();
         const force = /[?&]force=1\b/.test(req.url || '');
-        handleBitbucket(res, { force, days: parseDays(req.url) });
+        handleBitbucket(res, { force, ...parseRange(req.url) });
       });
     },
   };

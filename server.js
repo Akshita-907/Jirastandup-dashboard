@@ -69,8 +69,10 @@ const server = createServer(async (req, res) => {
   if (url === '/api/bitbucket' || url.startsWith('/api/bitbucket?')) {
     if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
     const force = /[?&]force=1\b/.test(url);
-    const m = /[?&]days=(\d+)/.exec(url);
-    return handleBitbucket(res, { force, days: m ? Number(m[1]) : undefined });
+    const range = /[?&]from=(\d{4}-\d{2}-\d{2})[^&]*&to=(\d{4}-\d{2}-\d{2})/.exec(url);
+    const d = /[?&]days=(\d+)/.exec(url);
+    const opts = range ? { from: range[1], to: range[2] } : { days: d ? Number(d[1]) : undefined };
+    return handleBitbucket(res, { force, ...opts });
   }
   return serveStatic(res, url);
 });
