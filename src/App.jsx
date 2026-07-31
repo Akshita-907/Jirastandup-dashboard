@@ -98,7 +98,7 @@ const _now = new Date();
 const TODAY = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}-${String(_now.getDate()).padStart(2, '0')}`;
 // Sprint #38 window (update on rollover, or derive from Jira sprint field once stored)
 const SPRINT_START = '2026-07-16';
-const SPRINT_END_DAY = '2026-07-30';
+const SPRINT_END_DAY = '2026-07-31';
 // Reporting window is scoped to the ELAPSED part of the sprint: start → today
 // (clamped to the sprint end). Time-series charts and the headline framing cover
 // Jul 16 → today rather than projecting empty days out to the sprint end. ISO date
@@ -1662,7 +1662,7 @@ function App() {
             <div className="section-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
                 <h2 className="section-title">Current sprint burndown</h2>
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Remaining story points vs the ideal trend · Jul 16–30</span>
+                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Remaining story points vs the ideal trend · Jul 16–31</span>
               </div>
               <Burndown issues={issues} />
             </div>
@@ -1814,7 +1814,7 @@ function App() {
               return (
                 <div className="section-panel">
                   <h2 className="section-title">Sprint over sprint — #37 vs #38</h2>
-                  <p>Last sprint (closed, Jul 1–15) vs current sprint so far (Jul 16–30, in progress).</p>
+                  <p>Last sprint (closed, Jul 1–15) vs current sprint so far (Jul 16–31, in progress).</p>
                   <table className="aging-table">
                     <thead><tr><th>Metric</th><th>#37 (last)</th><th>#38 (current)</th><th>Change</th></tr></thead>
                     <tbody>
@@ -2368,7 +2368,7 @@ function App() {
             rangeNote = `Tickets with activity since ${weekAgo} · ${ds.length} tickets`;
           } else {
             ds = issues; asOf = TODAY; asOfMs = Date.now();
-            rangeNote = `Sprint #38 (Jul 16–30) · ${ds.length} tickets`;
+            rangeNote = `Sprint #38 (Jul 16–31) · ${ds.length} tickets`;
           }
 
           // Spillover: current-sprint tickets that were already in last sprint
