@@ -2787,8 +2787,11 @@ function App() {
             <div className="teams-workload-grid">
               {TEAM_ORDER.map(teamName => {
                 const metrics = getTeamMetrics(teamName);
-                const isTeamAtRisk = metrics.overdueCount > 0 || metrics.activeCount >= 10;
-                
+                // "At Risk" reflects real trouble — overdue or blocked tickets — not just a
+                // high WIP count (which is normal early in a sprint).
+                const teamBlocked = metrics.allIssues.filter(i => i.status === 'QA BLOCKED').length;
+                const isTeamAtRisk = metrics.overdueCount > 0 || teamBlocked > 0;
+
                 return (
                   <div 
                     key={teamName} 
