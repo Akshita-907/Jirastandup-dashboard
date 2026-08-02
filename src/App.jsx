@@ -146,11 +146,17 @@ function businessHoursSince(startStr, nowMs) {
   return Math.max(1, Math.round(rawHours - weekendDays * 24));
 }
 
+// The overdue clock never starts before the current sprint began: carryover
+// tickets get a fresh clock, so nothing is flagged overdue on day 1 and time
+// accrued in the previous sprint doesn't count. (ISO dates compare lexically.)
+const overdueClockStart = (dateStr) => (dateStr && dateStr > SPRINT_START ? dateStr : SPRINT_START);
+
 // A ticket is "overdue" when it has outstayed its allowance:
 //   • Story with NO story points → never overdue (exempt in every status).
 //   • Bug in In Progress → longer than 24 hours since it entered In Progress.
 //   • Story/Task/Epic in In Progress → longer than its story-point budget in working days.
 //   • Any ticket in QA Review → longer than 24 hours.
+// The clock is measured from max(entry date, sprint start) and excludes weekends.
 // Returns { overdue, approaching, kind, overdueBy (days, fractional so lists sort), label }.
 function overdueInfo(issue) {
   // Unpointed stories are never overdue, in any status.
@@ -162,7 +168,7 @@ function overdueInfo(issue) {
       // day-granular, so hours are approximated from that entry date (like the QA clock).
       const ipDate = [...(issue.history || [])].reverse().find(h => h.status === 'In Progress')?.date || issue.inProgressDate;
       if (!ipDate) return { overdue: false, approaching: false };
-      const hours = businessHoursSince(ipDate, Date.now()); // excludes weekend hours
+      const hours = businessHoursSince(overdueClockStart(ipDate), Date.now()); // from sprint start, excl. weekends
 
       const overdue = hours > 24;
       const approaching = !overdue && hours >= 18;
@@ -172,15 +178,16 @@ function overdueInfo(issue) {
     // Story / Task / Epic: story-point budget in working days (unpointed non-story = 1-day allowance).
     if (!issue.inProgressDate) return { overdue: false, approaching: false };
     const expected = issue.storyPoints > 0 ? issue.storyPoints : 1;
-    const elapsed = workingDaysBetween(issue.inProgressDate, TODAY);
+    const elapsed = workingDaysBetween(overdueClockStart(issue.inProgressDate), TODAY);
     const overdue = elapsed > expected;
     const approaching = !overdue && (expected - elapsed) <= 1;
     const by = elapsed - expected;
     return { overdue, approaching, kind: 'dev', expected, elapsed, overdueBy: by, remaining: -by, label: `${by}d over` };
   }
   if (issue.status === 'QA Review') {
-    const q = qaHoursInfo(issue);
-    const hours = q ? q.hours : 0;
+    // Measure from max(most-recent QA entry, sprint start), excluding weekends.
+    const lastQa = [...(issue.history || [])].reverse().find(h => h.status === 'QA Review')?.date || issue.qaEnteredDate;
+    const hours = lastQa ? businessHoursSince(overdueClockStart(lastQa), Date.now()) : 0;
     const overdue = hours > 24;
     // approaching = within ~6h of the 24h QA limit
     const approaching = !overdue && hours >= 18;
