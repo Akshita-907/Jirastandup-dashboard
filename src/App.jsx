@@ -4,10 +4,12 @@ import INITIAL_ISSUES from './issues.json';
 import LAST_SPRINT from './lastSprint.json';
 import DATA_META from './dataMeta.json';
 import { Icon, StatusBadge, PriorityBadge, getStatusMeta, Verdict, TypeIcon } from './Icon.jsx';
+import { buildNameIndex, parseTranscript } from './standup-parse.js';
 
-// Standup transcripts load OPTIONALLY: src/transcripts.json is gitignored (it holds
-// internal meeting content + emails and must not be committed to a public repo), so it
-// may be absent in a fresh clone. Fall back to an empty list when the file isn't present.
+// Standup notes load from src/transcripts.json (committed, so they ship to production
+// in the Vite build). Keep the file to CLEAN notes only — overall focus, decisions, and
+// per-person "Next steps" — with no email roster or other PII, since the repo is shared.
+// The glob keeps this resilient if the file is ever absent (falls back to an empty list).
 const TRANSCRIPTS = Object.values(import.meta.glob('./transcripts.json', { eager: true, import: 'default' }))[0] || [];
 
 // Complete list of G99PRODUCT active board members restructured by teams.
@@ -96,9 +98,13 @@ const INITIAL_ACTIONS = [];
 // anchored to the last sync, but all live calculations use the actual current date).
 const _now = new Date();
 const TODAY = `${_now.getFullYear()}-${String(_now.getMonth() + 1).padStart(2, '0')}-${String(_now.getDate()).padStart(2, '0')}`;
-// Sprint #38 window (update on rollover, or derive from Jira sprint field once stored)
-const SPRINT_START = '2026-07-16';
-const SPRINT_END_DAY = '2026-07-30';
+// Current sprint window (update on rollover, or derive from Jira sprint field once stored)
+const SPRINT_NO = 39;
+const SPRINT_START = '2026-08-01';
+const SPRINT_END_DAY = '2026-08-15';
+// Short labels derived from the window, so rollovers only need the dates above.
+const SPRINT_START_LABEL = new Date(SPRINT_START + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+const SPRINT_END_LABEL = new Date(SPRINT_END_DAY + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 // Reporting window is scoped to the ELAPSED part of the sprint: start → today
 // (clamped to the sprint end). Time-series charts and the headline framing cover
 // Jul 16 → today rather than projecting empty days out to the sprint end. ISO date
@@ -142,11 +148,17 @@ function businessHoursSince(startStr, nowMs) {
   return Math.max(1, Math.round(rawHours - weekendDays * 24));
 }
 
+// The overdue clock never starts before the current sprint began: carryover
+// tickets get a fresh clock, so nothing is flagged overdue on day 1 and time
+// accrued in the previous sprint doesn't count. (ISO dates compare lexically.)
+const overdueClockStart = (dateStr) => (dateStr && dateStr > SPRINT_START ? dateStr : SPRINT_START);
+
 // A ticket is "overdue" when it has outstayed its allowance:
 //   • Story with NO story points → never overdue (exempt in every status).
 //   • Bug in In Progress → longer than 24 hours since it entered In Progress.
 //   • Story/Task/Epic in In Progress → longer than its story-point budget in working days.
 //   • Any ticket in QA Review → longer than 24 hours.
+// The clock is measured from max(entry date, sprint start) and excludes weekends.
 // Returns { overdue, approaching, kind, overdueBy (days, fractional so lists sort), label }.
 function overdueInfo(issue) {
   // Unpointed stories are never overdue, in any status.
@@ -158,7 +170,7 @@ function overdueInfo(issue) {
       // day-granular, so hours are approximated from that entry date (like the QA clock).
       const ipDate = [...(issue.history || [])].reverse().find(h => h.status === 'In Progress')?.date || issue.inProgressDate;
       if (!ipDate) return { overdue: false, approaching: false };
-      const hours = businessHoursSince(ipDate, Date.now()); // excludes weekend hours
+      const hours = businessHoursSince(overdueClockStart(ipDate), Date.now()); // from sprint start, excl. weekends
 
       const overdue = hours > 24;
       const approaching = !overdue && hours >= 18;
@@ -168,15 +180,16 @@ function overdueInfo(issue) {
     // Story / Task / Epic: story-point budget in working days (unpointed non-story = 1-day allowance).
     if (!issue.inProgressDate) return { overdue: false, approaching: false };
     const expected = issue.storyPoints > 0 ? issue.storyPoints : 1;
-    const elapsed = workingDaysBetween(issue.inProgressDate, TODAY);
+    const elapsed = workingDaysBetween(overdueClockStart(issue.inProgressDate), TODAY);
     const overdue = elapsed > expected;
     const approaching = !overdue && (expected - elapsed) <= 1;
     const by = elapsed - expected;
     return { overdue, approaching, kind: 'dev', expected, elapsed, overdueBy: by, remaining: -by, label: `${by}d over` };
   }
   if (issue.status === 'QA Review') {
-    const q = qaHoursInfo(issue);
-    const hours = q ? q.hours : 0;
+    // Measure from max(most-recent QA entry, sprint start), excluding weekends.
+    const lastQa = [...(issue.history || [])].reverse().find(h => h.status === 'QA Review')?.date || issue.qaEnteredDate;
+    const hours = lastQa ? businessHoursSince(overdueClockStart(lastQa), Date.now()) : 0;
     const overdue = hours > 24;
     // approaching = within ~6h of the 24h QA limit
     const approaching = !overdue && hours >= 18;
@@ -1084,6 +1097,23 @@ function App() {
     })
     .sort((a, b) => b.active.length - a.active.length);
 
+  // ---- "Said vs. did": parse the standup call notes into per-person commitments ----
+  // The name index maps spoken first-names ("Pushkar", "Monica") to the canonical
+  // Jira assignee/QA names so a spoken update can be joined to live ticket status.
+  const nameIndex = React.useMemo(() => {
+    const names = new Set();
+    for (const i of issues) {
+      if (i.assignee && i.assignee !== 'Unassigned') names.add(i.assignee);
+      issueQAs(i).forEach(q => q && names.add(q));
+    }
+    return buildNameIndex([...names]);
+  }, [issues]);
+  // Parse the currently-selected transcript (the standup date the PM is viewing).
+  const standupParsed = React.useMemo(() => {
+    const t = TRANSCRIPTS.find(x => x.date === transcriptDate) || TRANSCRIPTS[TRANSCRIPTS.length - 1];
+    return t ? parseTranscript(t, nameIndex) : null;
+  }, [transcriptDate, nameIndex]);
+
   // Presenter keyboard nav: ←/→ move, d or Space = mark discussed & advance
   useEffect(() => {
     if (!presenter) return;
@@ -1499,7 +1529,7 @@ function App() {
         <div className="top-header">
           <div className="header-title">
             <h1>SprintHub</h1>
-            <p>{new Date(TODAY + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} • Sprint #38 • Jul 16 – {reportEndLabel} elapsed (day {sprintDayNum} of {sprintTotalDays}) • {daysLeft === 0 ? 'Final day' : `${daysLeft} days remaining`}</p>
+            <p>{new Date(TODAY + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })} • Sprint #{SPRINT_NO} • {SPRINT_START_LABEL} – {reportEndLabel} elapsed (day {sprintDayNum} of {sprintTotalDays}) • {daysLeft === 0 ? 'Final day' : `${daysLeft} days remaining`}</p>
           </div>
           <div className="header-actions">
             <GlobalSearch issues={issues} onPick={(i) => setSelectedTicket(i)} />
@@ -1662,7 +1692,7 @@ function App() {
             <div className="section-panel">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
                 <h2 className="section-title">Current sprint burndown</h2>
-                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Remaining story points vs the ideal trend · Jul 16–30</span>
+                <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>Remaining story points vs the ideal trend · {SPRINT_START_LABEL}–{SPRINT_END_LABEL}</span>
               </div>
               <Burndown issues={issues} />
             </div>
@@ -1814,7 +1844,7 @@ function App() {
               return (
                 <div className="section-panel">
                   <h2 className="section-title">Sprint over sprint — #37 vs #38</h2>
-                  <p>Last sprint (closed, Jul 1–15) vs current sprint so far (Jul 16–30, in progress).</p>
+                  <p>Last sprint (closed, Jul 16–31) vs current sprint so far ({SPRINT_START_LABEL}–{SPRINT_END_LABEL}, in progress).</p>
                   <table className="aging-table">
                     <thead><tr><th>Metric</th><th>#37 (last)</th><th>#38 (current)</th><th>Change</th></tr></thead>
                     <tbody>
@@ -1929,20 +1959,19 @@ function App() {
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
 
-              {/* AI STANDUP CALL TRANSCRIPTS */}
+              {/* STANDUP NOTES (clean, from the daily call) */}
               <div className="section-panel">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
-                  <h2 className="section-title">AI standup call transcripts</h2>
+                  <h2 className="section-title">Standup notes</h2>
                   {(() => {
                     const t = TRANSCRIPTS.find(x => x.date === transcriptDate);
-                    if (!t) return null;
-                    const href = t.downloadUrl || `${import.meta.env.BASE_URL}transcripts/${t.date}.docx`;
-                    return <a className="btn btn-secondary" href={href} download={`standup-${t.date}.docx`}><Icon name="download" size={14} /> Download transcript</a>;
+                    if (!t || !t.viewUrl) return null;
+                    return <a className="btn btn-secondary" href={t.viewUrl} target="_blank" rel="noreferrer"><Icon name="download" size={14} /> Open source doc</a>;
                   })()}
                 </div>
-                <p>Gemini notes &amp; full transcript from each daily standup call (Jul 16 onward). Ask-anything AI search is coming next.</p>
+                <p>Clean notes from each daily standup — overall focus, key decisions, and who is working on what. The per-person breakdown feeds the “Said vs. did” view below.</p>
                 {TRANSCRIPTS.length === 0 ? (
-                  <p style={{ color: 'var(--text-muted)', margin: 0 }}>No transcripts available yet.</p>
+                  <p style={{ color: 'var(--text-muted)', margin: 0 }}>No standup notes available yet.</p>
                 ) : (
                   <>
                     <div className="filter-tabs">
@@ -1954,7 +1983,7 @@ function App() {
                     </div>
                     <input
                       style={{ width: '100%', margin: '4px 0 12px', padding: '10px 14px', borderRadius: '8px', border: '1px solid var(--border-color)', backgroundColor: 'var(--bg-subtle)', color: 'var(--text-primary)', fontSize: '13px', boxSizing: 'border-box' }}
-                      placeholder="Search within this transcript (keyword)…"
+                      placeholder="Search within these notes (keyword)…"
                       value={transcriptQuery}
                       onChange={(e) => setTranscriptQuery(e.target.value)}
                     />
@@ -1979,6 +2008,92 @@ function App() {
                   </>
                 )}
               </div>
+
+              {/* SAID VS. DID — spoken commitments matched to live Jira status */}
+              {standupParsed && standupParsed.people.length > 0 && (() => {
+                const issueByKey = new Map(issues.map(i => [i.key, i]));
+                const dateLabel = new Date(standupParsed.date + 'T12:00:00')
+                  .toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+                // When a person is selected in the control bar, focus on them.
+                const shown = standupPerson === 'all'
+                  ? standupParsed.people
+                  : standupParsed.people.filter(p => p.person === standupPerson);
+                // "did" verdict for one ticket the person committed to.
+                const verdictFor = (iss) => {
+                  if (!iss) return { tone: 'gone', label: 'not in current sprint', icon: 'help' };
+                  if (isDone(iss.status)) return { tone: 'done', label: 'Delivered', icon: 'check' };
+                  const od = overdueInfo(iss);
+                  if (od.overdue) return { tone: 'over', label: `Overdue · ${od.label}`, icon: 'alert' };
+                  if (iss.status === 'QA BLOCKED') return { tone: 'over', label: 'Blocked', icon: 'alert' };
+                  if (iss.status === 'QA Review') return { tone: 'moving', label: 'Moved to QA', icon: 'clock' };
+                  if (iss.status === 'In Progress' || iss.status === 'Code Review') return { tone: 'moving', label: 'In progress', icon: 'clock' };
+                  return { tone: 'idle', label: iss.status, icon: 'clock' };
+                };
+                const toneColor = {
+                  done: 'var(--color-success, #16a34a)',
+                  moving: 'var(--color-primary, #4f7cff)',
+                  over: 'var(--color-danger, #dc2626)',
+                  idle: 'var(--text-muted)',
+                  gone: 'var(--text-muted)',
+                };
+                return (
+                  <div className="section-panel">
+                    <h2 className="section-title">Said vs. did · {dateLabel} standup</h2>
+                    <p style={{ marginTop: 0 }}>
+                      What each person committed to in the call, matched to where those tickets stand in Jira <strong>right now</strong>.
+                      Green = delivered, red = overdue or blocked, blue = still moving. Ask about any of these tomorrow.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                      {shown.map(p => {
+                        const delivered = p.tickets.filter(k => { const i = issueByKey.get(k); return i && isDone(i.status); }).length;
+                        const overdueN = p.tickets.filter(k => { const i = issueByKey.get(k); return i && overdueInfo(i).overdue; }).length;
+                        return (
+                          <div key={p.person} style={{ border: '1px solid var(--border-color)', borderRadius: '10px', padding: '14px 16px', backgroundColor: 'var(--bg-subtle)' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap', marginBottom: '10px' }}>
+                              <strong style={{ fontSize: '14px' }}>{p.person}</strong>
+                              {p.blocked && <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--color-danger, #dc2626)', border: '1px solid var(--color-danger, #dc2626)', borderRadius: '10px', padding: '1px 8px' }}>flagged a blocker</span>}
+                              {delivered > 0 && <span style={{ fontSize: '11px', color: toneColor.done }}>✓ {delivered} delivered</span>}
+                              {overdueN > 0 && <span style={{ fontSize: '11px', color: toneColor.over }}>⚠ {overdueN} overdue</span>}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                              {p.commitments.map((c, ci) => (
+                                <div key={ci} style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '12px', alignItems: 'start' }}>
+                                  {/* SAID */}
+                                  <div style={{ fontSize: '13px', lineHeight: 1.5, color: 'var(--text-primary)', borderLeft: '3px solid var(--border-color)', paddingLeft: '10px' }}>
+                                    <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '.04em', color: 'var(--text-muted)', display: 'block', marginBottom: '2px' }}>said</span>
+                                    {c.text}
+                                  </div>
+                                  {/* DID */}
+                                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                    <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '.04em', color: 'var(--text-muted)' }}>did (live)</span>
+                                    {c.tickets.length === 0 ? (
+                                      <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontStyle: 'italic' }}>No Jira ticket referenced</span>
+                                    ) : c.tickets.map(k => {
+                                      const iss = issueByKey.get(k);
+                                      const v = verdictFor(iss);
+                                      return (
+                                        <div key={k} style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                                          <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 600 }}>{k.replace('G99PRODUCT-', '#')}</span>
+                                          {iss && <StatusBadge status={iss.status} />}
+                                          <span style={{ fontSize: '11px', fontWeight: 700, color: toneColor[v.tone] }}>{v.label}</span>
+                                          {iss && iss.assignee !== p.person && !issueQAs(iss).includes(p.person) && (
+                                            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>· owned by {iss.assignee}</span>
+                                          )}
+                                          {iss && <span style={{ fontSize: '11px', color: 'var(--text-muted)', flexBasis: '100%' }}>{iss.summary}</span>}
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* CONTROL BAR + CATEGORY CARDS */}
               <div className="section-panel">
@@ -2368,7 +2483,7 @@ function App() {
             rangeNote = `Tickets with activity since ${weekAgo} · ${ds.length} tickets`;
           } else {
             ds = issues; asOf = TODAY; asOfMs = Date.now();
-            rangeNote = `Sprint #38 (Jul 16–30) · ${ds.length} tickets`;
+            rangeNote = `Sprint #${SPRINT_NO} (${SPRINT_START_LABEL}–${SPRINT_END_LABEL}) · ${ds.length} tickets`;
           }
 
           // Spillover: current-sprint tickets that were already in last sprint
@@ -2776,8 +2891,11 @@ function App() {
             <div className="teams-workload-grid">
               {TEAM_ORDER.map(teamName => {
                 const metrics = getTeamMetrics(teamName);
-                const isTeamAtRisk = metrics.overdueCount > 0 || metrics.activeCount >= 10;
-                
+                // "At Risk" reflects real trouble — overdue or blocked tickets — not just a
+                // high WIP count (which is normal early in a sprint).
+                const teamBlocked = metrics.allIssues.filter(i => i.status === 'QA BLOCKED').length;
+                const isTeamAtRisk = metrics.overdueCount > 0 || teamBlocked > 0;
+
                 return (
                   <div 
                     key={teamName} 

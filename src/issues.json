@@ -1,45 +1,632 @@
 [
   {
-    "key": "G99PRODUCT-3838",
-    "summary": "Handle country code if its empty ",
+    "key": "G99PRODUCT-4046",
+    "summary": "Test voice agent call forwarding and minute deduction",
     "status": "QA Review",
     "assignee": "Monika Desai",
-    "staleDays": 1,
+    "staleDays": 0,
+    "priority": "Highest",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Shubhashis Swain",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-08-02",
+        "user": "akshita.garg"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-08-02",
+        "user": "akshita.garg"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-08-02",
+        "user": "akshita.garg"
+      }
+    ],
+    "inProgressDate": "2026-08-02",
+    "qaEnteredDate": "2026-08-02",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 0.1,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4028",
+    "summary": "Twilio  duplicate subaccount issue",
+    "status": "QA Review",
+    "assignee": "Pushkar Murkute",
+    "staleDays": 0,
     "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Rimsha Riyadh",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Pushkar Murkute"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-31",
+        "user": "Pushkar Murkute"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-31",
+        "user": "Pushkar Murkute"
+      }
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-31",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 2.5,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4001",
+    "summary": "Contact assigned email subject change 'patient' to 'contact'",
+    "status": "QA Review",
+    "assignee": "Omm Chavan",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Rimsha Riyadh",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-30",
+        "user": "Omm Chavan"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-30",
+        "user": "Omm Chavan"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-30",
+        "user": "Omm Chavan"
+      }
+    ],
+    "inProgressDate": "2026-07-30",
+    "qaEnteredDate": "2026-07-30",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 3.4,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3948",
+    "summary": "File Manager: Multiple Validation and Functional Issues Observed in Folder Management and File Download",
+    "status": "Code Review",
+    "assignee": "Omm Chavan",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Ajay Chafekarande",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-29",
+        "user": "Omm Chavan"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-29",
+        "user": "Omm Chavan"
+      }
+    ],
+    "inProgressDate": "2026-07-29",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3911",
+    "summary": "Reset Gia configuration and clear RAG resources upon disabling Gia Purchase toggle",
+    "status": "Code Review",
+    "assignee": "sujal.rathore",
+    "staleDays": 2,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Abhishek",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "sujal.rathore"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-31",
+        "user": "sujal.rathore"
+      }
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3904",
+    "summary": "Implement option to add sub tasks under each main tasks like jira story & sub tasks",
+    "status": "Code Review",
+    "assignee": "sujal.rathore",
+    "staleDays": 2,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 2,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "sujal.rathore"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-31",
+        "user": "sujal.rathore"
+      }
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3873",
+    "summary": "POC for Smart link/One click login ",
+    "status": "Code Review",
+    "assignee": "Sachin Tripathi",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-21",
+        "user": "Sachin Tripathi"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-28",
+        "user": "Sachin Tripathi"
+      }
+    ],
+    "inProgressDate": "2026-07-21",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3858",
+    "summary": "Incorrect Health Check Status for Businesses Using Qdrant",
+    "status": "QA Review",
+    "assignee": "Avinasha",
+    "staleDays": 0,
+    "priority": "High",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "akshita.garg",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-19",
-    "qaEnteredDate": "2026-07-19",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 4,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-19",
-        "user": "Monika Desai"
+        "date": "2026-07-21",
+        "user": "Avinasha"
       },
       {
         "status": "Code Review",
-        "date": "2026-07-19",
-        "user": "Monika Desai"
+        "date": "2026-07-21",
+        "user": "Avinasha"
       },
       {
         "status": "QA Review",
-        "date": "2026-07-19",
-        "user": "Monika Desai"
+        "date": "2026-07-21",
+        "user": "Avinasha"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-21",
+    "qaEnteredDate": "2026-07-21",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 12,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3809",
-    "summary": "Not able disable gia purchase flag from admin",
+    "key": "G99PRODUCT-3717",
+    "summary": "[Security P2] score-card-tool - Restrict CORS to explicit origin allowlist",
+    "status": "Code Review",
+    "assignee": "Akshay Dhole",
+    "staleDays": 2,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Ajay Chafekarande",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-13",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-13",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-14",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "Ready to Release",
+        "date": "2026-07-15",
+        "user": "Abhishek"
+      },
+      {
+        "status": "Released To Prod",
+        "date": "2026-07-15",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "QA BLOCKED",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "Ready For UI Integration",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "QA BLOCKED",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "FE BLOCKED",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "Ready For UI Integration",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "FE BLOCKED",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "QA BLOCKED",
+        "date": "2026-07-16",
+        "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "Ready For UI Integration",
+        "date": "2026-07-31",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-31",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-31",
+        "user": "Akshay Dhole"
+      }
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-14",
+    "qaDoneDate": "2026-07-15",
+    "qaCycleDays": 1,
+    "qaOngoingDays": null,
+    "lifecycleDays": 7
+  },
+  {
+    "key": "G99PRODUCT-3245",
+    "summary": "GIA Usage Analytics – Fix Date Range Validation and Apply Button Behavior",
     "status": "QA Review",
+    "assignee": "Akshay Dhole",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Muskan Arora",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-05-14",
+        "user": "ankit.sawant"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-05-14",
+        "user": "ankit.sawant"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-06-15",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "To Do",
+        "date": "2026-06-15",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-01",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-01",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-01",
+        "user": "Akshay Dhole"
+      }
+    ],
+    "inProgressDate": "2026-07-01",
+    "qaEnteredDate": "2026-07-01",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 32.2,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4055",
+    "summary": "Issue in Email and SMS usage history",
+    "status": "To Do",
+    "assignee": "Akshay Dhole",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Akshay Dhole"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4054",
+    "summary": "R&D Support for publishing video and Reels posts through the scheduler",
+    "status": "To Do",
+    "assignee": "Omm Chavan",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Omm Chavan"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4053",
+    "summary": "R&D GIA Appointment Booking Based on System Access",
+    "status": "To Do",
+    "assignee": "Monika Desai",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Monika Desai"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4051",
+    "summary": "[BE/FE] Self assessment Enhancement Implementation",
+    "status": "To Do",
+    "assignee": "Kundan Kumar",
+    "staleDays": 0,
+    "priority": "Low",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 3,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Kundan Kumar"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4049",
+    "summary": "[BE/FE] Support for multiple media files in a single social media post",
+    "status": "To Do",
+    "assignee": "Manish Patidar",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 2,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Manish Patidar"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4044",
+    "summary": "Disconnect decoda when we remove webhook url",
+    "status": "To Do",
+    "assignee": "Kundan Kumar",
+    "staleDays": 0,
+    "priority": "Highest",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Kundan Kumar"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4031",
+    "summary": "[BE/FE] Add Redirection on landing page",
+    "status": "To Do",
+    "assignee": "Manish Patidar",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Manish Patidar"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4030",
+    "summary": "Modern UI Form Logo issue",
+    "status": "To Do",
     "assignee": "Sachin Tripathi",
     "staleDays": 0,
     "priority": "Medium",
@@ -49,137 +636,80 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-19",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
     "history": [
       {
-        "status": "In Progress",
-        "date": "2026-07-19",
-        "user": "Sachin Tripathi"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-20",
-        "user": "Sachin Tripathi"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
+        "status": "To Do",
+        "date": "2026-08-02",
         "user": "Sachin Tripathi"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3785",
-    "summary": "[BE/FE] Add a debugger for gia voices call responses ",
-    "status": "Code Review",
-    "assignee": "Monika Desai",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-20",
+    ],
+    "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Monika Desai"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3779",
-    "summary": "Transcript is not coming as expected for Gia Voice Agent",
-    "status": "QA Review",
-    "assignee": "Lalit Suryan",
-    "staleDays": 2,
+    "key": "G99PRODUCT-4027",
+    "summary": "UI Defect: Extra horizontal line extends beyond the setup progress tracker on the Gia Setup Config page",
+    "status": "To Do",
+    "assignee": "Omm Chavan",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
+    "primaryQA": "Abhishek",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": "2026-07-17",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 6,
-    "lifecycleDays": null,
     "history": [
       {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Lalit Suryan"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Lalit Suryan"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-17",
-        "user": "Lalit Suryan"
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Omm Chavan"
       }
-    ]
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3772",
-    "summary": "[BE/FE] Inbox Revamp - Display contacts in correct order (SMS, Email, Call) by timestamp and add pagination",
-    "status": "QA Review",
-    "assignee": "Manish Patidar",
+    "key": "G99PRODUCT-4002",
+    "summary": "All Tasks Count Displays Pagination Count Instead of Total Task Count",
+    "status": "To Do",
+    "assignee": "Sachin Tripathi",
     "staleDays": 0,
     "priority": "Medium",
-    "type": "Story",
+    "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Janhavi Made",
-    "storyPoints": 3,
-    "inProgressDate": "2026-07-19",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
+    "primaryQA": "Ajay Chafekarande",
+    "storyPoints": 0,
     "history": [
       {
-        "status": "In Progress",
-        "date": "2026-07-19",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Manish Patidar"
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Sachin Tripathi"
       }
-    ]
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3769",
-    "summary": "R&D List down all the write API for MCP Connection (Phase 2)",
-    "status": "Code Review",
-    "assignee": "Monika Desai",
-    "staleDays": 5,
+    "key": "G99PRODUCT-3998",
+    "summary": "[BE/FE] Fetch Existing Site from HubSpot and Populate Onboarding Form",
+    "status": "To Do",
+    "assignee": "Mehul Kothari",
+    "staleDays": 4,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
@@ -187,29 +717,240 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 1,
-    "inProgressDate": "2026-07-17",
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-07-29",
+        "user": "Mehul Kothari"
+      }
+    ],
+    "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Monika Desai"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3744",
-    "summary": "Add option to show reference to end user for gia resposnes",
-    "status": "Code Review",
+    "key": "G99PRODUCT-3997",
+    "summary": "Fetch GitHub URL and Repository URL from HubSpot Properties",
+    "status": "To Do",
+    "assignee": "Mehul Kothari",
+    "staleDays": 4,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-07-29",
+        "user": "Mehul Kothari"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3996",
+    "summary": "[BE] Beta Website builder Tool: automate retry mechanism on transient failures",
+    "status": "To Do",
+    "assignee": "Mehul Kothari",
+    "staleDays": 4,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 2,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-07-29",
+        "user": "Mehul Kothari"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3995",
+    "summary": "Track client onboarding form progress in HubSpot",
+    "status": "To Do",
+    "assignee": "Mehul Kothari",
+    "staleDays": 4,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-07-29",
+        "user": "Mehul Kothari"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3975",
+    "summary": "MCP Write API'S Workflow - Trigger Creation",
+    "status": "To Do",
+    "assignee": "Sai Somanath",
+    "staleDays": 0,
+    "priority": "Highest",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Sai Somanath"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3974",
+    "summary": "MCP Write API'S Workflow - Campaign Creation",
+    "status": "To Do",
+    "assignee": "Sai Somanath",
+    "staleDays": 0,
+    "priority": "Highest",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 2,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Sai Somanath"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3969",
+    "summary": "[BE/FE] Show history in url analytics where we will show how many url's change with time stamp",
+    "status": "To Do",
+    "assignee": "Kundan Kumar",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Kundan Kumar"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3957",
+    "summary": "Gia Responses Are Inconsistent and AI Campaign Incorrectly Displays \"Upgrade to GIA\" Banner in Business 2203 (Dev)",
+    "status": "To Do",
+    "assignee": "Kundan Kumar",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Shubhashis Swain",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Kundan Kumar"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3930",
+    "summary": "AI Campaign Manual Trigger Audit Page Displays Duplicate Email/SMS Records Despite Single Execution",
+    "status": "To Do",
+    "assignee": "Akshay Dhole",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Shubhashis Swain",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Akshay Dhole"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3925",
+    "summary": "[BE] Humanize AI Blog Writer output to reduce AI-detection",
+    "status": "To Do",
     "assignee": "Neha Kakkar",
     "staleDays": 0,
     "priority": "Medium",
@@ -219,1005 +960,26 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-13",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
-        "status": "In Progress",
-        "date": "2026-07-13",
-        "user": "Neha Kakkar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-22",
+        "status": "To Do",
+        "date": "2026-08-02",
         "user": "Neha Kakkar"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3738",
-    "summary": "Template Module: Customer Template Filter and SMS Template Type Mapping Issues",
-    "status": "QA Review",
-    "assignee": "Akshay Dhole",
-    "staleDays": 0,
-    "priority": "Low",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Akshay Dhole"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3737",
-    "summary": "Support Special Characters in First Name and Last Name for imported contacts",
-    "status": "Code Review",
-    "assignee": "Omm Chavan",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 2,
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-21",
-        "user": "Omm Chavan"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-22",
-        "user": "Omm Chavan"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3732",
-    "summary": "[BE/FE] Show analytics data for gia resposnses that are in test mode in gia usage analytics",
-    "status": "QA Review",
-    "assignee": "Kundan Kumar",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 3,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": "2026-07-21",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-21",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Kundan Kumar"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3710",
-    "summary": "Not able to add variable in subject line for email template",
-    "status": "QA Review",
-    "assignee": "Sachin Tripathi",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Suchit Senghani",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-15",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "Sachin Tripathi"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Sachin Tripathi"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Sachin Tripathi"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3701",
-    "summary": "Centralize Landing Page API in One File",
-    "status": "QA Review",
-    "assignee": "Sai Somanath",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Janhavi Made",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Sai Somanath"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3696",
-    "summary": "[BE] API Gateway Architecture (webhook / callback)  - 7 Endpoints",
-    "status": "Code Review",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-22",
-        "user": "Pushkar Murkute"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3694",
-    "summary": "[BE] API Gateway Architecture (auth)  - 7 Endpoints",
-    "status": "QA Review",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-14",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-14",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Pushkar Murkute"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3693",
-    "summary": "[FE] API Gateway Architecture (auth)  - 7 Endpoints",
-    "status": "QA Review",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-10",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-10",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Pushkar Murkute"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3690",
-    "summary": "Perform End-to-End Testing of AI Campaign in Dev & Production for Client Rollout",
-    "status": "Rejected",
-    "assignee": "Shubhashis Swain",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "REJECTED",
-        "date": "2026-07-11",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3668",
-    "summary": "[FE] Ability to execute customer trigger if the stage change from lead to customer",
-    "status": "QA Review",
-    "assignee": "Sai Somanath",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Janhavi Made",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Sai Somanath"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3645",
-    "summary": "In email campaign - for audit open status is not working as expected",
-    "status": "Rejected",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "REJECTED",
-        "date": "2026-07-11",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3616",
-    "summary": "[BE/FE] Add provisioning of business, clinic, services etc on submit of the onboarding form",
-    "status": "QA Review",
-    "assignee": "Mehul Kothari",
-    "staleDays": 1,
-    "priority": "Highest",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 2,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-21",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 2,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Mehul Kothari"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Mehul Kothari"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-21",
-        "user": "Mehul Kothari"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3533",
-    "summary": "[H-1] Tenant Identity Taken from Client-Controlled X-TenantID Header",
-    "status": "Rejected",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 6,
-    "priority": "High",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-06-16",
-    "qaEnteredDate": "2026-06-17",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 36,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-06-16",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-17",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-06-17",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "REJECTED",
-        "date": "2026-06-19",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3481",
-    "summary": "MCP API are not passing correct data",
-    "status": "QA Review",
-    "assignee": "Monika Desai",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-01",
-    "qaEnteredDate": "2026-07-01",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 22,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-01",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-01",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-01",
-        "user": "Monika Desai"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3457",
-    "summary": "While activating Gia , when we upload doc getting error",
-    "status": "QA Review",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "Highest",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 0,
-    "inProgressDate": "2026-06-02",
-    "qaEnteredDate": "2026-06-09",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 44,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-06-02",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-09",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-06-09",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3344",
-    "summary": "Call rail automate response are not coming in same thread",
-    "status": "QA Review",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 0,
-    "inProgressDate": "2026-06-08",
-    "qaEnteredDate": "2026-06-09",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 44,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-06-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-09",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-06-09",
-        "user": "Akshay Dhole"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3270",
-    "summary": "Skipping delayed lead trigger due to recent conversation activity for leadId - add this check for the buisness where gia is activated",
-    "status": "QA Review",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
-    "priority": "High",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-08",
-    "qaEnteredDate": "2026-05-08",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 76,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-08",
-        "user": "Akshay Dhole"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3266",
-    "summary": "Questionnaire Mapping Issue Across Multiple Businesses",
-    "status": "QA Review",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Ajay Chafekarande",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-18",
-    "qaEnteredDate": "2026-07-22",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 0,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-18",
-        "user": "Rajkumar Ramdas Mane"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-18",
-        "user": "Rajkumar Ramdas Mane"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-22",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3245",
-    "summary": "GIA Usage Analytics – Fix Date Range Validation and Apply Button Behavior",
-    "status": "QA Review",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Muskan Arora",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-01",
-    "qaEnteredDate": "2026-07-01",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 22,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-14",
-        "user": "ankit.sawant"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-14",
-        "user": "ankit.sawant"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-06-15",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "To Do",
-        "date": "2026-06-15",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-01",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-01",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-01",
-        "user": "Akshay Dhole"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3230",
-    "summary": "Re-engagement trigger firing incorrectly without validating last message sender and activity window",
-    "status": "QA Review",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-04",
-    "qaEnteredDate": "2026-05-04",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 80,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-04",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-04",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-04",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-2594",
-    "summary": "Incorrect Audit Status and Count Issues in Mass Email and SMS Audit Pages",
-    "status": "Rejected",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "High",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "REJECTED",
-        "date": "2026-07-01",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-2468",
-    "summary": "Show correct message when blog generation got failed as business not found",
-    "status": "QA Review",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "akshita.garg",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-06",
-    "qaEnteredDate": "2026-02-09",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 164,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-01-30",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-01-30",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-02-09",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-04-27",
-        "user": "Abhishek"
-      },
-      {
-        "status": "To Do",
-        "date": "2026-04-29",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-05-15",
-        "user": "ankit.sawant"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-15",
-        "user": "ankit.sawant"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-06-15",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "To Do",
-        "date": "2026-06-15",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-06",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-06",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-06",
-        "user": "Akshay Dhole"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3905",
-    "summary": "API Failure when attempting to mark a file as private in File Manager",
-    "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-22",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3889",
-    "summary": "Migrate voice recordings to S3",
-    "status": "To Do",
-    "assignee": "Monika Desai",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-22",
-        "user": "Monika Desai"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3875",
-    "summary": "In chatbot if any keyword is present in more than one service, then chatbot will display first one, irrespective of complete name search",
-    "status": "To Do",
-    "assignee": "sujal.rathore",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-21",
-        "user": "sujal.rathore"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3869",
-    "summary": "One click deployment for AI service",
-    "status": "To Do",
-    "assignee": "abhishek.h",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Task",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-21",
-        "user": "abhishek.h"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3868",
-    "summary": "One click deployment for UI Product ",
-    "status": "To Do",
-    "assignee": "abhishek.h",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Task",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-21",
-        "user": "abhishek.h"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3867",
     "summary": "One click deployment for g99+ repos",
     "status": "To Do",
     "assignee": "abhishek.h",
-    "staleDays": 1,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Epic",
     "blocked": false,
@@ -1225,46 +987,19 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "To Do",
-        "date": "2026-07-21",
+        "date": "2026-08-02",
         "user": "abhishek.h"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3853",
-    "summary": "Gia activating for BID-2243 with Qdrant when website data is not fully uploaded",
-    "status": "To Do",
-    "assignee": "Avinasha",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-22",
-        "user": "Avinasha"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3850",
@@ -1279,350 +1014,80 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "To Do",
-        "date": "2026-07-22",
+        "date": "2026-08-02",
         "user": "Avinasha"
       }
-    ]
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3787",
-    "summary": "Testing Scorecard Implementation in Growth99 CRM",
+    "key": "G99PRODUCT-3778",
+    "summary": "Improve Gia voice agent prompt ",
     "status": "To Do",
-    "assignee": "Manish Patidar",
-    "staleDays": 7,
+    "assignee": "Lalit Suryan",
+    "staleDays": 0,
     "priority": "Medium",
-    "type": "Bug",
+    "type": "Story",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Lalit Suryan"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-15",
-        "user": "Manish Patidar"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3771",
-    "summary": "R&D Hipaa Compliance in Growth99",
-    "status": "To Do",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 5,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-17",
-        "user": "Pushkar Murkute"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3768",
-    "summary": "[FE] GIA Voice Agent - Minute Usage Dashboard, Low Balance Notification, Overage Handling & Package Renewal",
-    "status": "To Do",
-    "assignee": "Manish Patidar",
-    "staleDays": 8,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Manish Patidar"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3767",
-    "summary": "Show Gia Source Indicator for Responses in AI Campaign, Welcome Message, and Follow-Up",
-    "status": "To Do",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 8,
-    "priority": "Low",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 2,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Pushkar Murkute"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3766",
-    "summary": "Query optimization for Gia usage analytics and Health Check",
-    "status": "To Do",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 8,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Pushkar Murkute"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3765",
-    "summary": "Auto-Fill Blank Cells for Successful Import",
-    "status": "To Do",
-    "assignee": "Sachin Tripathi",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-21",
-        "user": "Sachin Tripathi"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3762",
-    "summary": "Gia Gets Disabled Automatically and Multi RAG Data Is Not Cleared After Business Reset (BID: 2234)",
-    "status": "To Do",
-    "assignee": "Kundan Kumar",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Kundan Kumar"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3740",
-    "summary": "[BE] Ability to edit AI Trigger in AI campaign",
-    "status": "To Do",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 8,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Pushkar Murkute"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3728",
     "summary": "[Security P3] g99-ui-admin - Inventory and upgrade vendored legacy JS libraries",
     "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
+    "assignee": "Sai Somanath",
+    "staleDays": 0,
     "priority": "Low",
     "type": "Story",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
-    "storyPoints": 0,
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Sai Somanath"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3727",
     "summary": "[Security P3] Multiple Spring services - Externalize local/test DB passwords from committed config",
     "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
-    "priority": "Low",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3726",
-    "summary": "[Security P3] sv-ivy-web - Audit dangerouslySetInnerHTML sinks for XSS risk",
-    "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
-    "priority": "Low",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3725",
-    "summary": "[Security P3] g99-ui-product - Restrict Google Maps API key and audit bypassSecurityTrustHtml usage",
-    "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
-    "priority": "Low",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3724",
-    "summary": "[Security P3] score-card-tool - Audit dangerouslySetInnerHTML sinks and client-side API keys",
-    "status": "To Do",
-    "assignee": "Manish Patidar",
-    "staleDays": 8,
+    "assignee": "Sai Somanath",
+    "staleDays": 0,
     "priority": "Low",
     "type": "Story",
     "blocked": false,
@@ -1630,107 +1095,26 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Sai Somanath"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Manish Patidar"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3723",
     "summary": "[Security P2] g99-pr-agent - Remove .secrets.toml from VCS and add to .gitignore",
     "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3722",
-    "summary": "[Security P2] sv-ivy-web - Upgrade end-of-life Next.js 12 to supported LTS version",
-    "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3720",
-    "summary": "[Security P2] g99-api-specs - Replace wildcard CORS with explicit origin allowlist in API Gateway",
-    "status": "To Do",
-    "assignee": "Unassigned",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "System"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3716",
-    "summary": "[Security P2] score-card-tool - Harden Express session secret and cookie configuration",
-    "status": "To Do",
-    "assignee": "Mehul Kothari",
-    "staleDays": 8,
+    "assignee": "Akshay Dhole",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
@@ -1738,26 +1122,26 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Akshay Dhole"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Mehul Kothari"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3714",
     "summary": "[Security P1] score-card-tool - Rotate committed Webshare proxy credentials",
     "status": "To Do",
-    "assignee": "Mehul Kothari",
-    "staleDays": 8,
+    "assignee": "Manish Patidar",
+    "staleDays": 0,
     "priority": "High",
     "type": "Story",
     "blocked": false,
@@ -1765,107 +1149,53 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 1,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Manish Patidar"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Mehul Kothari"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3712",
-    "summary": "[Security P0] g99-pr-agent - Revoke committed Google Gemini API keys and scrub deployment docs",
-    "status": "To Do",
-    "assignee": "Akash Sharma",
-    "staleDays": 6,
-    "priority": "Highest",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Akash Sharma"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3695",
     "summary": "[FE] API Gateway Architecture (webhook / callback)  - 7 Endpoints",
     "status": "To Do",
     "assignee": "Pushkar Murkute",
-    "staleDays": 8,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
+    "storyPoints": 2,
     "history": [
       {
         "status": "To Do",
-        "date": "2026-07-14",
+        "date": "2026-08-02",
         "user": "Pushkar Murkute"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3676",
-    "summary": "[BE] Move readonly queries to Reader Database - Auth Service",
-    "status": "To Do",
-    "assignee": "Kundan Kumar",
-    "staleDays": 8,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-14",
-        "user": "Kundan Kumar"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3652",
     "summary": "Testing ticket - Phorest Credentails ",
     "status": "To Do",
-    "assignee": "akshita.garg",
-    "staleDays": 6,
+    "assignee": "Kundan Kumar",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
@@ -1873,77 +1203,23 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Kundan Kumar"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "akshita.garg"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3647",
-    "summary": "AI Trigger Execution Fails for Valid Contacts",
-    "status": "To Do",
-    "assignee": "Monika Desai",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Monika Desai"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3623",
-    "summary": "[BE/FE] Automate user creation while onbarding",
-    "status": "To Do",
-    "assignee": "Mehul Kothari",
-    "staleDays": 7,
-    "priority": "Low",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-15",
-        "user": "Mehul Kothari"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3620",
-    "summary": "[BE] Gia url funnel report for admin",
+    "key": "G99PRODUCT-3621",
+    "summary": "[FE] Gia url funnel report for admin",
     "status": "To Do",
     "assignee": "Manish Patidar",
     "staleDays": 0,
@@ -1954,80 +1230,53 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 2,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "To Do",
-        "date": "2026-07-09",
+        "date": "2026-08-02",
         "user": "Manish Patidar"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3607",
-    "summary": "UI that shows where a GIA answer is coming from",
-    "status": "To Do",
-    "assignee": "Lalit Suryan",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Lalit Suryan"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3595",
     "summary": "Symptoms not getting added on Self assessment body part",
     "status": "To Do",
     "assignee": "Yogesh Paygude",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "High",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
+    "primaryQA": "Rimsha Riyadh",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Yogesh Paygude"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Yogesh Paygude"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3587",
     "summary": "Gia URL funnel report for Admin",
     "status": "To Do",
     "assignee": "Manish Patidar",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Epic",
     "blocked": false,
@@ -2035,26 +1284,26 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Manish Patidar"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Manish Patidar"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3566",
     "summary": "Whenever User is created by System User it is not getting created under Cognito",
     "status": "To Do",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
+    "assignee": "abhishek.h",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
@@ -2062,53 +1311,53 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "akshita.garg",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "abhishek.h"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Yogesh Paygude"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3237",
-    "summary": "Business creation from Admin Error",
+    "key": "G99PRODUCT-3496",
+    "summary": "[FE] Implement Phorest Integration",
     "status": "To Do",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "High",
-    "type": "Bug",
+    "assignee": "Sai Somanath",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 0,
+    "primaryQA": "Janhavi Made",
+    "storyPoints": 2,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Sai Somanath"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Yogesh Paygude"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3208",
     "summary": "Symptoms are not loaded for some Body parts",
     "status": "To Do",
     "assignee": "Yogesh Paygude",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "High",
     "type": "Bug",
     "blocked": false,
@@ -2116,80 +1365,176 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Rimsha Riyadh",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Yogesh Paygude"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-2191",
+    "summary": "Inconsistent Checkbox UI on Bulk Select in Inbox ",
+    "status": "To Do",
+    "assignee": "Yogesh Paygude",
+    "staleDays": 0,
+    "priority": "High",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Rimsha Riyadh",
+    "storyPoints": 0,
     "history": [
       {
         "status": "To Do",
-        "date": "2026-07-16",
+        "date": "2026-08-02",
         "user": "Yogesh Paygude"
       }
-    ]
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3136",
-    "summary": "Migration from beta site to app.growth99.com",
+    "key": "G99PRODUCT-1655",
+    "summary": "[BE]Inbox – Search fails for full name or names with spaces",
     "status": "To Do",
-    "assignee": "Mehul Kothari",
-    "staleDays": 6,
+    "assignee": "sujal.rathore",
+    "staleDays": 0,
     "priority": "Medium",
-    "type": "Epic",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Firooz.H",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "sujal.rathore"
+      }
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-1444",
+    "summary": "Instagram Post's Image should support a 4:5 ratio for posts",
+    "status": "To Do",
+    "assignee": "Omm Chavan",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
+    "history": [
+      {
+        "status": "To Do",
+        "date": "2026-08-02",
+        "user": "Omm Chavan"
+      }
+    ],
     "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Mehul Kothari"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-2863",
-    "summary": "GIA Response Incorrectly Identifies Current Day as Friday Instead of Tuesday",
-    "status": "To Do",
-    "assignee": "Lalit Suryan",
-    "staleDays": 6,
+    "key": "G99PRODUCT-4047",
+    "summary": "Search box on Business page not working for \"&\" character",
+    "status": "In Progress",
+    "assignee": "abhishek.h",
+    "staleDays": 0,
     "priority": "Medium",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "abhishek.h"
+      }
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-4029",
+    "summary": "GIA Voice responds during working hours and conversation is not recorded in Inbox",
+    "status": "In Progress",
+    "assignee": "Monika Desai",
+    "staleDays": 0,
+    "priority": "Highest",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Shubhashis Swain",
     "storyPoints": 0,
-    "inProgressDate": null,
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Lalit Suryan"
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Monika Desai"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-31",
+        "user": "Monika Desai"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-31",
+        "user": "Monika Desai"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Shubhashis Swain"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-31",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 2.4,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-2833",
-    "summary": "File Upload Fails in File Manager on Dev – “File upload failed. Please try again.” but files are listed in the folder.",
-    "status": "To Do",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
+    "key": "G99PRODUCT-4014",
+    "summary": "Campaign Module drop-downs selection issue",
+    "status": "In Progress",
+    "assignee": "Omm Chavan",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
@@ -2197,52 +1542,94 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": null,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-30",
+        "user": "Omm Chavan"
+      }
+    ],
+    "inProgressDate": "2026-07-30",
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Akshay Dhole"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-2415",
-    "summary": "[BE] Implement email account linking and authentication",
-    "status": "To Do",
+    "key": "G99PRODUCT-3977",
+    "summary": "Review List issue",
+    "status": "In Progress",
     "assignee": "Akshay Dhole",
-    "staleDays": 22,
+    "staleDays": 0,
+    "priority": "High",
+    "type": "Bug",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Rimsha Riyadh",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-29",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-29",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-30",
+        "user": "Akshay Dhole"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Rimsha Riyadh"
+      }
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-30",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 3.4,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3967",
+    "summary": "Trigger: Email Template Variables Not Resolving in Subject ",
+    "status": "In Progress",
+    "assignee": "Sachin Tripathi",
+    "staleDays": 0,
     "priority": "Medium",
-    "type": "Story",
+    "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
-    "storyPoints": 5,
-    "inProgressDate": null,
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-29",
+        "user": "Sachin Tripathi"
+      }
+    ],
+    "inProgressDate": "2026-07-29",
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-06-30",
-        "user": "Akshay Dhole"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3873",
-    "summary": "POC for Smart link/One click login ",
+    "key": "G99PRODUCT-3946",
+    "summary": "AWS Inspector Issues",
     "status": "In Progress",
-    "assignee": "Sachin Tripathi",
+    "assignee": "Ankur Singh",
     "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
@@ -2251,26 +1638,95 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-27",
+        "user": "Akash Sharma"
+      }
+    ],
+    "inProgressDate": "2026-07-27",
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3944",
+    "summary": "[BE] Pass Source and UTM Parameter to docoda",
+    "status": "In Progress",
+    "assignee": "Kundan Kumar",
+    "staleDays": 0,
+    "priority": "Highest",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Janhavi Made",
+    "storyPoints": 1,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Sachin Tripathi"
+        "date": "2026-07-28",
+        "user": "Kundan Kumar"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-29",
+        "user": "Kundan Kumar"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-29",
+        "user": "Kundan Kumar"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Janhavi Made"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-29",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 4.6,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3913",
+    "summary": "SmileVirtual AWS Support",
+    "status": "In Progress",
+    "assignee": "Ankur Singh",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-23",
+        "user": "Ankur Singh"
+      }
+    ],
+    "inProgressDate": "2026-07-23",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3871",
     "summary": "One click deployment for Product Service",
     "status": "In Progress",
     "assignee": "abhishek.h",
-    "staleDays": 1,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Task",
     "blocked": false,
@@ -2278,26 +1734,26 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
         "date": "2026-07-21",
         "user": "abhishek.h"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-21",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3870",
     "summary": "One click deployment for UI Admin",
     "status": "In Progress",
     "assignee": "abhishek.h",
-    "staleDays": 1,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Task",
     "blocked": false,
@@ -2305,26 +1761,26 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
         "date": "2026-07-21",
         "user": "abhishek.h"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-21",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3866",
-    "summary": "Icon changes for ted project",
+    "key": "G99PRODUCT-3862",
+    "summary": "Evaluate Atlassian AI tools for automatic story point generation",
     "status": "In Progress",
-    "assignee": "abhishek.h",
-    "staleDays": 1,
+    "assignee": "akshita.garg",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
@@ -2332,78 +1788,19 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-21",
+        "date": "2026-07-28",
         "user": "akshita.garg"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3865",
-    "summary": "When Deactivating Gia Config API Is Called and Failed ",
-    "status": "In Progress",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Abhishek",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-22",
+    ],
+    "inProgressDate": "2026-07-28",
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-22",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3861",
-    "summary": "Onboarding form feedback v3 from larisa",
-    "status": "In Progress",
-    "assignee": "Mehul Kothari",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Mehul Kothari"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3859",
@@ -2416,165 +1813,69 @@
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
+    "primaryQA": "Rimsha Riyadh",
+    "storyPoints": 2,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-21",
+        "user": "Yogesh Paygude"
+      }
+    ],
     "inProgressDate": "2026-07-21",
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3840",
-    "summary": "AI Trigger & AI Blast Should Be Disabled When GIA Is Not Activated",
+    "key": "G99PRODUCT-3779",
+    "summary": "Transcript is not coming as expected for Gia Voice Agent",
     "status": "In Progress",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-21",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-22",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3790",
-    "summary": "In AI Blast and Manual Blast, after complete contact count is getting changed if creatria  match",
-    "status": "In Progress",
-    "assignee": "Yogesh Paygude",
+    "assignee": "Lalit Suryan",
     "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
+    "primaryQA": "akshita.garg",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-21",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-22",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3789",
-    "summary": "[BE/FE] Show contact count below email and sms based on opt in /out preference",
-    "status": "In Progress",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3784",
-    "summary": "AI Blast Preview API does not return sample message while scheduling AI Blast",
-    "status": "In Progress",
-    "assignee": "Kundan Kumar",
-    "staleDays": 5,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
         "date": "2026-07-17",
-        "user": "Kundan Kumar"
+        "user": "Lalit Suryan"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-17",
+        "user": "Lalit Suryan"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-17",
+        "user": "Lalit Suryan"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-24",
+        "user": "akshita.garg"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-24",
+    "qaEnteredDate": "2026-07-17",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 16.6,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3780",
-    "summary": "[BE/FE] Write form submission response back to hubspot",
+    "key": "G99PRODUCT-3771",
+    "summary": "R&D Hipaa Compliance in Growth99",
     "status": "In Progress",
-    "assignee": "Mehul Kothari",
+    "assignee": "Pushkar Murkute",
     "staleDays": 2,
     "priority": "Medium",
     "type": "Story",
@@ -2583,104 +1884,50 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 1,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Mehul Kothari"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3776",
-    "summary": "R&D In decoda Integration can we send source and utm parameter as well",
-    "status": "In Progress",
-    "assignee": "Kundan Kumar",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-15",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "Kundan Kumar"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3747",
-    "summary": "Gia configure should save even if we are not clicking on complete , so that user can resume from their",
-    "status": "In Progress",
-    "assignee": "abhishek.h",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-15",
-    "qaEnteredDate": "2026-07-10",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 13,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-10",
-        "user": "abhishek.h"
+        "date": "2026-07-27",
+        "user": "Pushkar Murkute"
       },
       {
         "status": "Code Review",
-        "date": "2026-07-10",
-        "user": "abhishek.h"
+        "date": "2026-07-29",
+        "user": "Pushkar Murkute"
       },
       {
         "status": "QA Review",
-        "date": "2026-07-10",
-        "user": "abhishek.h"
+        "date": "2026-07-29",
+        "user": "Pushkar Murkute"
       },
       {
         "status": "In Progress",
-        "date": "2026-07-10",
-        "user": "akshita.garg"
+        "date": "2026-07-29",
+        "user": "Abhishek"
       },
       {
         "status": "To Do",
-        "date": "2026-07-10",
-        "user": "akshita.garg"
+        "date": "2026-07-29",
+        "user": "Abhishek"
       },
       {
         "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "abhishek.h"
+        "date": "2026-07-31",
+        "user": "Pushkar Murkute"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-29",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 4.6,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3741",
-    "summary": "For AI blast / manual blast give option to view details irrespective of execution status",
+    "key": "G99PRODUCT-3744",
+    "summary": "Add option to show reference to end user for gia resposnes",
     "status": "In Progress",
-    "assignee": "Sai Somanath",
+    "assignee": "Neha Kakkar",
     "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
@@ -2688,59 +1935,69 @@
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Shubhashis Swain",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-22",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "To Do",
-        "date": "2026-07-16",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-22",
-        "user": "Sai Somanath"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3706",
-    "summary": "[BE] POC - Email to Workflow Automation",
-    "status": "In Progress",
-    "assignee": "gopesh.pandey",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Epic",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-13",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
         "date": "2026-07-13",
-        "user": "gopesh.pandey"
+        "user": "Neha Kakkar"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-07-22",
+        "user": "Neha Kakkar"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-07-31",
+        "user": "Neha Kakkar"
+      },
+      {
+        "status": "In Progress",
+        "date": "2026-07-31",
+        "user": "Shubhashis Swain"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-07-31",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 2.6,
+    "lifecycleDays": null
+  },
+  {
+    "key": "G99PRODUCT-3716",
+    "summary": "[Security P2] score-card-tool - Harden Express session secret and cookie configuration",
+    "status": "In Progress",
+    "assignee": "Mehul Kothari",
+    "staleDays": 0,
+    "priority": "Medium",
+    "type": "Story",
+    "blocked": false,
+    "blockerReason": "",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Unassigned",
+    "storyPoints": 1,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-07-29",
+        "user": "Mehul Kothari"
+      }
+    ],
+    "inProgressDate": "2026-07-29",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3705",
     "summary": "Implement Passwordless Authentication",
     "status": "In Progress",
     "assignee": "abhishek.h",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
@@ -2748,182 +2005,23 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-13",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
         "date": "2026-07-13",
         "user": "akshita.garg"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3704",
-    "summary": "[BE] GIA Voice Agent - Minute Usage Dashboard, Low Balance Notification, Overage Handling & Package Renewal",
-    "status": "In Progress",
-    "assignee": "Monika Desai",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 3,
-    "inProgressDate": "2026-05-15",
-    "qaEnteredDate": "2026-01-08",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 196,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2025-08-01",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "To Do",
-        "date": "2026-01-07",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-01-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-01-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-01-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-01-20",
-        "user": "Kirti Nagesh Waradole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-01-21",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-01-21",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-01-22",
-        "user": "Kirti Nagesh Waradole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-02-26",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-02-26",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-02-26",
-        "user": "Kirti Nagesh Waradole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-11",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-11",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-05-11",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-14",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-14",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-05-15",
-        "user": "Ajay Chafekarande"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3675",
-    "summary": "[BE] Move readonly queries to Reader Database - Review Manager",
-    "status": "In Progress",
-    "assignee": "Kundan Kumar",
-    "staleDays": 0,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 2,
-    "inProgressDate": "2026-07-17",
+    ],
+    "inProgressDate": "2026-07-13",
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-16",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Blocked",
-        "date": "2026-07-17",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-22",
-        "user": "Kundan Kumar"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3650",
-    "summary": "\"Save for Later\" Option Displayed for Custom Email/SMS When GIA Is Not Activated",
+    "key": "G99PRODUCT-3594",
+    "summary": "SMS Template created for  Customer is not showing on templates section",
     "status": "In Progress",
     "assignee": "Yogesh Paygude",
     "staleDays": 0,
@@ -2932,149 +2030,85 @@
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
+    "primaryQA": "Rimsha Riyadh",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-22",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
-        "status": "To Do",
-        "date": "2026-07-16",
+        "status": "In Progress",
+        "date": "2026-06-29",
+        "user": "Yogesh Paygude"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-06-29",
+        "user": "Yogesh Paygude"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-06-29",
         "user": "Yogesh Paygude"
       },
       {
         "status": "In Progress",
-        "date": "2026-07-22",
-        "user": "Yogesh Paygude"
+        "date": "2026-06-30",
+        "user": "Rimsha Riyadh"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3624",
-    "summary": "[BE/FE] Call transfer to business staff on request",
-    "status": "In Progress",
-    "assignee": "Monika Desai",
-    "staleDays": 5,
-    "priority": "Highest",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 3,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": null,
+    ],
+    "inProgressDate": "2026-06-30",
+    "qaEnteredDate": "2026-06-29",
     "qaDoneDate": null,
     "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Monika Desai"
-      }
-    ]
+    "qaOngoingDays": 34.3,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3563",
-    "summary": "Handoff Email/SMS Formatting Issue",
+    "key": "G99PRODUCT-3481",
+    "summary": "MCP API are not passing correct data",
     "status": "In Progress",
-    "assignee": "Sai Somanath",
-    "staleDays": 1,
+    "assignee": "Monika Desai",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Abhishek",
+    "primaryQA": "Ajay Chafekarande",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
-    "qaEnteredDate": "2026-07-15",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 8,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "Sai Somanath"
+        "date": "2026-07-01",
+        "user": "Monika Desai"
       },
       {
         "status": "Code Review",
-        "date": "2026-07-15",
-        "user": "Sai Somanath"
+        "date": "2026-07-01",
+        "user": "Monika Desai"
       },
       {
         "status": "QA Review",
-        "date": "2026-07-15",
-        "user": "Sai Somanath"
+        "date": "2026-07-01",
+        "user": "Monika Desai"
       },
       {
         "status": "In Progress",
-        "date": "2026-07-16",
-        "user": "Abhishek"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Sai Somanath"
+        "date": "2026-07-29",
+        "user": "Ajay Chafekarande"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3504",
-    "summary": "A-04 Unauthenticated Writes into Attacker-Chosen Tenant",
-    "status": "In Progress",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 7,
-    "priority": "Highest",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-02",
-    "qaEnteredDate": null,
+    ],
+    "inProgressDate": "2026-07-29",
+    "qaEnteredDate": "2026-07-01",
     "qaDoneDate": null,
     "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-06-17",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-30",
-        "user": "Pushkar Murkute"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-02",
-        "user": "Pushkar Murkute"
-      }
-    ]
+    "qaOngoingDays": 32.6,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3404",
     "summary": "Selected AI Blast Template Not Displayed as Selected During Edit",
     "status": "In Progress",
     "assignee": "Lalit Suryan",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Low",
     "type": "Bug",
     "blocked": false,
@@ -3082,12 +2116,6 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Shubhashis Swain",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-01",
-    "qaEnteredDate": "2026-07-01",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 22,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
@@ -3114,14 +2142,20 @@
         "date": "2026-07-01",
         "user": "Shubhashis Swain"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-01",
+    "qaEnteredDate": "2026-07-01",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 32.5,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3386",
     "summary": "Not receiving password change successful email ",
     "status": "In Progress",
     "assignee": "Akshay Dhole",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
@@ -3129,12 +2163,6 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Ajay Chafekarande",
     "storyPoints": 0,
-    "inProgressDate": "2026-05-22",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
@@ -3151,14 +2179,20 @@
         "date": "2026-05-22",
         "user": "Akshay Dhole"
       }
-    ]
+    ],
+    "inProgressDate": "2026-05-22",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3215",
     "summary": "DB Backup and Code Backup - Push into Google Drive ( Read only)",
     "status": "In Progress",
     "assignee": "Lalit Suryan",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
@@ -3166,19 +2200,19 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
     "storyPoints": 0,
-    "inProgressDate": "2026-05-04",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
         "date": "2026-05-04",
         "user": "Lalit Suryan"
       }
-    ]
+    ],
+    "inProgressDate": "2026-05-04",
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3084",
@@ -3193,12 +2227,6 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Ajay Chafekarande",
     "storyPoints": 0,
-    "inProgressDate": "2026-05-19",
-    "qaEnteredDate": "2026-07-20",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
@@ -3218,16 +2246,22 @@
       {
         "status": "In Progress",
         "date": "2026-07-22",
-        "user": "Mehul Kothari"
+        "user": "Ajay Chafekarande"
       }
-    ]
+    ],
+    "inProgressDate": "2026-07-22",
+    "qaEnteredDate": "2026-07-20",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 13.6,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-2359",
     "summary": "Template target is incorrect when created via Mass SMS/Email Campaign (All Contacts / Customers)",
     "status": "In Progress",
     "assignee": "Akshay Dhole",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
     "blocked": false,
@@ -3235,1249 +2269,221 @@
     "commitActivity": "🟢 Active",
     "primaryQA": "Rimsha Riyadh",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-13",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-13",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-2161",
-    "summary": "Issues Releated to Campaign - Targeted Audience & Audit",
-    "status": "In Progress",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "High",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Ajay Chafekarande",
-    "storyPoints": 0,
-    "inProgressDate": "2026-06-11",
-    "qaEnteredDate": "2026-06-10",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 43,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2025-11-21",
-        "user": "Yogesh Paygude"
+        "date": "2026-05-18",
+        "user": "ankit.sawant"
       },
       {
         "status": "Code Review",
-        "date": "2026-06-10",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-06-10",
-        "user": "Yogesh Paygude"
+        "date": "2026-05-18",
+        "user": "ankit.sawant"
       },
       {
         "status": "In Progress",
-        "date": "2026-06-11",
-        "user": "Ajay Chafekarande"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-2072",
-    "summary": "Time-based automation rule not working in Lead Status Automation",
-    "status": "In Progress",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "Highest",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 0,
-    "inProgressDate": "2026-03-16",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-03-16",
-        "user": "Yogesh Paygude"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-1426",
-    "summary": "Audit Count Mismatch — Targeted Count Shows More than Audit Count",
-    "status": "In Progress",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
-    "priority": "Highest",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Ajay Chafekarande",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-15",
-    "qaEnteredDate": "2026-01-08",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 196,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2025-08-01",
+        "date": "2026-06-15",
         "user": "Akshay Dhole"
       },
       {
         "status": "To Do",
-        "date": "2026-01-07",
+        "date": "2026-06-15",
         "user": "Akshay Dhole"
       },
       {
         "status": "In Progress",
-        "date": "2026-01-08",
+        "date": "2026-06-18",
         "user": "Akshay Dhole"
       },
       {
         "status": "Code Review",
-        "date": "2026-01-08",
+        "date": "2026-06-18",
         "user": "Akshay Dhole"
       },
       {
         "status": "QA Review",
-        "date": "2026-01-08",
+        "date": "2026-06-18",
         "user": "Akshay Dhole"
       },
       {
         "status": "In Progress",
-        "date": "2026-01-20",
-        "user": "Kirti Nagesh Waradole"
+        "date": "2026-06-19",
+        "user": "Rimsha Riyadh"
       },
       {
         "status": "Code Review",
-        "date": "2026-01-21",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-01-21",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-01-22",
-        "user": "Kirti Nagesh Waradole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-02-26",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-02-26",
+        "date": "2026-07-23",
         "user": "Akshay Dhole"
       },
       {
         "status": "In Progress",
-        "date": "2026-02-26",
-        "user": "Kirti Nagesh Waradole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-11",
+        "date": "2026-07-31",
         "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-11",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-05-11",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-14",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-14",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-05-15",
-        "user": "Ajay Chafekarande"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3774",
-    "summary": "Implement automation for tickets update automatically in jira",
-    "status": "Done",
-    "assignee": "akshita.garg",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-15",
-    "qaEnteredDate": null,
+    ],
+    "inProgressDate": "2026-07-31",
+    "qaEnteredDate": "2026-06-18",
     "qaDoneDate": null,
     "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "Released To Prod",
-        "date": "2026-07-20",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "Done",
-        "date": "2026-07-20",
-        "user": "akshita.garg"
-      }
-    ]
+    "qaOngoingDays": 45.3,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3874",
-    "summary": "GIA Follow-up Responses Display ${bookingLink} Variable Instead of Actual Booking URL",
-    "status": "Ready to Release",
+    "key": "G99PRODUCT-4019",
+    "summary": "GIA Configuration Create and Update APIs Return 500 Internal Server Error, Preventing Activation and Configuration Updates",
+    "status": "Done",
     "assignee": "Yogesh Paygude",
     "staleDays": 0,
-    "priority": "Highest",
+    "priority": "Medium",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Shubhashis Swain",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-21",
+    "history": [
+      {
+        "status": "Done",
+        "date": "2026-08-02",
+        "user": "akshita.garg"
+      }
+    ],
+    "inProgressDate": null,
     "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
     "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-22",
-        "user": "Yogesh Paygude"
-      }
-    ]
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3857",
-    "summary": "Incorrect Health Check Status for Businesses Using MultiRAG",
+    "key": "G99PRODUCT-3563",
+    "summary": "Handoff Email/SMS Formatting Issue",
     "status": "Ready to Release",
-    "assignee": "Pushkar Murkute",
-    "staleDays": 1,
-    "priority": "High",
+    "assignee": "Sai Somanath",
+    "staleDays": 0,
+    "priority": "Medium",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Abhishek",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-20",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 0.9,
-    "qaOngoingDays": null,
-    "lifecycleDays": 1,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Pushkar Murkute"
+        "date": "2026-07-15",
+        "user": "Sai Somanath"
       },
       {
         "status": "Code Review",
-        "date": "2026-07-20",
-        "user": "Pushkar Murkute"
+        "date": "2026-07-15",
+        "user": "Sai Somanath"
       },
       {
         "status": "QA Review",
-        "date": "2026-07-20",
-        "user": "Pushkar Murkute"
+        "date": "2026-07-15",
+        "user": "Sai Somanath"
       },
       {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
+        "status": "In Progress",
+        "date": "2026-07-16",
         "user": "Abhishek"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3852",
-    "summary": "GIA Responses Display Incorrect Booking URL or Variables Instead of Booking Link",
-    "status": "Ready to Release",
-    "assignee": "Kundan Kumar",
-    "staleDays": 1,
-    "priority": "High",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-20",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 0.7,
-    "qaOngoingDays": null,
-    "lifecycleDays": 0.8,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Kundan Kumar"
       },
       {
         "status": "Code Review",
-        "date": "2026-07-20",
-        "user": "Kundan Kumar"
+        "date": "2026-07-21",
+        "user": "Sai Somanath"
       },
       {
-        "status": "QA Review",
-        "date": "2026-07-20",
-        "user": "Kundan Kumar"
+        "status": "In Progress",
+        "date": "2026-07-21",
+        "user": "Sai Somanath"
       },
       {
         "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Shubhashis Swain"
+        "date": "2026-08-02",
+        "user": "akshita.garg"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3851",
-    "summary": "GIA SMS Responses Are Not Sent for Unknown Contacts",
-    "status": "Ready to Release",
-    "assignee": "Kundan Kumar",
-    "staleDays": 1,
-    "priority": "High",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
+    ],
     "inProgressDate": "2026-07-21",
-    "qaEnteredDate": "2026-07-21",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 0,
+    "qaEnteredDate": "2026-07-15",
+    "qaDoneDate": "2026-08-02",
+    "qaCycleDays": 18.3,
     "qaOngoingDays": null,
-    "lifecycleDays": 1,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-21",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-21",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Shubhashis Swain"
-      }
-    ]
+    "lifecycleDays": 46.4
   },
   {
-    "key": "G99PRODUCT-3839",
-    "summary": "In form for dob field calender is getting cropped",
-    "status": "Ready to Release",
-    "assignee": "Manish Patidar",
-    "staleDays": 2,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-20",
-    "qaEnteredDate": "2026-07-20",
-    "qaDoneDate": "2026-07-20",
-    "qaCycleDays": 0.6,
-    "qaOngoingDays": null,
-    "lifecycleDays": 0.6,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-20",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-20",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-20",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-20",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3793",
-    "summary": "Onboarding form feedback",
-    "status": "Ready to Release",
-    "assignee": "Mehul Kothari",
-    "staleDays": 3,
+    "key": "G99PRODUCT-4056",
+    "summary": "Qdrant was not working - Configuration issue / library issue ",
+    "status": "Released To Prod",
+    "assignee": "Avinasha",
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Story",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": "2026-07-17",
-    "qaDoneDate": "2026-07-19",
-    "qaCycleDays": 2.3,
-    "qaOngoingDays": null,
-    "lifecycleDays": 2.4,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Mehul Kothari"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Mehul Kothari"
-      },
-      {
-        "status": "Ready For UI Integration",
-        "date": "2026-07-17",
-        "user": "Mehul Kothari"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-17",
-        "user": "Mehul Kothari"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-19",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3786",
-    "summary": "In Email Template give ablity to sort based on update and created date ",
-    "status": "Ready to Release",
-    "assignee": "Omm Chavan",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Janhavi Made",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": "2026-07-17",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 4.1,
-    "qaOngoingDays": null,
-    "lifecycleDays": 6,
     "history": [
       {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "akshita.garg"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Omm Chavan"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-17",
-        "user": "Omm Chavan"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Abhishek"
+        "status": "Released To Prod",
+        "date": "2026-08-02",
+        "user": "Avinasha"
       }
-    ]
+    ],
+    "inProgressDate": null,
+    "qaEnteredDate": null,
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
-    "key": "G99PRODUCT-3783",
-    "summary": "AI Blast Status Displays \"Active\" Instead of \"Scheduled\" for Opt-Out (Email/SMS) Contacts",
-    "status": "Ready to Release",
+    "key": "G99PRODUCT-3865",
+    "summary": "When Deactivating Gia Config API Is Called and Failed ",
+    "status": "Released To Prod",
     "assignee": "Yogesh Paygude",
-    "staleDays": 2,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-16",
-    "qaEnteredDate": "2026-07-15",
-    "qaDoneDate": "2026-07-16",
-    "qaCycleDays": 0.9,
-    "qaOngoingDays": null,
-    "lifecycleDays": 1.1,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-15",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-15",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-16",
-        "user": "Shubhashis Swain"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-16",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-16",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-16",
-        "user": "Shubhashis Swain"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3742",
-    "summary": "[BE/FE] Add AI campaign enable/disable in Automation module when Gia is activated",
-    "status": "Ready to Release",
-    "assignee": "Manish Patidar",
-    "staleDays": 1,
-    "priority": "Highest",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Ajay Chafekarande",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-16",
-    "qaEnteredDate": "2026-07-17",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 3.8,
-    "qaOngoingDays": null,
-    "lifecycleDays": 11.9,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-16",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-17",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "akshita.garg"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3736",
-    "summary": "[BE/FE] In gia cofiguration give ability to add customize phone number and email address in gia responses",
-    "status": "Ready to Release",
-    "assignee": "Monika Desai",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 2,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": "2026-07-17",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 4.1,
-    "qaOngoingDays": null,
-    "lifecycleDays": 12.1,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-17",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Shubhashis Swain"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3713",
-    "summary": "[Security P1] score-card-tool - Rotate and restrict committed Google Cloud API key",
-    "status": "Ready to Release",
-    "assignee": "Manish Patidar",
-    "staleDays": 0,
-    "priority": "High",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Unassigned",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-17",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-17",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-22",
-        "user": "Manish Patidar"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3679",
-    "summary": "AI Blast responses display template variables instead of resolved contact data",
-    "status": "Ready to Release",
-    "assignee": "Akshay Dhole",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-10",
-    "qaEnteredDate": "2026-07-16",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 4.7,
-    "qaOngoingDays": null,
-    "lifecycleDays": 14.8,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-10",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-16",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-16",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Shubhashis Swain"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3677",
-    "summary": "[BE] Move readonly queries to Reader Database - Workflow CF",
-    "status": "Ready to Release",
-    "assignee": "Kundan Kumar",
-    "staleDays": 1,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 2,
-    "inProgressDate": "2026-07-15",
-    "qaEnteredDate": "2026-07-17",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 4.1,
-    "qaOngoingDays": null,
-    "lifecycleDays": 14.8,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-15",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-17",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-17",
-        "user": "Kundan Kumar"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Shubhashis Swain"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3665",
-    "summary": "[BE] Ability to select third party as a source in customer trigger",
-    "status": "Ready to Release",
-    "assignee": "Sai Somanath",
     "staleDays": 0,
     "priority": "Medium",
-    "type": "Story",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 2,
-    "inProgressDate": "2026-07-16",
-    "qaEnteredDate": null,
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-16",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-21",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-22",
-        "user": "Sai Somanath"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3484",
-    "summary": "MCP Returning Incorrect Business Data for Quotas, Contacts, and Campaigns",
-    "status": "Ready to Release",
-    "assignee": "Monika Desai",
-    "staleDays": 1,
-    "priority": "High",
     "type": "Bug",
     "blocked": false,
     "blockerReason": "",
     "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain, Abhishek",
+    "primaryQA": "Abhishek",
     "storyPoints": 0,
-    "inProgressDate": "2026-07-13",
-    "qaEnteredDate": "2026-07-01",
-    "qaDoneDate": "2026-07-21",
-    "qaCycleDays": 20,
-    "qaOngoingDays": null,
-    "lifecycleDays": 45.8,
     "history": [
       {
         "status": "In Progress",
-        "date": "2026-07-01",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-01",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-01",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-13",
-        "user": "Abhishek"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-16",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-16",
-        "user": "Monika Desai"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-21",
-        "user": "Abhishek"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3462",
-    "summary": "Global FAQs are not being uploaded or indexed in the RAG (Retrieval-Augmented Generation) system.",
-    "status": "Ready to Release",
-    "assignee": "Akshay Dhole",
-    "staleDays": 0,
-    "priority": "Highest",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Shubhashis Swain",
-    "storyPoints": 0,
-    "inProgressDate": "2026-07-08",
-    "qaEnteredDate": "2026-06-10",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-06-02",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-09",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-06-10",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-06-10",
-        "user": "Shubhashis Swain"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-10",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-06-10",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-03",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-08",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-07-08",
-        "user": "Shubhashis Swain"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-20",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Ready to Release",
         "date": "2026-07-22",
-        "user": "Akshay Dhole"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-2099",
-    "summary": "[FE]Pre Release Bulk Import Issues ",
-    "status": "Ready to Release",
-    "assignee": "Sai Somanath",
-    "staleDays": 0,
-    "priority": "Low",
-    "type": "Bug",
-    "blocked": false,
-    "blockerReason": "",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Ajay Chafekarande",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-29",
-    "qaEnteredDate": "2026-07-15",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": null,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-29",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-01",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-15",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-22",
-        "user": "Sai Somanath"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3717",
-    "summary": "[Security P2] score-card-tool - Restrict CORS to explicit origin allowlist",
-    "status": "QA BLOCKED",
-    "assignee": "Akshay Dhole",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Story",
-    "blocked": true,
-    "blockerReason": "QA Blocked",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Ajay Chafekarande",
-    "storyPoints": 1,
-    "inProgressDate": "2026-07-13",
-    "qaEnteredDate": "2026-07-14",
-    "qaDoneDate": "2026-07-15",
-    "qaCycleDays": 1,
-    "qaOngoingDays": null,
-    "lifecycleDays": 7,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-07-13",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-07-13",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-07-14",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "Ready to Release",
-        "date": "2026-07-15",
-        "user": "Abhishek"
+        "user": "Yogesh Paygude"
       },
       {
         "status": "Released To Prod",
-        "date": "2026-07-15",
-        "user": "Akshay Dhole"
-      },
-      {
-        "status": "QA BLOCKED",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
-      },
-      {
-        "status": "Ready For UI Integration",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
-      },
-      {
-        "status": "QA BLOCKED",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
-      },
-      {
-        "status": "FE BLOCKED",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
-      },
-      {
-        "status": "Ready For UI Integration",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
-      },
-      {
-        "status": "FE BLOCKED",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
-      },
-      {
-        "status": "QA BLOCKED",
-        "date": "2026-07-16",
-        "user": "Ajay Chafekarande"
+        "date": "2026-08-02",
+        "user": "akshita.garg"
       }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3540",
-    "summary": "[FE] Enhance the user profile dropdown menu by adding referral and support ticket options, and removing the feedback option.",
-    "status": "QA BLOCKED",
-    "assignee": "Sai Somanath",
-    "staleDays": 6,
-    "priority": "Highest",
-    "type": "Story",
-    "blocked": true,
-    "blockerReason": "QA Blocked",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 0.5,
-    "inProgressDate": "2026-06-16",
-    "qaEnteredDate": "2026-06-19",
+    ],
+    "inProgressDate": "2026-07-22",
+    "qaEnteredDate": null,
     "qaDoneDate": null,
     "qaCycleDays": null,
-    "qaOngoingDays": 34,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-06-16",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-06-19",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-06-19",
-        "user": "Sai Somanath"
-      },
-      {
-        "status": "QA BLOCKED",
-        "date": "2026-06-22",
-        "user": "Rimsha Riyadh"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3358",
-    "summary": "Sept Month selection issue on Manual Reviews",
-    "status": "QA BLOCKED",
-    "assignee": "Manish Patidar",
-    "staleDays": 6,
-    "priority": "Medium",
-    "type": "Bug",
-    "blocked": true,
-    "blockerReason": "QA Blocked",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-22",
-    "qaEnteredDate": "2026-05-19",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 65,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-19",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-19",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-19",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "In Progress",
-        "date": "2026-05-22",
-        "user": "Rimsha Riyadh"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-25",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-25",
-        "user": "Manish Patidar"
-      },
-      {
-        "status": "QA BLOCKED",
-        "date": "2026-05-25",
-        "user": "Rimsha Riyadh"
-      }
-    ]
-  },
-  {
-    "key": "G99PRODUCT-3295",
-    "summary": "Twilio setup not working for few businesses",
-    "status": "QA BLOCKED",
-    "assignee": "Yogesh Paygude",
-    "staleDays": 6,
-    "priority": "High",
-    "type": "Bug",
-    "blocked": true,
-    "blockerReason": "QA Blocked",
-    "commitActivity": "🟢 Active",
-    "primaryQA": "Rimsha Riyadh",
-    "storyPoints": 0,
-    "inProgressDate": "2026-05-13",
-    "qaEnteredDate": "2026-05-14",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 70,
-    "lifecycleDays": null,
-    "history": [
-      {
-        "status": "In Progress",
-        "date": "2026-05-13",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "Code Review",
-        "date": "2026-05-13",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA Review",
-        "date": "2026-05-14",
-        "user": "Yogesh Paygude"
-      },
-      {
-        "status": "QA BLOCKED",
-        "date": "2026-05-15",
-        "user": "Rimsha Riyadh"
-      }
-    ]
+    "qaOngoingDays": null,
+    "lifecycleDays": null
   },
   {
     "key": "G99PRODUCT-3288",
     "summary": "Chatbot shows wrong service when multiple services share similar names",
-    "status": "QA BLOCKED",
+    "status": "Released To Prod",
     "assignee": "Yogesh Paygude",
-    "staleDays": 6,
+    "staleDays": 0,
     "priority": "Medium",
     "type": "Bug",
-    "blocked": true,
-    "blockerReason": "QA Blocked",
+    "blocked": false,
+    "blockerReason": "",
     "commitActivity": "🟢 Active",
     "primaryQA": "Ajay Chafekarande",
     "storyPoints": 0,
-    "inProgressDate": "2026-05-14",
-    "qaEnteredDate": "2026-05-14",
-    "qaDoneDate": null,
-    "qaCycleDays": null,
-    "qaOngoingDays": 70,
-    "lifecycleDays": null,
     "history": [
       {
         "status": "In Progress",
@@ -4498,7 +2504,60 @@
         "status": "QA BLOCKED",
         "date": "2026-06-12",
         "user": "Ajay Chafekarande"
+      },
+      {
+        "status": "Released To Prod",
+        "date": "2026-08-02",
+        "user": "akshita.garg"
       }
-    ]
+    ],
+    "inProgressDate": "2026-05-14",
+    "qaEnteredDate": "2026-05-14",
+    "qaDoneDate": "2026-08-02",
+    "qaCycleDays": 80.1,
+    "qaOngoingDays": null,
+    "lifecycleDays": 82.2
+  },
+  {
+    "key": "G99PRODUCT-3295",
+    "summary": "Twilio setup not working for few businesses",
+    "status": "QA BLOCKED",
+    "assignee": "Yogesh Paygude",
+    "staleDays": 0,
+    "priority": "High",
+    "type": "Bug",
+    "blocked": true,
+    "blockerReason": "QA Blocked",
+    "commitActivity": "🟢 Active",
+    "primaryQA": "Rimsha Riyadh",
+    "storyPoints": 0,
+    "history": [
+      {
+        "status": "In Progress",
+        "date": "2026-05-13",
+        "user": "Yogesh Paygude"
+      },
+      {
+        "status": "Code Review",
+        "date": "2026-05-13",
+        "user": "Yogesh Paygude"
+      },
+      {
+        "status": "QA Review",
+        "date": "2026-05-14",
+        "user": "Yogesh Paygude"
+      },
+      {
+        "status": "QA BLOCKED",
+        "date": "2026-05-15",
+        "user": "Rimsha Riyadh"
+      }
+    ],
+    "inProgressDate": "2026-05-13",
+    "qaEnteredDate": "2026-05-14",
+    "qaDoneDate": null,
+    "qaCycleDays": null,
+    "qaOngoingDays": 80.6,
+    "lifecycleDays": null
   }
 ]
