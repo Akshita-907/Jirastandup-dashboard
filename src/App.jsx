@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import INITIAL_ISSUES from './issues.json';
 import LAST_SPRINT from './lastSprint.json';
 import DATA_META from './dataMeta.json';
+import RELEASE from './release.json';
 import { Icon, StatusBadge, PriorityBadge, getStatusMeta, Verdict, TypeIcon } from './Icon.jsx';
 import { buildNameIndex, parseTranscript } from './standup-parse.js';
 
@@ -3504,39 +3505,54 @@ function App() {
           </div>
         )}
 
-        {/* TAB 5: RELEASE READINESS */}
-        {currentTab === 'release' && (
-          <div className="section-panel">
-            <h2 className="section-title">Release Safety Checklists</h2>
-            <p>Evaluating defect density, blockers, and overdue tickets on G99PRODUCT.</p>
+        {/* TAB 5: RELEASE READINESS — release note */}
+        {currentTab === 'release' && (() => {
+          const BROWSE = 'https://growth99.atlassian.net/browse/';
+          const s = RELEASE.summary;
+          const relDate = new Date(RELEASE.releaseDate + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+          const prioTone = { Highest: 'var(--color-danger)', High: 'var(--color-danger)', Medium: 'var(--text-primary)', Low: 'var(--text-muted)', Lowest: 'var(--text-muted)' };
+          const renderTable = (list) => (
             <table className="aging-table">
               <thead>
-                <tr>
-                  <th>Readiness Parameter</th>
-                  <th>Metric Value</th>
-                  <th>Assessment</th>
-                </tr>
+                <tr><th>Ticket</th><th>Priority</th><th>Summary</th><th>Owner</th><th>PR</th></tr>
               </thead>
               <tbody>
-                <tr>
-                  <td><strong>Release Confidence Score</strong></td>
-                  <td style={{ fontWeight: 700, color: 'var(--color-primary)' }}>{releaseConfidence}%</td>
-                  <td>{releaseConfidence >= 80 ? <Verdict tone="ok">Safe to Release</Verdict> : releaseConfidence >= 60 ? <Verdict tone="warn">Watch (Medium Risk)</Verdict> : <Verdict tone="bad">Unsafe (Blockers / Defects)</Verdict>}</td>
-                </tr>
-                <tr>
-                  <td><strong>Active Defects (Bugs)</strong></td>
-                  <td style={{ fontWeight: 600, color: totalDefects > 0 ? 'var(--color-danger)' : 'var(--text-primary)' }}>{totalDefects} Bugs</td>
-                  <td>{totalDefects === 0 ? <Verdict tone="ok">No open bugs</Verdict> : <Verdict tone="bad">Resolving bugs required prior to release</Verdict>}</td>
-                </tr>
-                <tr>
-                  <td><strong>Critical Defects (Highest priority)</strong></td>
-                  <td style={{ fontWeight: 600, color: criticalDefects > 0 ? 'var(--color-danger)' : 'var(--text-primary)' }}>{criticalDefects} Critical</td>
-                  <td>{criticalDefects === 0 ? <Verdict tone="ok">No critical bottlenecks</Verdict> : <Verdict tone="bad">Blocked: Critical defects open</Verdict>}</td>
-                </tr>
+                {list.map(t => (
+                  <tr key={t.key}>
+                    <td style={{ whiteSpace: 'nowrap' }}><a href={`${BROWSE}${t.key}`} target="_blank" rel="noreferrer" style={{ fontFamily: 'monospace', fontWeight: 600 }}>{t.key.replace('G99PRODUCT-', '#')}</a></td>
+                    <td style={{ color: prioTone[t.priority] || 'var(--text-muted)', fontWeight: (t.priority === 'Highest' || t.priority === 'High') ? 700 : 400, whiteSpace: 'nowrap' }}>{t.priority || '—'}</td>
+                    <td>{t.summary}{t.sp ? <span style={{ color: 'var(--text-muted)' }}> · {t.sp} SP</span> : null}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>{t.assignee}</td>
+                    <td style={{ whiteSpace: 'nowrap' }}>
+                      {t.prs.length === 0 ? <span style={{ color: 'var(--text-muted)' }}>—</span> : t.prs.map((p, i) => (
+                        <span key={p.href}>{i > 0 ? ' ' : ''}<a href={p.href} target="_blank" rel="noreferrer" title={`${p.repo} · ${p.state}`}>#{p.id}</a></span>
+                      ))}
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-          </div>
-        )}
+          );
+          return (
+            <div className="section-panel">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', flexWrap: 'wrap', gap: '8px' }}>
+                <h2 className="section-title">Release note · {relDate}</h2>
+                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Work completed {RELEASE.window.from} → {RELEASE.window.to} (since the {RELEASE.lastReleaseDate} release)</span>
+              </div>
+              <p>Everything currently <strong>Ready to Release</strong> that moves to production on this date. Already-live and internal TED tickets are excluded.</p>
+              <div className="cat-cards" style={{ marginBottom: '18px' }}>
+                <div className="cat-card tone-dev"><span className="cat-n">{s.total}</span><span className="cat-l">Total tickets</span></div>
+                <div className="cat-card tone-bad"><span className="cat-n">{s.bugs}</span><span className="cat-l">Bug fixes</span></div>
+                <div className="cat-card tone-good"><span className="cat-n">{s.stories}</span><span className="cat-l">Stories ({s.storyPoints} SP)</span></div>
+                <div className="cat-card tone-qa"><span className="cat-n">{s.withPR}</span><span className="cat-l">With linked PR</span></div>
+              </div>
+              <h3 style={{ margin: '8px 0' }}>🐞 Bug fixes ({s.bugs})</h3>
+              {renderTable(RELEASE.tickets.filter(t => t.type === 'Bug'))}
+              <h3 style={{ margin: '24px 0 8px' }}>✨ Stories &amp; features ({s.stories} · {s.storyPoints} SP)</h3>
+              {renderTable(RELEASE.tickets.filter(t => t.type !== 'Bug'))}
+            </div>
+          );
+        })()}
 
         </>}
       </main>

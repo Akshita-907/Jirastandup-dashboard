@@ -1,0 +1,1578 @@
+{
+  "releaseDate": "2026-08-04",
+  "sprint": "#39",
+  "window": {
+    "from": "2026-07-22",
+    "to": "2026-08-03"
+  },
+  "generatedAt": "2026-08-03",
+  "lastReleaseDate": "2026-07-21",
+  "summary": {
+    "total": 92,
+    "bugs": 44,
+    "stories": 47,
+    "storyPoints": 65,
+    "withPR": 57
+  },
+  "tickets": [
+    {
+      "key": "G99PRODUCT-3457",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "While activating Gia , when we upload doc getting error",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3462",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Global FAQs are not being uploaded or indexed in the RAG (Retrieval-Augmented Generation) system.",
+      "prs": [
+        {
+          "id": 983,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/983",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3504",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Pushkar Murkute",
+      "sp": 1,
+      "summary": "A-04 Unauthenticated Writes into Attacker-Chosen Tenant",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3616",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Mehul Kothari",
+      "sp": 2,
+      "summary": "[BE/FE] Add provisioning of business, clinic, services etc on submit of the onboarding form",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3624",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Monika Desai",
+      "sp": 3,
+      "summary": "[BE/FE] Call transfer to business staff on request",
+      "prs": [
+        {
+          "id": 996,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/996",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3874",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "GIA Follow-up Responses Display ${bookingLink} Variable Instead of Actual Booking URL",
+      "prs": [
+        {
+          "id": 987,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/987",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3883",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "New User Email verification not working on Prod",
+      "prs": [
+        {
+          "id": 2559,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2559",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3944",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Kundan Kumar",
+      "sp": 1,
+      "summary": "[BE] Pass Source and UTM Parameter to docoda",
+      "prs": [
+        {
+          "id": 2587,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2587",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2613,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2613",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-4000",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Mehul Kothari",
+      "sp": 1,
+      "summary": "Website builder tool: generate complete 10 service pages end-to-end (content, images)",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-4046",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Highest",
+      "assignee": "Monika Desai",
+      "sp": null,
+      "summary": "Test voice agent call forwarding and minute deduction",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-2833",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "High",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "File Upload Fails in File Manager on Dev – “File upload failed. Please try again.” but files are listed in the folder.",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3270",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "High",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Skipping delayed lead trigger due to recent conversation activity for leadId - add this check for the buisness where gia is activated",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3650",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "High",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "\"Save for Later\" Option Displayed for Custom Email/SMS When GIA Is Not Activated",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3999",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "High",
+      "assignee": "abhishek.h",
+      "sp": null,
+      "summary": "Hide RAG Engine Configuration from Business Users in Gia Knowledge Base",
+      "prs": [
+        {
+          "id": 1848,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1848",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-2468",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Show correct message when blog generation got failed as business not found",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-2863",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Lalit Suryan",
+      "sp": null,
+      "summary": "GIA Response Incorrectly Identifies Current Day as Friday Instead of Tuesday",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3230",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "Re-engagement trigger firing incorrectly without validating last message sender and activity window",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3266",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "Questionnaire Mapping Issue Across Multiple Businesses",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3344",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Call rail automate response are not coming in same thread",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3358",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Manish Patidar",
+      "sp": null,
+      "summary": "Sept Month selection issue on Manual Reviews",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3552",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Chatbot Service Selection Option Is Not Working in Integration Preview Page",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3563",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": null,
+      "summary": "Handoff Email/SMS Formatting Issue",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3620",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Manish Patidar",
+      "sp": 2,
+      "summary": "[BE] Gia url funnel report for admin",
+      "prs": [
+        {
+          "id": 997,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/997",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 998,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/998",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 999,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/999",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3653",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": null,
+      "summary": "Bulk Contact Complete is showing as Completed by System",
+      "prs": [
+        {
+          "id": 2589,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2589",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3665",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 2,
+      "summary": "[BE] Ability to select third party as a source in customer trigger",
+      "prs": [
+        {
+          "id": 2554,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2554",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3666",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 1,
+      "summary": "[FE] Ability to select third party as a source in customer trigger",
+      "prs": [
+        {
+          "id": 1832,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1832",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3668",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 1,
+      "summary": "[FE] Ability to execute customer trigger if the stage change from lead to customer",
+      "prs": [
+        {
+          "id": 1818,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1818",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3675",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 2,
+      "summary": "[BE] Move readonly queries to Reader Database - Review Manager",
+      "prs": [
+        {
+          "id": 231,
+          "href": "https://bitbucket.org/growth99_plus/g99-web-review-manger-application/pull-requests/231",
+          "state": "MERGED",
+          "repo": "g99-web-review-manger-application"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3676",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 1,
+      "summary": "[BE] Move readonly queries to Reader Database - Auth Service",
+      "prs": [
+        {
+          "id": 57,
+          "href": "https://bitbucket.org/growth99_plus/g99-auth-service/pull-requests/57",
+          "state": "MERGED",
+          "repo": "g99-auth-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3693",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Pushkar Murkute",
+      "sp": 1,
+      "summary": "[FE] API Gateway Architecture (auth)  - 7 Endpoints",
+      "prs": [
+        {
+          "id": 276,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/276",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        },
+        {
+          "id": 277,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/277",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3694",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Pushkar Murkute",
+      "sp": 1,
+      "summary": "[BE] API Gateway Architecture (auth)  - 7 Endpoints",
+      "prs": [
+        {
+          "id": 52,
+          "href": "https://bitbucket.org/growth99_plus/g99-auth-service/pull-requests/52",
+          "state": "MERGED",
+          "repo": "g99-auth-service"
+        },
+        {
+          "id": 54,
+          "href": "https://bitbucket.org/growth99_plus/g99-auth-service/pull-requests/54",
+          "state": "MERGED",
+          "repo": "g99-auth-service"
+        },
+        {
+          "id": 55,
+          "href": "https://bitbucket.org/growth99_plus/g99-auth-service/pull-requests/55",
+          "state": "MERGED",
+          "repo": "g99-auth-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3696",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Pushkar Murkute",
+      "sp": 1,
+      "summary": "[BE] API Gateway Architecture (webhook / callback)  - 7 Endpoints",
+      "prs": [
+        {
+          "id": 2552,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2552",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2567,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2567",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3701",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 1,
+      "summary": "Centralize Landing Page API in One File",
+      "prs": [
+        {
+          "id": 2560,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2560",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3704",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Monika Desai",
+      "sp": 3,
+      "summary": "[BE] GIA Voice Agent - Minute Usage Dashboard, Low Balance Notification, Overage Handling & Package Renewal",
+      "prs": [
+        {
+          "id": 9,
+          "href": "https://bitbucket.org/growth99_plus/g99-notifications-cf/pull-requests/9",
+          "state": "MERGED",
+          "repo": "g99-notifications-cf"
+        },
+        {
+          "id": 1004,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1004",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 1008,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1008",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3706",
+      "type": "Epic",
+      "status": "Done",
+      "priority": "Medium",
+      "assignee": "gopesh.pandey",
+      "sp": null,
+      "summary": "[BE] POC - Email to Workflow Automation",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3710",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sachin Tripathi",
+      "sp": null,
+      "summary": "Not able to add variable in subject line for email template",
+      "prs": [
+        {
+          "id": 2548,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2548",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 1811,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1811",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3732",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 3,
+      "summary": "[BE/FE] Show analytics data for gia resposnses that are in test mode in gia usage analytics",
+      "prs": [
+        {
+          "id": 979,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/979",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 275,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/275",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3737",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Omm Chavan",
+      "sp": 2,
+      "summary": "Support Special Characters in First Name and Last Name for imported contacts",
+      "prs": [
+        {
+          "id": 2564,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2564",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3739",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 2,
+      "summary": "Expand the Contact Import Options",
+      "prs": [
+        {
+          "id": 2563,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2563",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2566,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2566",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2586,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2586",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2588,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2588",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 1827,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1827",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3741",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 1,
+      "summary": "For AI blast / manual blast give option to view details irrespective of execution status",
+      "prs": [
+        {
+          "id": 1826,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1826",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3747",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "abhishek.h",
+      "sp": null,
+      "summary": "Gia configure should save even if we are not clicking on complete , so that user can resume from their",
+      "prs": [
+        {
+          "id": 970,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/970",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 1808,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1808",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3753",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Latest Review Not Showing at the Top of the Review List",
+      "prs": [
+        {
+          "id": 236,
+          "href": "https://bitbucket.org/growth99_plus/g99-web-review-manger-application/pull-requests/236",
+          "state": "MERGED",
+          "repo": "g99-web-review-manger-application"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3765",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sachin Tripathi",
+      "sp": 1,
+      "summary": "Auto-Fill Blank Cells for Successful Import",
+      "prs": [
+        {
+          "id": 2583,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2583",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3766",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Pushkar Murkute",
+      "sp": 1,
+      "summary": "Query optimization for Gia usage analytics and Health Check",
+      "prs": [
+        {
+          "id": 994,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/994",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 1000,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1000",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3768",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Manish Patidar",
+      "sp": 2,
+      "summary": "[FE] GIA Voice Agent - Minute Usage Dashboard, Low Balance Notification, Overage Handling & Package Renewal",
+      "prs": [
+        {
+          "id": 282,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/282",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        },
+        {
+          "id": 1850,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1850",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3769",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Monika Desai",
+      "sp": 1,
+      "summary": "R&D List down all the write API for MCP Connection (Phase 2)",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3772",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Manish Patidar",
+      "sp": 3,
+      "summary": "[BE/FE] Inbox Revamp - Display contacts in correct order (SMS, Email, Call) by timestamp and add pagination",
+      "prs": [
+        {
+          "id": 2561,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2561",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 1822,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1822",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3776",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 1,
+      "summary": "R&D In decoda Integration can we send source and utm parameter as well",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3780",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Mehul Kothari",
+      "sp": 1,
+      "summary": "[BE/FE] Write form submission response back to hubspot",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3784",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": null,
+      "summary": "AI Blast Preview API does not return sample message while scheduling AI Blast",
+      "prs": [
+        {
+          "id": 974,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/974",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3785",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Monika Desai",
+      "sp": 2,
+      "summary": "[BE/FE] Add a debugger for gia voices call responses",
+      "prs": [
+        {
+          "id": 981,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/981",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 1815,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1815",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3787",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Manish Patidar",
+      "sp": null,
+      "summary": "Testing Scorecard Implementation in Growth99 CRM",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3789",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Yogesh Paygude",
+      "sp": 1,
+      "summary": "[BE/FE] Show contact count below email and sms based on opt in /out preference",
+      "prs": [
+        {
+          "id": 2557,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2557",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 1839,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1839",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        },
+        {
+          "id": 1843,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1843",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3790",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Yogesh Paygude",
+      "sp": null,
+      "summary": "In AI Blast and Manual Blast, after complete contact count is getting changed if creatria  match",
+      "prs": [
+        {
+          "id": 2582,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2582",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3809",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sachin Tripathi",
+      "sp": null,
+      "summary": "Not able disable gia purchase flag from admin",
+      "prs": [
+        {
+          "id": 273,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/273",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3838",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Monika Desai",
+      "sp": null,
+      "summary": "Handle country code if its empty",
+      "prs": [
+        {
+          "id": 128,
+          "href": "https://bitbucket.org/growth99_plus/g99-workflow-cf/pull-requests/128",
+          "state": "MERGED",
+          "repo": "g99-workflow-cf"
+        },
+        {
+          "id": 2550,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2550",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3840",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Yogesh Paygude",
+      "sp": 1,
+      "summary": "AI Trigger & AI Blast Should Be Disabled When GIA Is Not Activated",
+      "prs": [
+        {
+          "id": 1001,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1001",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 1821,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1821",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        },
+        {
+          "id": 1844,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1844",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        },
+        {
+          "id": 1846,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1846",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3853",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Avinasha",
+      "sp": null,
+      "summary": "Gia activating for BID-2243 with Qdrant when website data is not fully uploaded",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3854",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Avinasha",
+      "sp": null,
+      "summary": "Graph not working with Qdrant implementation",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3855",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Avinasha",
+      "sp": null,
+      "summary": "Fallback message appears for every question even when content is present on website",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3856",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Avinasha",
+      "sp": null,
+      "summary": "Debugger not configured for Qdrant",
+      "prs": [
+        {
+          "id": 990,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/990",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3861",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Mehul Kothari",
+      "sp": 1,
+      "summary": "Onboarding form feedback v3 from larisa",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3863",
+      "type": "Story",
+      "status": "Done",
+      "priority": "Medium",
+      "assignee": "akshita.garg",
+      "sp": 2,
+      "summary": "Generate a weekly performance dashboard to track sprint progress and task completion",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3866",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "abhishek.h",
+      "sp": 1,
+      "summary": "Icon changes for ted project",
+      "prs": [
+        {
+          "id": 1837,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1837",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3875",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "sujal.rathore",
+      "sp": null,
+      "summary": "In chatbot if any keyword is present in more than one service, then chatbot will display first one, irrespective of complete name search",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3889",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Monika Desai",
+      "sp": 1,
+      "summary": "Migrate voice recordings to S3",
+      "prs": [
+        {
+          "id": 989,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/989",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3899",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Lalit Suryan",
+      "sp": null,
+      "summary": "Manage VPN configuration and infrastructure support for onboarding automation",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3902",
+      "type": "Story",
+      "status": "Done",
+      "priority": "Medium",
+      "assignee": "Disha Sil",
+      "sp": 1,
+      "summary": "Get the list of tasks from paid media, social media & landing page team",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3905",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Omm Chavan",
+      "sp": null,
+      "summary": "API Failure when attempting to mark a file as private in File Manager",
+      "prs": [
+        {
+          "id": 2574,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2574",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3906",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Mehul Kothari",
+      "sp": 1,
+      "summary": "Creating beta website from onboarding form submission",
+      "prs": [
+        {
+          "id": 2571,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2571",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2580,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2580",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 1831,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1831",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3910",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Lalit Suryan",
+      "sp": null,
+      "summary": "Podium Intergration not working",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3926",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Yogesh Paygude",
+      "sp": 1,
+      "summary": "[BE] Whenever any patient is created, show them in that particular business contact list as a customer",
+      "prs": [
+        {
+          "id": 2573,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2573",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2575,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2575",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2576,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2576",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2577,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2577",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3929",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Refresh review and fetching review is not working on dev",
+      "prs": [
+        {
+          "id": 2601,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2601",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3940",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 1,
+      "summary": "[BE] Security Vulnerability - g99-contact-status-automation-cf-dev",
+      "prs": [
+        {
+          "id": 7,
+          "href": "https://bitbucket.org/growth99_plus/g99-contact-status-automation-cf/pull-requests/7",
+          "state": "MERGED",
+          "repo": "g99-contact-status-automation-cf"
+        },
+        {
+          "id": 8,
+          "href": "https://bitbucket.org/growth99_plus/g99-contact-status-automation-cf/pull-requests/8",
+          "state": "MERGED",
+          "repo": "g99-contact-status-automation-cf"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3942",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Mehul Kothari",
+      "sp": null,
+      "summary": "Hide onboarding form from business forms",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3943",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Monika Desai",
+      "sp": null,
+      "summary": "Add restriction not able to access other business data using URL",
+      "prs": [
+        {
+          "id": 2596,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2596",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3945",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Omm Chavan",
+      "sp": null,
+      "summary": "In form Custom CSS add option to expand custom css box",
+      "prs": [
+        {
+          "id": 1842,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1842",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3955",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Unassigned",
+      "sp": null,
+      "summary": "Podium OAuth Fix - Production Release Plan",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3968",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 2,
+      "summary": "Gia response time should consider the delay mention in edit configuration window",
+      "prs": [
+        {
+          "id": 1005,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1005",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 1014,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1014",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3971",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Omm Chavan",
+      "sp": null,
+      "summary": "\"Run All Now\" in Gia Health Check Dashboard Experiencing Slow Execution",
+      "prs": [
+        {
+          "id": 280,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/280",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        },
+        {
+          "id": 281,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-admin/pull-requests/281",
+          "state": "MERGED",
+          "repo": "g99-ui-admin"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3972",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 1,
+      "summary": "MCP Write API'S Workflow - Contact Creation",
+      "prs": [
+        {
+          "id": 2594,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2594",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3973",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Sai Somanath",
+      "sp": 2,
+      "summary": "MCP Write API'S Workflow - Template Creation",
+      "prs": [
+        {
+          "id": 2600,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2600",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 2606,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2606",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3976",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Kundan Kumar",
+      "sp": 1,
+      "summary": "R&D: Analyze Webhook URLs and businesses associated with those URLs",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-4001",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "Omm Chavan",
+      "sp": null,
+      "summary": "Contact assigned email subject change 'patient' to 'contact'",
+      "prs": [
+        {
+          "id": 2598,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2598",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-4004",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Medium",
+      "assignee": "abhishek.h",
+      "sp": null,
+      "summary": "Incorrect error message when entering wrong confirmation code during password reset",
+      "prs": [
+        {
+          "id": 1851,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1851",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-2091",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Template not visible after selecting “Is Website” checkbox in Landing Page edit (Website Template section missing in new UI)",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-2099",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Sai Somanath",
+      "sp": null,
+      "summary": "[FE]Pre Release Bulk Import Issues",
+      "prs": [
+        {
+          "id": 1680,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1680",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-2114",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Search by full name not working in Appointments",
+      "prs": [
+        {
+          "id": 1841,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1841",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3623",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Mehul Kothari",
+      "sp": 1,
+      "summary": "[BE/FE] Automate user creation while onbarding",
+      "prs": []
+    },
+    {
+      "key": "G99PRODUCT-3724",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Manish Patidar",
+      "sp": 1,
+      "summary": "[Security P3] score-card-tool - Audit dangerouslySetInnerHTML sinks and client-side API keys",
+      "prs": [
+        {
+          "id": 25,
+          "href": "https://bitbucket.org/growth99_plus/score-card-tool/pull-requests/25",
+          "state": "MERGED",
+          "repo": "score-card-tool"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3738",
+      "type": "Bug",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Akshay Dhole",
+      "sp": null,
+      "summary": "Template Module: Customer Template Filter and SMS Template Type Mapping Issues",
+      "prs": [
+        {
+          "id": 1823,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1823",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        },
+        {
+          "id": 1828,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1828",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    },
+    {
+      "key": "G99PRODUCT-3767",
+      "type": "Story",
+      "status": "Ready to Release",
+      "priority": "Low",
+      "assignee": "Pushkar Murkute",
+      "sp": 2,
+      "summary": "[BE/FE] Show Gia Source Indicator for Responses in AI Campaign, Welcome Message, and Follow-Up",
+      "prs": [
+        {
+          "id": 130,
+          "href": "https://bitbucket.org/growth99_plus/g99-workflow-cf/pull-requests/130",
+          "state": "MERGED",
+          "repo": "g99-workflow-cf"
+        },
+        {
+          "id": 1010,
+          "href": "https://bitbucket.org/growth99_plus/g99-ai-service/pull-requests/1010",
+          "state": "MERGED",
+          "repo": "g99-ai-service"
+        },
+        {
+          "id": 2602,
+          "href": "https://bitbucket.org/growth99_plus/g99-product-service/pull-requests/2602",
+          "state": "MERGED",
+          "repo": "g99-product-service"
+        },
+        {
+          "id": 400,
+          "href": "https://bitbucket.org/growth99_plus/g99-notification-application/pull-requests/400",
+          "state": "MERGED",
+          "repo": "g99-notification-application"
+        },
+        {
+          "id": 1849,
+          "href": "https://bitbucket.org/growth99_plus/g99-ui-product/pull-requests/1849",
+          "state": "MERGED",
+          "repo": "g99-ui-product"
+        }
+      ]
+    }
+  ]
+}

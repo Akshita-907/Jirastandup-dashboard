@@ -20,10 +20,24 @@ import { fetchSprintData, DONE_STATUSES } from './sync-core.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_FILE = join(__dirname, '..', 'src', 'issues.json');
+const META_FILE = join(__dirname, '..', 'src', 'dataMeta.json');
+
+// Current sprint label shown in the dashboard's "Data health" banner. Keep in
+// step with SPRINT_START / SPRINT_END_DAY in src/App.jsx when the sprint rolls.
+const SPRINT_LABEL = '#39 FY Product Aug 1–15 2026';
 
 (async () => {
   const out = await fetchSprintData((msg) => console.log(msg));
   writeFileSync(OUT_FILE, JSON.stringify(out, null, 2));
+
+  // Stamp freshness metadata so the "Synced N days ago" banner is accurate.
+  const now = new Date();
+  writeFileSync(META_FILE, JSON.stringify({
+    syncedAt: now.toISOString().slice(0, 10),
+    syncedAtTime: now.toISOString(),
+    sprint: SPRINT_LABEL,
+    source: 'Jira REST (project = G99PRODUCT AND sprint in openSprints())',
+  }) + '\n');
 
   const cyc = out.map((i) => i.qaCycleDays).filter((t) => t != null);
   const avg = (a) => (a.length ? (a.reduce((x, y) => x + y, 0) / a.length).toFixed(1) : 'N/A');
