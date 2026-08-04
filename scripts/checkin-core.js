@@ -14,13 +14,32 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { createRequire } from 'node:module';
 import { loadDotEnv } from './sync-core.js';
 import { buildNameIndex, parseTranscript } from '../src/standup-parse.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
-const readJson = (rel) => JSON.parse(readFileSync(join(ROOT, 'src', rel), 'utf8'));
-const RESPONSES_FILE = join(ROOT, 'checkin-responses.json');
+const require = createRequire(import.meta.url);
+
+// Static requires so Vercel's file tracer bundles these into the function.
+// (On Vercel, runtime readFileSync of arbitrary paths is NOT included.)
+const safeRequire = (p) => { try { return require(p); } catch { return null; } };
+const BUNDLED = {
+  'transcripts.json': safeRequire('../src/transcripts.json'),
+  'issues.json': safeRequire('../src/issues.json'),
+};
+// On Vercel use the bundled copy; elsewhere (dev / self-hosted) read fresh so
+// daily edits to the notes are picked up without a restart.
+const readJson = (rel) => {
+  if (process.env.VERCEL) return BUNDLED[rel] || [];
+  return JSON.parse(readFileSync(join(ROOT, 'src', rel), 'utf8'));
+};
+// Vercel's filesystem is read-only except /tmp (ephemeral, per-instance).
+const RESPONSES_FILE = process.env.VERCEL
+  ? join(tmpdir(), 'checkin-responses.json')
+  : join(ROOT, 'checkin-responses.json');
 
 // A commitment is "time-bound" if it names a same-day deadline.
 const DEADLINE_RE = /\b(eod|end of day|by\s+end of day|by\s+\d{1,2}(:\d{2})?\s*(am|pm)?|by\s+noon|by\s+midnight|by\s+today|today)\b/i;
@@ -57,13 +76,13 @@ const fmtDate = (d) => d
   : '';
 
 function dashboardBase() {
-  const u = (process.env.DASHBOARD_URL || 'http://localhost:5173').trim();
+  const fallback = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:5173';
+  const u = (process.env.DASHBOARD_URL || fallback).trim();
   return u.replace(/\/+$/, '');
 }
 
 /** Plain-text per-person blocks — used only for the dashboard preview. */
 export function buildMessages(checkin) {
-  const dateLabel = fmtDate(checkin.date);
   return checkin.people.map((person) => {
     const mine = checkin.items.filter((i) => i.person === person);
     const lines = mine.map((i) => {
