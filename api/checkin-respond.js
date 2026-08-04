@@ -1,11 +1,11 @@
 /**
- * api/checkin/respond.js — Vercel function for POST /api/checkin/respond.
+ * api/checkin-respond.js — Vercel function for POST /api/checkin-respond.
  * Records one ✅/❌ (+ reason) from the dashboard.
  *
  * NOTE: on Vercel storage is /tmp (ephemeral). Back with Vercel KV / a DB for
  * durable responses.
  */
-import { handleRespond } from '../../scripts/checkin-core.js';
+import { handleRespond } from '../scripts/checkin-core.js';
 
 function readBody(req) {
   return new Promise((resolve) => {
