@@ -64,17 +64,13 @@ const TEAM_ORDER = ['DevOps', 'Dev 1', 'Dev 2', 'Support', 'TED', 'PM', 'QA Team
 
 // Themes / epics committed for the current sprint (shown on the Overview).
 const SPRINT_SCOPE = [
-  'MCP write APIs',
   'HIPAA compliance',
-  'Security fixes',
-  'Import minor enhancement',
-  'Gia minor enhancement (test mode analytics, Gia funnel report)',
-  'Onboarding automation',
-  'Gia voice agent (call forwarding)',
-  'Move the read-only queries to the Reader Database',
-  'Query optimization (Gia usage analytics & health check)',
-  'Multi-RAG and Qdrant',
-  'Smart link login',
+  'Multi-RAG and Qdrant fixes',
+  'Self-assessment enhancement',
+  'Appointment booking from Gia',
+  'Write API (Trigger, Campaign)',
+  'Gia voice agent bug fixes & prompt changes',
+  'Onboarding automation — new enhancement',
 ];
 
 // Primary QA can hold one or more QAs (comma-joined). Split into individual names.
