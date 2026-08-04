@@ -995,6 +995,61 @@ function App() {
   const [standupCat, setStandupCat] = useState('focus');
   const [transcriptDate, setTranscriptDate] = useState(TRANSCRIPTS.length ? TRANSCRIPTS[TRANSCRIPTS.length - 1].date : null);
   const [transcriptQuery, setTranscriptQuery] = useState('');
+  const [checkin, setCheckin] = useState(null); // { loading } | { data } | { error }
+  const [checkinResponses, setCheckinResponses] = useState({});
+  const runCheckin = async (preview) => {
+    setCheckin({ loading: true, preview });
+    try {
+      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin${preview ? '?preview=1' : ''}`);
+      setCheckin({ data: await r.json() });
+    } catch (e) {
+      setCheckin({ error: e.message });
+    }
+  };
+  const loadCheckinResponses = async () => {
+    try {
+      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin/responses`);
+      const d = await r.json();
+      setCheckinResponses(d.responses || {});
+    } catch { /* ignore */ }
+  };
+  useEffect(() => { loadCheckinResponses(); }, []);
+
+  // Respond flow: chat ✅/❌ buttons link here as ?checkin=<id>&mark=done|notdone
+  const [respond, setRespond] = useState(() => {
+    try {
+      const p = new URLSearchParams(window.location.search);
+      const id = p.get('checkin'); const mark = p.get('mark');
+      if (id && (mark === 'done' || mark === 'notdone')) return { id, mark, reason: '', phase: mark === 'done' ? 'submitting' : 'reason', item: null };
+    } catch { /* none */ }
+    return null;
+  });
+  const submitRespond = async (status, reason) => {
+    setRespond((s) => ({ ...s, phase: 'submitting' }));
+    try {
+      await fetch(`${import.meta.env.BASE_URL}api/checkin/respond`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: respond.id, status, reason: reason || '' }),
+      });
+      setRespond((s) => ({ ...s, phase: 'saved', savedStatus: status }));
+      loadCheckinResponses();
+    } catch (e) {
+      setRespond((s) => ({ ...s, phase: 'error', error: e.message }));
+    }
+  };
+  useEffect(() => {
+    if (!respond) return;
+    fetch(`${import.meta.env.BASE_URL}api/checkin?preview=1`).then((r) => r.json()).then((d) => {
+      const item = (d.items || []).find((i) => i.id === respond.id) || null;
+      setRespond((s) => (s ? { ...s, item } : s));
+    }).catch(() => {});
+    if (respond.mark === 'done' && respond.phase === 'submitting') submitRespond('done', '');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const closeRespond = () => {
+    try { window.history.replaceState({}, '', import.meta.env.BASE_URL); } catch { /* noop */ }
+    setRespond(null);
+  };
 
   // Action Tracker inputs
   const [newActionText, setNewActionText] = useState('');
@@ -1479,6 +1534,36 @@ function App() {
     <div className="app-container">
       {selectedTicket && <TicketModal issue={selectedTicket} onClose={() => setSelectedTicket(null)} />}
 
+      {respond && (
+        <div onClick={closeRespond} style={{ position: 'fixed', inset: 0, background: 'rgba(15,23,42,0.55)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+          <div onClick={(e) => e.stopPropagation()} style={{ width: '100%', maxWidth: '460px', background: 'var(--bg-card, #fff)', color: 'var(--text-primary)', border: '1px solid var(--border-color)', borderRadius: '14px', padding: '22px 24px', boxShadow: '0 20px 60px rgba(0,0,0,0.3)' }}>
+            <h3 style={{ margin: '0 0 4px' }}>Standup check-in</h3>
+            <p style={{ fontSize: '13px', color: 'var(--text-muted)', margin: '0 0 14px' }}>
+              {respond.item ? <>{respond.item.person} · <strong style={{ color: 'var(--text-primary)' }}>{respond.item.text}</strong></> : 'Recording your update…'}
+            </p>
+            {respond.phase === 'submitting' && <p>Saving…</p>}
+            {respond.phase === 'error' && <p style={{ color: 'var(--color-danger)' }}>Couldn’t save: {respond.error}</p>}
+            {respond.phase === 'reason' && (
+              <>
+                <label style={{ fontSize: '13px', fontWeight: 600 }}>Why isn’t it done? (blocker / new ETA)</label>
+                <textarea autoFocus value={respond.reason} onChange={(e) => setRespond((s) => ({ ...s, reason: e.target.value }))}
+                  rows={4} style={{ width: '100%', marginTop: '6px', padding: '10px 12px', borderRadius: '8px', border: '1px solid var(--border-color)', background: 'var(--bg-subtle)', color: 'var(--text-primary)', fontSize: '13px', boxSizing: 'border-box', resize: 'vertical' }} placeholder="e.g. Blocked on API access; expect to finish tomorrow AM" />
+                <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', marginTop: '12px' }}>
+                  <button className="btn btn-secondary" onClick={() => submitRespond('done', '')}>Actually done ✅</button>
+                  <button className="btn btn-primary" disabled={!respond.reason.trim()} onClick={() => submitRespond('notdone', respond.reason)}>Submit reason</button>
+                </div>
+              </>
+            )}
+            {respond.phase === 'saved' && (
+              <>
+                <p style={{ fontSize: '14px' }}>{respond.savedStatus === 'done' ? '✅ Marked done — thanks!' : '❌ Recorded as not done, with your reason. Thanks!'}</p>
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}><button className="btn btn-primary" onClick={closeRespond}>Close</button></div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* LEFT NAVIGATION SIDEBAR */}
       <aside className="sidebar">
         <div className="sidebar-top">
@@ -1956,6 +2041,64 @@ function App() {
           return (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
 
+              {/* EOD CHECK-IN — post deadline commitments to the AI space for ✅/❌ */}
+              <div className="section-panel">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+                  <h2 className="section-title" style={{ margin: 0 }}>EOD check-in</h2>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <button className="btn btn-secondary" disabled={checkin?.loading} onClick={() => runCheckin(true)}>
+                      <Icon name="clock" size={14} /> Preview
+                    </button>
+                    <button className="btn btn-primary" disabled={checkin?.loading} onClick={() => runCheckin(false)}>
+                      <Icon name="rocket" size={14} /> {checkin?.loading && !checkin?.preview ? 'Sending…' : 'Send to AI space'}
+                    </button>
+                  </div>
+                </div>
+                <p style={{ margin: '6px 0 0' }}>
+                  Posts each person’s <strong>“by EOD / by &lt;time&gt;”</strong> commitment from the latest standup into the Google Chat AI space,
+                  so they react ✅ done / ❌ not done. Runs automatically at 6&nbsp;PM too.
+                </p>
+                {checkin?.error && <p style={{ color: 'var(--color-danger)', fontSize: '13px' }}>Failed: {checkin.error}</p>}
+                {checkin?.data && (() => {
+                  const d = checkin.data;
+                  if (d.reason === 'no-deadline-items') return <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: 0 }}>No deadline commitments in the {d.date || 'latest'} notes — nothing to send.</p>;
+                  return (
+                    <div style={{ marginTop: '10px' }}>
+                      <p style={{ fontSize: '13px', margin: '0 0 8px', fontWeight: 600 }}>
+                        {d.ok
+                          ? `✅ Sent ${d.sent} message${d.sent === 1 ? '' : 's'} to the AI space.`
+                          : d.reason === 'no-webhook'
+                            ? 'Preview (no webhook configured yet — set GCHAT_WEBHOOK_URL in .env to send):'
+                            : `Preview — ${d.messages.length} message${d.messages.length === 1 ? '' : 's'} ready:`}
+                      </p>
+                      {d.messages.map((m, i) => (
+                        <div key={i} style={{ whiteSpace: 'pre-wrap', fontSize: '12.5px', lineHeight: 1.5, background: 'var(--bg-subtle)', border: '1px solid var(--border-color)', borderRadius: '8px', padding: '10px 12px', marginBottom: '8px' }}>{m.text}</div>
+                      ))}
+                    </div>
+                  );
+                })()}
+                {Object.keys(checkinResponses).length > 0 && (
+                  <div style={{ marginTop: '16px', borderTop: '1px solid var(--border-color)', paddingTop: '14px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <h3 style={{ margin: '0 0 8px' }}>Responses</h3>
+                      <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={loadCheckinResponses}>Refresh</button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {Object.values(checkinResponses).sort((a, b) => (b.at || '').localeCompare(a.at || '')).map((r) => (
+                        <div key={r.id} style={{ display: 'flex', gap: '10px', alignItems: 'baseline', fontSize: '13px', padding: '8px 10px', background: 'var(--bg-subtle)', borderRadius: '8px' }}>
+                          <span style={{ fontSize: '15px' }}>{r.status === 'done' ? '✅' : '❌'}</span>
+                          <div style={{ flex: 1 }}>
+                            <div><strong>{r.person || '—'}</strong> — {r.taskText}</div>
+                            {r.status === 'notdone' && r.reason && <div style={{ color: 'var(--color-danger)', marginTop: '2px' }}>Reason: {r.reason}</div>}
+                          </div>
+                          <span style={{ color: 'var(--text-muted)', fontSize: '11px', whiteSpace: 'nowrap' }}>{r.at ? new Date(r.at).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : ''}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
               {/* STANDUP NOTES (clean, from the daily call) */}
               <div className="section-panel">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
@@ -1999,6 +2142,17 @@ function App() {
                           <div style={{ maxHeight: '460px', overflow: 'auto', whiteSpace: 'pre-wrap', wordBreak: 'break-word', fontSize: '13px', lineHeight: 1.6, backgroundColor: 'var(--bg-subtle)', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '16px' }}>
                             {body || 'No matching lines in this transcript.'}
                           </div>
+                          {t.image && !q && (
+                            <figure style={{ margin: '14px 0 0' }}>
+                              <img
+                                src={`${import.meta.env.BASE_URL}${t.image}`}
+                                alt={`Diagram shared in the ${t.date} standup`}
+                                style={{ maxWidth: '100%', height: 'auto', borderRadius: '10px', border: '1px solid var(--border-color)', display: 'block' }}
+                                onError={(e) => { const f = e.currentTarget.closest('figure'); if (f) f.style.display = 'none'; }}
+                              />
+                              <figcaption style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '6px' }}>Shared in the standup call.</figcaption>
+                            </figure>
+                          )}
                         </>
                       );
                     })()}

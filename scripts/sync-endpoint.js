@@ -10,6 +10,15 @@
 
 import { fetchSprintData } from './sync-core.js';
 import { fetchBitbucketActivity } from './bitbucket-core.js';
+import { handleCheckin, handleResponses, handleRespond } from './checkin-core.js';
+
+function readBody(req) {
+  return new Promise((resolve) => {
+    let s = '';
+    req.on('data', (c) => { s += c; });
+    req.on('end', () => { try { resolve(JSON.parse(s || '{}')); } catch { resolve({}); } });
+  });
+}
 
 const CACHE_MS = 30_000; // serve a cached result for 30s
 let cache = { at: 0, data: null };
@@ -119,6 +128,19 @@ export function syncApiPlugin() {
         if (req.method !== 'GET') return next();
         const force = /[?&]force=1\b/.test(req.url || '');
         handleBitbucket(res, { force, ...parseRange(req.url) });
+      });
+      server.middlewares.use('/api/checkin/responses', (req, res, next) => {
+        if (req.method !== 'GET') return next();
+        handleResponses(res);
+      });
+      server.middlewares.use('/api/checkin/respond', async (req, res, next) => {
+        if (req.method !== 'POST') return next();
+        handleRespond(res, await readBody(req));
+      });
+      server.middlewares.use('/api/checkin', (req, res, next) => {
+        if (req.method !== 'GET') return next();
+        const dryRun = /[?&]preview=1\b/.test(req.url || '');
+        handleCheckin(res, { dryRun });
       });
     },
   };
