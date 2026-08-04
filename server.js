@@ -16,6 +16,15 @@ import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
 import { handleSync, handleBitbucket } from './scripts/sync-endpoint.js';
+import { handleCheckin, handleResponses, handleRespond } from './scripts/checkin-core.js';
+
+function readBody(req) {
+  return new Promise((resolve) => {
+    let s = '';
+    req.on('data', (c) => { s += c; });
+    req.on('end', () => { try { resolve(JSON.parse(s || '{}')); } catch { resolve({}); } });
+  });
+}
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DIST = join(__dirname, 'dist');
@@ -73,6 +82,19 @@ const server = createServer(async (req, res) => {
     const d = /[?&]days=(\d+)/.exec(url);
     const opts = range ? { from: range[1], to: range[2] } : { days: d ? Number(d[1]) : undefined };
     return handleBitbucket(res, { force, ...opts });
+  }
+  if (url === '/api/checkin/responses') {
+    if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
+    return handleResponses(res);
+  }
+  if (url === '/api/checkin/respond') {
+    if (req.method !== 'POST') { res.statusCode = 405; return res.end('Method not allowed'); }
+    return readBody(req).then((b) => handleRespond(res, b));
+  }
+  if (url === '/api/checkin' || url.startsWith('/api/checkin?')) {
+    if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
+    const dryRun = /[?&]preview=1\b/.test(url);
+    return handleCheckin(res, { dryRun });
   }
   return serveStatic(res, url);
 });
