@@ -129,11 +129,11 @@ export function syncApiPlugin() {
         const force = /[?&]force=1\b/.test(req.url || '');
         handleBitbucket(res, { force, ...parseRange(req.url) });
       });
-      server.middlewares.use('/api/checkin/responses', (req, res, next) => {
+      server.middlewares.use('/api/checkin-responses', (req, res, next) => {
         if (req.method !== 'GET') return next();
         handleResponses(res);
       });
-      server.middlewares.use('/api/checkin/respond', async (req, res, next) => {
+      server.middlewares.use('/api/checkin-respond', async (req, res, next) => {
         if (req.method !== 'POST') return next();
         handleRespond(res, await readBody(req));
       });

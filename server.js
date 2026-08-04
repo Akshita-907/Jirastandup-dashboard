@@ -83,11 +83,11 @@ const server = createServer(async (req, res) => {
     const opts = range ? { from: range[1], to: range[2] } : { days: d ? Number(d[1]) : undefined };
     return handleBitbucket(res, { force, ...opts });
   }
-  if (url === '/api/checkin/responses') {
+  if (url === '/api/checkin-responses') {
     if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
     return handleResponses(res);
   }
-  if (url === '/api/checkin/respond') {
+  if (url === '/api/checkin-respond') {
     if (req.method !== 'POST') { res.statusCode = 405; return res.end('Method not allowed'); }
     return readBody(req).then((b) => handleRespond(res, b));
   }

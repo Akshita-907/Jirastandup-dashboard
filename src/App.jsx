@@ -1008,7 +1008,7 @@ function App() {
   };
   const loadCheckinResponses = async () => {
     try {
-      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin/responses`);
+      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin-responses`);
       const d = await r.json();
       setCheckinResponses(d.responses || {});
     } catch { /* ignore */ }
@@ -1027,7 +1027,7 @@ function App() {
   const submitRespond = async (status, reason) => {
     setRespond((s) => ({ ...s, phase: 'submitting' }));
     try {
-      await fetch(`${import.meta.env.BASE_URL}api/checkin/respond`, {
+      await fetch(`${import.meta.env.BASE_URL}api/checkin-respond`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: respond.id, status, reason: reason || '' }),
       });
