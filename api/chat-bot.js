@@ -18,7 +18,9 @@ export default async function handler(req, res) {
   if (req.method !== 'POST') { res.statusCode = 200; return res.end('SprintHub chat endpoint'); }
   const event = await readBody(req);
   let out = {};
-  try { out = await handleChatEvent(event); } catch (e) { console.error('[chat-bot] error', e.message); }
+  try { out = await handleChatEvent(event); }
+  catch (e) { console.error('[chat-bot] ERROR', e && e.stack ? e.stack : e); out = { text: `⚠️ ${e && e.message ? e.message : 'error'}` }; }
+  try { console.log('[chat-bot:resp]', JSON.stringify(out).slice(0, 800)); } catch { /* noop */ }
   res.statusCode = 200;
   res.setHeader('Content-Type', 'application/json');
   res.end(JSON.stringify(out || {}));
