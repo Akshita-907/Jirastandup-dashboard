@@ -17,7 +17,7 @@ import { dirname, join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { createRequire } from 'node:module';
 import { loadDotEnv } from './sync-core.js';
-import { buildNameIndex, parseTranscript } from '../src/standup-parse.js';
+import { buildNameIndex, parseTranscript, extractTickets } from '../src/standup-parse.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -40,6 +40,10 @@ const readJson = (rel) => {
 const RESPONSES_FILE = process.env.VERCEL
   ? join(tmpdir(), 'checkin-responses.json')
   : join(ROOT, 'checkin-responses.json');
+// Manual task edits/additions per date (overrides the parsed task list).
+const OVERRIDES_FILE = process.env.VERCEL
+  ? join(tmpdir(), 'checkin-overrides.json')
+  : join(ROOT, 'checkin-overrides.json');
 
 // A commitment is "time-bound" if it names a same-day deadline.
 const DEADLINE_RE = /\b(eod|end of day|by\s+end of day|by\s+\d{1,2}(:\d{2})?\s*(am|pm)?|by\s+noon|by\s+midnight|by\s+today|today)\b/i;
@@ -48,27 +52,77 @@ export function deadlinePhrase(text) {
   return m ? m[0] : null;
 }
 
-/** Build the check-in for a date (defaults to the latest transcript). */
-export function buildCheckin(dateStr) {
+/**
+ * Build the check-in for a date (defaults to the latest transcript).
+ * @param {{ all?: boolean }} [opts]  all=true keeps every task discussed;
+ *   otherwise only same-day-deadline ("by EOD / by <time>") tasks.
+ * Item ids are the GLOBAL commitment index (stable across all/eod modes), so a
+ * response recorded from an "all" card still resolves under either mode.
+ */
+export function buildCheckin(dateStr, opts = {}) {
+  const all = !!opts.all;
   let transcripts = [];
   let issues = [];
   try { transcripts = readJson('transcripts.json'); } catch { /* none */ }
   try { issues = readJson('issues.json'); } catch { /* none */ }
-  if (!transcripts.length) return { date: null, items: [], people: [] };
+  if (!transcripts.length) return { date: null, items: [], people: [], scope: all ? 'all' : 'eod' };
 
   const entry = transcripts.find((t) => t.date === dateStr) || transcripts[transcripts.length - 1];
-  const names = new Set();
-  for (const i of issues) { if (i.assignee && i.assignee !== 'Unassigned') names.add(i.assignee); }
-  const parsed = parseTranscript(entry, buildNameIndex([...names]));
 
-  const items = [];
-  for (const p of parsed.people) {
-    for (const c of p.commitments) {
-      const dl = deadlinePhrase(c.text);
-      if (dl) items.push({ id: `${entry.date}-${items.length}`, person: p.person, text: c.text, tickets: c.tickets, deadline: dl });
+  // Base task list: the PM's saved overrides for this date if present, else the
+  // parsed standup commitments.
+  const overrides = loadOverrides()[entry.date];
+  let base; // [{ id, person, text, tickets }]
+  let edited = false;
+  if (Array.isArray(overrides)) {
+    edited = true;
+    base = overrides.map((t, i) => ({
+      id: t.id || `${entry.date}-o${i}`,
+      person: t.person || 'Unassigned',
+      text: t.text || '',
+      tickets: t.tickets || extractTickets(t.text || ''),
+    }));
+  } else {
+    const names = new Set();
+    for (const i of issues) { if (i.assignee && i.assignee !== 'Unassigned') names.add(i.assignee); }
+    const parsed = parseTranscript(entry, buildNameIndex([...names]));
+    base = [];
+    let idx = 0;
+    for (const p of parsed.people) {
+      for (const c of p.commitments) {
+        base.push({ id: `${entry.date}-${idx}`, person: p.person, text: c.text, tickets: c.tickets });
+        idx += 1; // advance for every commitment so ids stay stable regardless of filter
+      }
     }
   }
-  return { date: entry.date, items, people: [...new Set(items.map((i) => i.person))] };
+
+  const items = base
+    .map((t) => ({ ...t, deadline: deadlinePhrase(t.text) }))
+    .filter((t) => all || t.deadline);
+  return { date: entry.date, items, people: [...new Set(items.map((i) => i.person))], scope: all ? 'all' : 'eod', edited };
+}
+
+// ---- editable task overrides (PM add/edit/delete before sending) -----------
+
+export function loadOverrides() {
+  if (!existsSync(OVERRIDES_FILE)) return {};
+  try { return JSON.parse(readFileSync(OVERRIDES_FILE, 'utf8')); } catch { return {}; }
+}
+/** Replace the full task list for a date. tasks: [{id?, person, text}]. */
+export function saveTasks(date, tasks) {
+  if (!date || !Array.isArray(tasks)) throw new Error('date and tasks[] required');
+  const all = loadOverrides();
+  all[date] = tasks
+    .filter((t) => (t.text || '').trim())
+    .map((t, i) => ({ id: t.id || `${date}-o${i}`, person: (t.person || 'Unassigned').trim(), text: t.text.trim(), tickets: extractTickets(t.text) }));
+  writeFileSync(OVERRIDES_FILE, JSON.stringify(all, null, 2) + '\n');
+  return all[date];
+}
+/** Drop overrides for a date (revert to the parsed standup tasks). */
+export function resetTasks(date) {
+  const all = loadOverrides();
+  delete all[date];
+  writeFileSync(OVERRIDES_FILE, JSON.stringify(all, null, 2) + '\n');
 }
 
 const fmtDate = (d) => d
@@ -135,15 +189,33 @@ async function post(webhookUrl, payload) {
 export async function sendCheckin(opts = {}) {
   loadDotEnv();
   const webhook = process.env.GCHAT_WEBHOOK_URL;
-  const checkin = buildCheckin(opts.dateStr);
+  const checkin = buildCheckin(opts.dateStr, { all: opts.all });
   const messages = buildMessages(checkin);
+  const base = { date: checkin.date, scope: checkin.scope, edited: checkin.edited, items: checkin.items, messages };
 
-  if (!checkin.items.length) return { ok: false, reason: 'no-deadline-items', date: checkin.date, items: [], messages: [], sent: 0 };
+  if (!checkin.items.length) return { ok: false, reason: opts.all ? 'no-tasks' : 'no-deadline-items', ...base, items: [], messages: [], sent: 0 };
   if (!webhook || opts.dryRun) {
-    return { ok: false, reason: webhook ? 'dry-run' : 'no-webhook', date: checkin.date, items: checkin.items, messages, sent: 0, preview: true };
+    return { ok: false, reason: webhook ? 'dry-run' : 'no-webhook', ...base, sent: 0, preview: true };
   }
   await post(webhook, buildCard(checkin));
-  return { ok: true, date: checkin.date, items: checkin.items, messages, sent: 1 };
+  return { ok: true, ...base, sent: 1 };
+}
+
+/** Plain-text status line echoed back into the AI space when a task is marked. */
+export function statusNoticeText(resp) {
+  const icon = resp.status === 'done' ? '✅' : '❌';
+  const label = resp.status === 'done' ? 'done' : 'not done';
+  let text = `${icon} *${resp.person || 'Someone'}* marked *${label}*: ${resp.taskText || ''}`.trim();
+  if (resp.status === 'notdone' && resp.reason) text += `\n↳ Reason: ${resp.reason}`;
+  return text;
+}
+/** Best-effort: post the status line to the AI space. Never throws. */
+export async function postStatusNotice(resp) {
+  loadDotEnv();
+  const webhook = process.env.GCHAT_WEBHOOK_URL;
+  if (!webhook || !resp) return { posted: false };
+  try { await post(webhook, { text: statusNoticeText(resp) }); return { posted: true }; }
+  catch (e) { console.error('[checkin] status notice failed:', e.message); return { posted: false }; }
 }
 
 // ---- response store (✅/❌ + reason, written from the dashboard) -----------
@@ -158,7 +230,7 @@ export function recordResponse({ id, status, reason, person, taskText }) {
   if (!person || !taskText) {
     try {
       const date = id.replace(/-\d+$/, '');
-      const item = buildCheckin(date).items.find((i) => i.id === id);
+      const item = buildCheckin(date, { all: true }).items.find((i) => i.id === id);
       if (item) { person = person || item.person; taskText = taskText || item.text; }
     } catch { /* leave blank */ }
   }
@@ -191,6 +263,19 @@ export function handleResponses(res) {
 
 /** POST /api/checkin/respond — record one ✅/❌ (+ reason). body already parsed. */
 export function handleRespond(res, body) {
-  try { return json(res, 200, { ok: true, saved: recordResponse(body || {}) }); }
-  catch (e) { return json(res, 400, { ok: false, error: e.message }); }
+  try {
+    const saved = recordResponse(body || {});
+    postStatusNotice(saved).catch(() => {}); // echo into the AI space, best-effort
+    return json(res, 200, { ok: true, saved });
+  } catch (e) { return json(res, 400, { ok: false, error: e.message }); }
+}
+
+/** POST /api/checkin-tasks — save the edited task list, or reset to notes. */
+export function handleSaveTasks(res, body) {
+  try {
+    const { date, tasks, reset } = body || {};
+    if (!date) throw new Error('date required');
+    if (reset) { resetTasks(date); return json(res, 200, { ok: true, reset: true }); }
+    return json(res, 200, { ok: true, tasks: saveTasks(date, tasks) });
+  } catch (e) { return json(res, 400, { ok: false, error: e.message }); }
 }

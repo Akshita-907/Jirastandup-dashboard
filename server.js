@@ -16,7 +16,7 @@ import { readFile, stat } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, normalize, extname } from 'node:path';
 import { handleSync, handleBitbucket } from './scripts/sync-endpoint.js';
-import { handleCheckin, handleResponses, handleRespond } from './scripts/checkin-core.js';
+import { handleCheckin, handleResponses, handleRespond, handleSaveTasks } from './scripts/checkin-core.js';
 
 function readBody(req) {
   return new Promise((resolve) => {
@@ -91,10 +91,15 @@ const server = createServer(async (req, res) => {
     if (req.method !== 'POST') { res.statusCode = 405; return res.end('Method not allowed'); }
     return readBody(req).then((b) => handleRespond(res, b));
   }
+  if (url === '/api/checkin-tasks') {
+    if (req.method !== 'POST') { res.statusCode = 405; return res.end('Method not allowed'); }
+    return readBody(req).then((b) => handleSaveTasks(res, b));
+  }
   if (url === '/api/checkin' || url.startsWith('/api/checkin?')) {
     if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
     const dryRun = /[?&]preview=1\b/.test(url);
-    return handleCheckin(res, { dryRun });
+    const all = /[?&]all=1\b/.test(url);
+    return handleCheckin(res, { dryRun, all });
   }
   return serveStatic(res, url);
 });

@@ -15,5 +15,6 @@ export default async function handler(req, res) {
     return res.end('Method not allowed');
   }
   const dryRun = /[?&]preview=1\b/.test(req.url || '');
-  await handleCheckin(res, { dryRun });
+  const all = /[?&]all=1\b/.test(req.url || '');
+  await handleCheckin(res, { dryRun, all });
 }
