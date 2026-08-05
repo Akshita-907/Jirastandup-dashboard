@@ -998,10 +998,10 @@ function App() {
   const [checkin, setCheckin] = useState(null); // { loading } | { data } | { error }
   const [checkinResponses, setCheckinResponses] = useState({});
   const [checkinScope, setCheckinScope] = useState('eod'); // 'eod' | 'all'
-  const runCheckin = async (preview, scope = checkinScope) => {
-    setCheckin({ loading: true, preview });
+  const runCheckin = async (preview, scope = checkinScope, app = false) => {
+    setCheckin({ loading: true, preview, app });
     try {
-      const qs = [preview ? 'preview=1' : '', scope === 'all' ? 'all=1' : ''].filter(Boolean).join('&');
+      const qs = [preview ? 'preview=1' : '', scope === 'all' ? 'all=1' : '', app ? 'app=1' : ''].filter(Boolean).join('&');
       const r = await fetch(`${import.meta.env.BASE_URL}api/checkin${qs ? `?${qs}` : ''}`);
       setCheckin({ data: await r.json() });
     } catch (e) {
@@ -2097,7 +2097,10 @@ function App() {
                       <Icon name="clock" size={14} /> Preview
                     </button>
                     <button className="btn btn-primary" disabled={checkin?.loading} onClick={() => runCheckin(false)}>
-                      <Icon name="rocket" size={14} /> {checkin?.loading && !checkin?.preview ? 'Sending…' : 'Send to AI space'}
+                      <Icon name="rocket" size={14} /> {checkin?.loading && !checkin?.preview && !checkin?.app ? 'Sending…' : 'Send to AI space'}
+                    </button>
+                    <button className="btn btn-primary" disabled={checkin?.loading} title="Posts an interactive card with clickable ✅/❌ buttons (Google Chat app)" onClick={() => runCheckin(false, checkinScope, true)}>
+                      <Icon name="zap" size={14} /> {checkin?.loading && checkin?.app ? 'Sending…' : 'Send interactive card'}
                     </button>
                   </div>
                 </div>
@@ -2142,6 +2145,8 @@ function App() {
                   const d = checkin.data;
                   if (d.reason === 'no-deadline-items') return <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: 0 }}>No “by EOD / by &lt;time&gt;” commitments in the {d.date || 'latest'} notes — switch to <strong>All tasks</strong> to include everything discussed.</p>;
                   if (d.reason === 'no-tasks') return <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: 0 }}>No tasks found in the {d.date || 'latest'} notes.</p>;
+                  if (d.reason === 'no-chat-app') return <p style={{ color: 'var(--color-danger)', fontSize: '13px', marginBottom: 0 }}>Interactive card not configured — set <code>GCHAT_SERVICE_ACCOUNT_JSON</code> and <code>GCHAT_SPACE</code> in the environment, then redeploy.</p>;
+                  if (d.ok && d.via === 'app') return <p style={{ color: 'var(--color-success, #16a34a)', fontSize: '13px', fontWeight: 600, marginTop: '10px', marginBottom: 0 }}>✅ Posted the interactive card to the space — buttons update in place as people respond.</p>;
                   return (
                     <div style={{ marginTop: '10px' }}>
                       <p style={{ fontSize: '13px', margin: '0 0 8px', fontWeight: 600 }}>
