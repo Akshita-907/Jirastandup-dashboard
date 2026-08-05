@@ -45,6 +45,37 @@ const OVERRIDES_FILE = process.env.VERCEL
   ? join(tmpdir(), 'checkin-overrides.json')
   : join(ROOT, 'checkin-overrides.json');
 
+// ---- durable store: Vercel KV (Upstash REST) when configured, else a local
+// file. KV is required on Vercel because its filesystem is ephemeral and not
+// shared across serverless instances. Dependency-free — plain fetch. ----------
+const KV_URL = process.env.KV_REST_API_URL;
+const KV_TOKEN = process.env.KV_REST_API_TOKEN;
+const kvOn = () => !!(KV_URL && KV_TOKEN);
+async function kvGet(key) {
+  const r = await fetch(`${KV_URL}/get/${encodeURIComponent(key)}`, { headers: { Authorization: `Bearer ${KV_TOKEN}` } });
+  if (!r.ok) return null;
+  const j = await r.json();
+  if (j.result == null) return null;
+  return typeof j.result === 'string' ? JSON.parse(j.result) : j.result;
+}
+async function kvSet(key, val) {
+  const r = await fetch(`${KV_URL}/set/${encodeURIComponent(key)}`, {
+    method: 'POST', headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' }, body: JSON.stringify(val),
+  });
+  if (!r.ok) throw new Error(`KV set ${r.status}`);
+}
+async function storeLoad(key, file) {
+  if (kvOn()) { return (await kvGet(key)) || {}; }
+  if (!existsSync(file)) return {};
+  try { return JSON.parse(readFileSync(file, 'utf8')); } catch { return {}; }
+}
+async function storeSave(key, file, obj) {
+  if (kvOn()) { await kvSet(key, obj); return; }
+  writeFileSync(file, JSON.stringify(obj, null, 2) + '\n');
+}
+const RESPONSES_KEY = 'checkin:responses';
+const OVERRIDES_KEY = 'checkin:overrides';
+
 // A commitment is "time-bound" if it names a same-day deadline.
 const DEADLINE_RE = /\b(eod|end of day|by\s+end of day|by\s+\d{1,2}(:\d{2})?\s*(am|pm)?|by\s+noon|by\s+midnight|by\s+today|today)\b/i;
 export function deadlinePhrase(text) {
@@ -59,7 +90,7 @@ export function deadlinePhrase(text) {
  * Item ids are the GLOBAL commitment index (stable across all/eod modes), so a
  * response recorded from an "all" card still resolves under either mode.
  */
-export function buildCheckin(dateStr, opts = {}) {
+export async function buildCheckin(dateStr, opts = {}) {
   const all = !!opts.all;
   let transcripts = [];
   let issues = [];
@@ -71,7 +102,7 @@ export function buildCheckin(dateStr, opts = {}) {
 
   // Base task list: the PM's saved overrides for this date if present, else the
   // parsed standup commitments.
-  const overrides = loadOverrides()[entry.date];
+  const overrides = (await loadOverrides())[entry.date];
   let base; // [{ id, person, text, tickets }]
   let edited = false;
   if (Array.isArray(overrides)) {
@@ -105,24 +136,23 @@ export function buildCheckin(dateStr, opts = {}) {
 // ---- editable task overrides (PM add/edit/delete before sending) -----------
 
 export function loadOverrides() {
-  if (!existsSync(OVERRIDES_FILE)) return {};
-  try { return JSON.parse(readFileSync(OVERRIDES_FILE, 'utf8')); } catch { return {}; }
+  return storeLoad(OVERRIDES_KEY, OVERRIDES_FILE);
 }
 /** Replace the full task list for a date. tasks: [{id?, person, text}]. */
-export function saveTasks(date, tasks) {
+export async function saveTasks(date, tasks) {
   if (!date || !Array.isArray(tasks)) throw new Error('date and tasks[] required');
-  const all = loadOverrides();
+  const all = await loadOverrides();
   all[date] = tasks
     .filter((t) => (t.text || '').trim())
     .map((t, i) => ({ id: t.id || `${date}-o${i}`, person: (t.person || 'Unassigned').trim(), text: t.text.trim(), tickets: extractTickets(t.text) }));
-  writeFileSync(OVERRIDES_FILE, JSON.stringify(all, null, 2) + '\n');
+  await storeSave(OVERRIDES_KEY, OVERRIDES_FILE, all);
   return all[date];
 }
 /** Drop overrides for a date (revert to the parsed standup tasks). */
-export function resetTasks(date) {
-  const all = loadOverrides();
+export async function resetTasks(date) {
+  const all = await loadOverrides();
   delete all[date];
-  writeFileSync(OVERRIDES_FILE, JSON.stringify(all, null, 2) + '\n');
+  await storeSave(OVERRIDES_KEY, OVERRIDES_FILE, all);
 }
 
 const fmtDate = (d) => d
@@ -189,7 +219,7 @@ async function post(webhookUrl, payload) {
 export async function sendCheckin(opts = {}) {
   loadDotEnv();
   const webhook = process.env.GCHAT_WEBHOOK_URL;
-  const checkin = buildCheckin(opts.dateStr, { all: opts.all });
+  const checkin = await buildCheckin(opts.dateStr, { all: opts.all });
   const messages = buildMessages(checkin);
   const base = { date: checkin.date, scope: checkin.scope, edited: checkin.edited, items: checkin.items, messages };
 
@@ -221,22 +251,21 @@ export async function postStatusNotice(resp) {
 // ---- response store (✅/❌ + reason, written from the dashboard) -----------
 
 export function loadResponses() {
-  if (!existsSync(RESPONSES_FILE)) return {};
-  try { return JSON.parse(readFileSync(RESPONSES_FILE, 'utf8')); } catch { return {}; }
+  return storeLoad(RESPONSES_KEY, RESPONSES_FILE);
 }
-export function recordResponse({ id, status, reason, person, taskText }) {
+export async function recordResponse({ id, status, reason, person, taskText }) {
   if (!id || !['done', 'notdone'].includes(status)) throw new Error('bad response');
   // Enrich person/task from the source notes when the client didn't send them.
   if (!person || !taskText) {
     try {
       const date = id.replace(/-\d+$/, '');
-      const item = buildCheckin(date, { all: true }).items.find((i) => i.id === id);
+      const item = (await buildCheckin(date, { all: true })).items.find((i) => i.id === id);
       if (item) { person = person || item.person; taskText = taskText || item.text; }
     } catch { /* leave blank */ }
   }
-  const all = loadResponses();
+  const all = await loadResponses();
   all[id] = { id, status, reason: reason || '', person: person || '', taskText: taskText || '', at: new Date().toISOString() };
-  writeFileSync(RESPONSES_FILE, JSON.stringify(all, null, 2) + '\n');
+  await storeSave(RESPONSES_KEY, RESPONSES_FILE, all);
   return all[id];
 }
 
@@ -256,26 +285,26 @@ export async function handleCheckin(res, opts = {}) {
 }
 
 /** GET /api/checkin/responses — the collected ✅/❌ + reasons. */
-export function handleResponses(res) {
-  try { return json(res, 200, { ok: true, responses: loadResponses() }); }
+export async function handleResponses(res) {
+  try { return json(res, 200, { ok: true, responses: await loadResponses() }); }
   catch (e) { return json(res, 500, { ok: false, error: e.message }); }
 }
 
 /** POST /api/checkin/respond — record one ✅/❌ (+ reason). body already parsed. */
-export function handleRespond(res, body) {
+export async function handleRespond(res, body) {
   try {
-    const saved = recordResponse(body || {});
+    const saved = await recordResponse(body || {});
     postStatusNotice(saved).catch(() => {}); // echo into the AI space, best-effort
     return json(res, 200, { ok: true, saved });
   } catch (e) { return json(res, 400, { ok: false, error: e.message }); }
 }
 
 /** POST /api/checkin-tasks — save the edited task list, or reset to notes. */
-export function handleSaveTasks(res, body) {
+export async function handleSaveTasks(res, body) {
   try {
     const { date, tasks, reset } = body || {};
     if (!date) throw new Error('date required');
-    if (reset) { resetTasks(date); return json(res, 200, { ok: true, reset: true }); }
-    return json(res, 200, { ok: true, tasks: saveTasks(date, tasks) });
+    if (reset) { await resetTasks(date); return json(res, 200, { ok: true, reset: true }); }
+    return json(res, 200, { ok: true, tasks: await saveTasks(date, tasks) });
   } catch (e) { return json(res, 400, { ok: false, error: e.message }); }
 }
