@@ -1,13 +1,17 @@
 /**
- * chat-app-core.js — Google Chat app: posts the check-in as an INTERACTIVE card
- * and updates it in place when people tap ✅/❌ (❌ opens a reason dialog).
+ * chat-app-core.js — Google Chat app for the EOD check-in.
  *
- * Needs (env, server-side): a service-account key with the chat.bot scope, and
- * the target space:
- *   GCHAT_SERVICE_ACCOUNT_JSON   the full service-account key JSON (or _B64)
+ * Posts the check-in as an interactive card and repaints it in place on every
+ * click (no dialog, no extra API call — each click's reply IS the update):
+ *   ✅ Done        -> task shows "✅ Done", buttons gone
+ *   ❌ Not done    -> task swaps buttons for an inline reason box + Submit
+ *   Submit         -> task shows "❌ Not done — <reason>", buttons gone
+ * Every result is also stored (so the dashboard shows it).
+ *
+ * Env (server-side): a service-account key (chat.bot scope) + the space —
+ * needed only to POST the initial card, NOT to handle clicks:
+ *   GCHAT_SERVICE_ACCOUNT_JSON   (or _B64)
  *   GCHAT_SPACE                  spaces/XXXXXXXX
- *
- * The interaction endpoint is api/chat-bot.js (set as the app's HTTP endpoint).
  */
 import crypto from 'node:crypto';
 import { loadDotEnv } from './sync-core.js';
@@ -45,12 +49,14 @@ async function getAccessToken() {
   return j.access_token;
 }
 
-// Build the interactive card for a date. Tasks already answered show their
-// result (no buttons); unanswered tasks show ✅ Done / ❌ Not done buttons.
-async function buildCard(date, itemIds) {
+const btn = (text, fn, id) => ({ text, onClick: { action: { function: fn, parameters: [{ key: 'id', value: id }] } } });
+
+// Build the interactive card. `awaitingId` = the task currently showing its
+// inline reason box (transient, from a "Not done" click).
+async function buildCard(date, opts = {}) {
   const checkin = await buildCheckin(date, { all: true });
   let items = checkin.items;
-  if (Array.isArray(itemIds)) items = items.filter((i) => itemIds.includes(i.id));
+  if (Array.isArray(opts.itemIds)) items = items.filter((i) => opts.itemIds.includes(i.id));
   const responses = await loadResponses();
   const byPerson = {};
   for (const it of items) (byPerson[it.person] = byPerson[it.person] || []).push(it);
@@ -62,14 +68,18 @@ async function buildCard(date, itemIds) {
       const r = responses[it.id];
       if (r) {
         const status = r.status === 'done' ? '✅ Done' : `❌ Not done${r.reason ? ` — ${r.reason}` : ''}`;
-        return [{ decoratedText: { text: label, bottomLabel: status } }];
+        return [{ decoratedText: { text: label, bottomLabel: status, wrapText: true } }];
+      }
+      if (opts.awaitingId === it.id) {
+        return [
+          { textParagraph: { text: label } },
+          { textInput: { name: 'reason', label: 'Reason (blocker / new ETA)', type: 'MULTIPLE_LINE' } },
+          { buttonList: { buttons: [btn('Submit', 'submitNotDone', it.id), btn('Cancel', 'cancelMark', it.id)] } },
+        ];
       }
       return [
         { textParagraph: { text: label } },
-        { buttonList: { buttons: [
-          { text: '✅ Done', onClick: { action: { function: 'markDone', parameters: [{ key: 'id', value: it.id }] } } },
-          { text: '❌ Not done', onClick: { action: { function: 'markNotDone', interaction: 'OPEN_DIALOG', parameters: [{ key: 'id', value: it.id }] } } },
-        ] } },
+        { buttonList: { buttons: [btn('✅ Done', 'markDone', it.id), btn('❌ Not done', 'markNotDone', it.id)] } },
       ];
     }),
   }));
@@ -81,7 +91,7 @@ export async function postInteractiveCard(checkin) {
   const token = await getAccessToken();
   const space = process.env.GCHAT_SPACE;
   const itemIds = checkin.items.map((i) => i.id);
-  const body = await buildCard(checkin.date, itemIds);
+  const body = await buildCard(checkin.date, { itemIds });
   const r = await fetch(`${CHAT_API}/${space}/messages`, {
     method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
   });
@@ -91,55 +101,32 @@ export async function postInteractiveCard(checkin) {
   return j;
 }
 
-async function updateCard(date) {
-  const meta = (await loadCardMeta())[date];
-  if (!meta || !meta.messageName) return;
-  const token = await getAccessToken();
-  const body = await buildCard(date, meta.itemIds);
-  await fetch(`${CHAT_API}/${meta.messageName}?updateMask=cardsV2`, {
-    method: 'PATCH', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-  });
-}
-
-function reasonDialog(id) {
-  return { actionResponse: { type: 'DIALOG', dialogAction: { dialog: { body: { sections: [{ widgets: [
-    { textInput: { label: 'Why isn’t it done? (blocker / new ETA)', type: 'MULTIPLE_LINE', name: 'reason' } },
-    { buttonList: { buttons: [{ text: 'Submit', onClick: { action: { function: 'submitNotDone', parameters: [{ key: 'id', value: id }] } } }] } },
-  ] }] } } } } };
-}
 const dateOf = (id) => (id || '').replace(/-o?\d+$/, '');
+const update = async (id, opts) => ({ actionResponse: { type: 'UPDATE_MESSAGE' }, ...(await buildCard(dateOf(id), opts)) });
+async function itemIdsFor(id) { const m = (await loadCardMeta())[dateOf(id)]; return m && m.itemIds; }
 
 /** Handle an interaction event from Google Chat. Returns the response JSON. */
 export async function handleChatEvent(event) {
   try { console.log('[chat-bot]', JSON.stringify(event).slice(0, 800)); } catch { /* noop */ }
   const type = event && event.type;
-  // Support both the classic Chat event (event.common) and the newer add-on
-  // event (event.commonEventObject). Parameters may be an object map or an
-  // array of {key,value}.
   const common = (event && (event.common || event.commonEventObject)) || {};
   const rawParams = common.parameters || {};
-  const params = Array.isArray(rawParams)
-    ? Object.fromEntries(rawParams.map((p) => [p.key, p.value]))
-    : rawParams;
+  const params = Array.isArray(rawParams) ? Object.fromEntries(rawParams.map((p) => [p.key, p.value])) : rawParams;
   const fn = common.invokedFunction || (event && event.action && event.action.actionMethodName);
 
   if (type === 'ADDED_TO_SPACE') return { text: '✅ SprintHub is here. Daily EOD check-ins will post in this space.' };
   if (type === 'MESSAGE' && !fn) return { text: 'I post the daily EOD check-in card here — tap ✅ Done or ❌ Not done on your tasks.' };
-  if (fn || type === 'CARD_CLICKED') {
-    const id = params.id;
-    if (fn === 'markDone') {
-      await recordResponse({ id, status: 'done' });
-      const meta = (await loadCardMeta())[dateOf(id)];
-      return { actionResponse: { type: 'UPDATE_MESSAGE' }, ...(await buildCard(dateOf(id), meta && meta.itemIds)) };
-    }
-    if (fn === 'markNotDone') return reasonDialog(id);
-    if (fn === 'submitNotDone') {
-      const fi = common.formInputs || {};
-      const reason = (fi.reason && fi.reason.stringInputs && fi.reason.stringInputs.value && fi.reason.stringInputs.value[0]) || '';
-      await recordResponse({ id, status: 'notdone', reason });
-      await updateCard(dateOf(id));
-      return { actionResponse: { type: 'DIALOG', dialogAction: { actionStatus: { statusCode: 'OK', userFacingMessage: 'Saved ✅' } } } };
-    }
+
+  const id = params.id;
+  const itemIds = await itemIdsFor(id);
+  if (fn === 'markDone') { await recordResponse({ id, status: 'done' }); return update(id, { itemIds }); }
+  if (fn === 'markNotDone') { return update(id, { itemIds, awaitingId: id }); }
+  if (fn === 'cancelMark') { return update(id, { itemIds }); }
+  if (fn === 'submitNotDone') {
+    const fi = common.formInputs || {};
+    const reason = (fi.reason && fi.reason.stringInputs && fi.reason.stringInputs.value && fi.reason.stringInputs.value[0]) || '';
+    await recordResponse({ id, status: 'notdone', reason });
+    return update(id, { itemIds });
   }
   return {};
 }
