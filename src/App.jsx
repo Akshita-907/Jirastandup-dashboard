@@ -997,10 +997,12 @@ function App() {
   const [transcriptQuery, setTranscriptQuery] = useState('');
   const [checkin, setCheckin] = useState(null); // { loading } | { data } | { error }
   const [checkinResponses, setCheckinResponses] = useState({});
-  const runCheckin = async (preview) => {
+  const [checkinScope, setCheckinScope] = useState('eod'); // 'eod' | 'all'
+  const runCheckin = async (preview, scope = checkinScope) => {
     setCheckin({ loading: true, preview });
     try {
-      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin${preview ? '?preview=1' : ''}`);
+      const qs = [preview ? 'preview=1' : '', scope === 'all' ? 'all=1' : ''].filter(Boolean).join('&');
+      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin${qs ? `?${qs}` : ''}`);
       setCheckin({ data: await r.json() });
     } catch (e) {
       setCheckin({ error: e.message });
@@ -1014,6 +1016,42 @@ function App() {
     } catch { /* ignore */ }
   };
   useEffect(() => { loadCheckinResponses(); }, []);
+  // Live-ish refresh of ✅/❌ responses while the Standup tab is open.
+  useEffect(() => {
+    if (currentTab !== 'standup') return undefined;
+    const id = setInterval(loadCheckinResponses, 20000);
+    return () => clearInterval(id);
+  }, [currentTab]);
+
+  // Editable task list for the check-in (PM can add / edit / delete before sending)
+  const [tasksOpen, setTasksOpen] = useState(false);
+  const [tasks, setTasks] = useState(null); // { date, list:[{id,person,text}], edited, dirty, saving }
+  const loadTasks = async () => {
+    try {
+      const r = await fetch(`${import.meta.env.BASE_URL}api/checkin?preview=1&all=1`);
+      const d = await r.json();
+      setTasks({ date: d.date, list: (d.items || []).map((i) => ({ id: i.id, person: i.person, text: i.text })), edited: !!d.edited, dirty: false, saving: false });
+    } catch { /* ignore */ }
+  };
+  const openTaskEditor = () => { setTasksOpen(true); loadTasks(); };
+  const setRow = (idx, field, val) => setTasks((t) => ({ ...t, dirty: true, list: t.list.map((r, i) => (i === idx ? { ...r, [field]: val } : r)) }));
+  const addRow = () => setTasks((t) => ({ ...t, dirty: true, list: [...t.list, { id: '', person: '', text: '' }] }));
+  const deleteRow = (idx) => setTasks((t) => ({ ...t, dirty: true, list: t.list.filter((_, i) => i !== idx) }));
+  const saveTasks = async () => {
+    setTasks((t) => ({ ...t, saving: true }));
+    try {
+      await fetch(`${import.meta.env.BASE_URL}api/checkin-tasks`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: tasks.date, tasks: tasks.list }) });
+      await loadTasks();
+      if (checkin?.data) runCheckin(true);
+    } catch { setTasks((t) => ({ ...t, saving: false })); }
+  };
+  const resetTasks = async () => {
+    try {
+      await fetch(`${import.meta.env.BASE_URL}api/checkin-tasks`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ date: tasks.date, reset: true }) });
+      await loadTasks();
+      if (checkin?.data) runCheckin(true);
+    } catch { /* ignore */ }
+  };
 
   // Respond flow: chat ✅/❌ buttons link here as ?checkin=<id>&mark=done|notdone
   const [respond, setRespond] = useState(() => {
@@ -1039,7 +1077,7 @@ function App() {
   };
   useEffect(() => {
     if (!respond) return;
-    fetch(`${import.meta.env.BASE_URL}api/checkin?preview=1`).then((r) => r.json()).then((d) => {
+    fetch(`${import.meta.env.BASE_URL}api/checkin?preview=1&all=1`).then((r) => r.json()).then((d) => {
       const item = (d.items || []).find((i) => i.id === respond.id) || null;
       setRespond((s) => (s ? { ...s, item } : s));
     }).catch(() => {});
@@ -2044,8 +2082,17 @@ function App() {
               {/* EOD CHECK-IN — post deadline commitments to the AI space for ✅/❌ */}
               <div className="section-panel">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                  <h2 className="section-title" style={{ margin: 0 }}>EOD check-in</h2>
-                  <div style={{ display: 'flex', gap: '8px' }}>
+                  <h2 className="section-title" style={{ margin: 0 }}>Daily check-in</h2>
+                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', border: '1px solid var(--border-color)', borderRadius: '8px', overflow: 'hidden' }}>
+                      {[{ k: 'eod', l: 'EOD tasks' }, { k: 'all', l: 'All tasks' }].map((s) => (
+                        <button key={s.k} onClick={() => { setCheckinScope(s.k); if (checkin?.data) runCheckin(true, s.k); }}
+                          style={{ padding: '6px 12px', fontSize: '13px', border: 'none', cursor: 'pointer', background: checkinScope === s.k ? 'var(--color-primary)' : 'transparent', color: checkinScope === s.k ? '#fff' : 'var(--text-primary)' }}>{s.l}</button>
+                      ))}
+                    </div>
+                    <button className="btn btn-secondary" onClick={() => (tasksOpen ? setTasksOpen(false) : openTaskEditor())}>
+                      <Icon name="settings" size={14} /> {tasksOpen ? 'Close editor' : 'Edit tasks'}
+                    </button>
                     <button className="btn btn-secondary" disabled={checkin?.loading} onClick={() => runCheckin(true)}>
                       <Icon name="clock" size={14} /> Preview
                     </button>
@@ -2055,13 +2102,46 @@ function App() {
                   </div>
                 </div>
                 <p style={{ margin: '6px 0 0' }}>
-                  Posts each person’s <strong>“by EOD / by &lt;time&gt;”</strong> commitment from the latest standup into the Google Chat AI space,
-                  so they react ✅ done / ❌ not done. Runs automatically at 6&nbsp;PM too.
+                  Posts each person’s tasks from the latest standup into the Google Chat AI space, so they react ✅ done / ❌ not done.
+                  {' '}<strong>{checkinScope === 'all' ? 'All tasks' : 'EOD tasks'}</strong> mode: {checkinScope === 'all' ? 'every task discussed in the call.' : 'only “by EOD / by <time>” commitments.'} Runs automatically at 6&nbsp;PM too.
                 </p>
+
+                {tasksOpen && tasks && (
+                  <div style={{ marginTop: '14px', border: '1px solid var(--border-color)', borderRadius: '10px', padding: '14px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                      <strong style={{ fontSize: '13px' }}>
+                        Tasks for {tasks.date} {tasks.edited && <span style={{ color: 'var(--color-primary)', fontWeight: 500 }}>· edited</span>}
+                      </strong>
+                      <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Add a ticket # in the text (e.g. 4053) to link it.</span>
+                    </div>
+                    <datalist id="checkin-people">
+                      {personBriefs.map((p) => <option key={p.name} value={p.name} />)}
+                    </datalist>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                      {tasks.list.map((r, idx) => (
+                        <div key={idx} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                          <input list="checkin-people" value={r.person} onChange={(e) => setRow(idx, 'person', e.target.value)} placeholder="Owner"
+                            style={{ width: '150px', flexShrink: 0, padding: '7px 9px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-subtle)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                          <input value={r.text} onChange={(e) => setRow(idx, 'text', e.target.value)} placeholder="Task description"
+                            style={{ flex: 1, padding: '7px 9px', borderRadius: '6px', border: '1px solid var(--border-color)', background: 'var(--bg-subtle)', color: 'var(--text-primary)', fontSize: '13px' }} />
+                          <button onClick={() => deleteRow(idx)} title="Remove" style={{ border: 'none', background: 'transparent', color: 'var(--color-danger)', cursor: 'pointer', fontSize: '16px', padding: '0 4px' }}>✕</button>
+                        </div>
+                      ))}
+                      {tasks.list.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '13px', margin: 0 }}>No tasks — add one below.</p>}
+                    </div>
+                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', marginTop: '12px', flexWrap: 'wrap' }}>
+                      <button className="btn btn-secondary" onClick={addRow}>+ Add task</button>
+                      <button className="btn btn-primary" disabled={!tasks.dirty || tasks.saving} onClick={saveTasks}>{tasks.saving ? 'Saving…' : 'Save tasks'}</button>
+                      {tasks.edited && <button className="btn btn-secondary" onClick={resetTasks}>Reset to notes</button>}
+                      {tasks.dirty && <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>Unsaved changes</span>}
+                    </div>
+                  </div>
+                )}
                 {checkin?.error && <p style={{ color: 'var(--color-danger)', fontSize: '13px' }}>Failed: {checkin.error}</p>}
                 {checkin?.data && (() => {
                   const d = checkin.data;
-                  if (d.reason === 'no-deadline-items') return <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: 0 }}>No deadline commitments in the {d.date || 'latest'} notes — nothing to send.</p>;
+                  if (d.reason === 'no-deadline-items') return <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: 0 }}>No “by EOD / by &lt;time&gt;” commitments in the {d.date || 'latest'} notes — switch to <strong>All tasks</strong> to include everything discussed.</p>;
+                  if (d.reason === 'no-tasks') return <p style={{ color: 'var(--text-muted)', fontSize: '13px', marginBottom: 0 }}>No tasks found in the {d.date || 'latest'} notes.</p>;
                   return (
                     <div style={{ marginTop: '10px' }}>
                       <p style={{ fontSize: '13px', margin: '0 0 8px', fontWeight: 600 }}>
@@ -2077,10 +2157,14 @@ function App() {
                     </div>
                   );
                 })()}
-                {Object.keys(checkinResponses).length > 0 && (
+                {Object.keys(checkinResponses).length > 0 && (() => {
+                  const vals = Object.values(checkinResponses);
+                  const doneN = vals.filter((r) => r.status === 'done').length;
+                  const notN = vals.length - doneN;
+                  return (
                   <div style={{ marginTop: '16px', borderTop: '1px solid var(--border-color)', paddingTop: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <h3 style={{ margin: '0 0 8px' }}>Responses</h3>
+                      <h3 style={{ margin: '0 0 8px' }}>Responses <span style={{ fontWeight: 400, fontSize: '13px', color: 'var(--text-muted)' }}>· <span style={{ color: 'var(--color-success, #16a34a)' }}>{doneN} done</span> · <span style={{ color: 'var(--color-danger)' }}>{notN} not done</span></span></h3>
                       <button className="btn btn-secondary" style={{ padding: '4px 10px', fontSize: '12px' }} onClick={loadCheckinResponses}>Refresh</button>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -2095,8 +2179,9 @@ function App() {
                         </div>
                       ))}
                     </div>
+                    <p style={{ fontSize: '11px', color: 'var(--text-muted)', margin: '8px 0 0' }}>Updates live as people react in the AI space (auto-refreshes).</p>
                   </div>
-                )}
+                  ); })()}
               </div>
 
               {/* STANDUP NOTES (clean, from the daily call) */}

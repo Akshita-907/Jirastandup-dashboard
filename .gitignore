@@ -28,3 +28,4 @@ dist-ssr
 
 # Runtime EOD check-in responses (per-machine)
 checkin-responses.json
+checkin-overrides.json

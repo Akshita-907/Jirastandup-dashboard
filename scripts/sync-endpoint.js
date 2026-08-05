@@ -10,7 +10,7 @@
 
 import { fetchSprintData } from './sync-core.js';
 import { fetchBitbucketActivity } from './bitbucket-core.js';
-import { handleCheckin, handleResponses, handleRespond } from './checkin-core.js';
+import { handleCheckin, handleResponses, handleRespond, handleSaveTasks } from './checkin-core.js';
 
 function readBody(req) {
   return new Promise((resolve) => {
@@ -137,10 +137,15 @@ export function syncApiPlugin() {
         if (req.method !== 'POST') return next();
         handleRespond(res, await readBody(req));
       });
+      server.middlewares.use('/api/checkin-tasks', async (req, res, next) => {
+        if (req.method !== 'POST') return next();
+        handleSaveTasks(res, await readBody(req));
+      });
       server.middlewares.use('/api/checkin', (req, res, next) => {
         if (req.method !== 'GET') return next();
         const dryRun = /[?&]preview=1\b/.test(req.url || '');
-        handleCheckin(res, { dryRun });
+        const all = /[?&]all=1\b/.test(req.url || '');
+        handleCheckin(res, { dryRun, all });
       });
     },
   };
