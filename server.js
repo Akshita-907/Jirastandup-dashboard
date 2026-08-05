@@ -99,7 +99,8 @@ const server = createServer(async (req, res) => {
     if (req.method !== 'GET') { res.statusCode = 405; return res.end('Method not allowed'); }
     const dryRun = /[?&]preview=1\b/.test(url);
     const all = /[?&]all=1\b/.test(url);
-    return handleCheckin(res, { dryRun, all });
+    const app = /[?&]app=1\b/.test(url);
+    return handleCheckin(res, { dryRun, all, app });
   }
   return serveStatic(res, url);
 });

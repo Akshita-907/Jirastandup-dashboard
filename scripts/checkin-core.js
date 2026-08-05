@@ -75,6 +75,17 @@ async function storeSave(key, file, obj) {
 }
 const RESPONSES_KEY = 'checkin:responses';
 const OVERRIDES_KEY = 'checkin:overrides';
+const CARDMETA_KEY = 'checkin:cardmeta';
+const CARDMETA_FILE = process.env.VERCEL ? join(tmpdir(), 'checkin-cardmeta.json') : join(ROOT, 'checkin-cardmeta.json');
+
+// Posted interactive-card metadata per date: { messageName, itemIds } — lets the
+// Chat app update the right message in place when someone marks a task.
+export function loadCardMeta() { return storeLoad(CARDMETA_KEY, CARDMETA_FILE); }
+export async function saveCardMeta(date, meta) {
+  const all = await loadCardMeta();
+  all[date] = meta;
+  await storeSave(CARDMETA_KEY, CARDMETA_FILE, all);
+}
 
 // A commitment is "time-bound" if it names a same-day deadline.
 const DEADLINE_RE = /\b(eod|end of day|by\s+end of day|by\s+\d{1,2}(:\d{2})?\s*(am|pm)?|by\s+noon|by\s+midnight|by\s+today|today)\b/i;
@@ -224,6 +235,16 @@ export async function sendCheckin(opts = {}) {
   const base = { date: checkin.date, scope: checkin.scope, edited: checkin.edited, items: checkin.items, messages };
 
   if (!checkin.items.length) return { ok: false, reason: opts.all ? 'no-tasks' : 'no-deadline-items', ...base, items: [], messages: [], sent: 0 };
+
+  // Interactive Google Chat app card (buttons update the card in place).
+  if (opts.app) {
+    const { chatAppConfigured, postInteractiveCard } = await import('./chat-app-core.js');
+    if (!chatAppConfigured()) return { ok: false, reason: 'no-chat-app', ...base, sent: 0 };
+    if (opts.dryRun) return { ok: false, reason: 'dry-run', ...base, sent: 0, preview: true, via: 'app' };
+    await postInteractiveCard(checkin);
+    return { ok: true, ...base, sent: 1, via: 'app' };
+  }
+
   if (!webhook || opts.dryRun) {
     return { ok: false, reason: webhook ? 'dry-run' : 'no-webhook', ...base, sent: 0, preview: true };
   }
