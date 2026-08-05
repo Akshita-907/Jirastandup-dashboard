@@ -113,11 +113,19 @@ const dateOf = (id) => (id || '').replace(/-o?\d+$/, '');
 export async function handleChatEvent(event) {
   try { console.log('[chat-bot]', JSON.stringify(event).slice(0, 800)); } catch { /* noop */ }
   const type = event && event.type;
+  // Support both the classic Chat event (event.common) and the newer add-on
+  // event (event.commonEventObject). Parameters may be an object map or an
+  // array of {key,value}.
+  const common = (event && (event.common || event.commonEventObject)) || {};
+  const rawParams = common.parameters || {};
+  const params = Array.isArray(rawParams)
+    ? Object.fromEntries(rawParams.map((p) => [p.key, p.value]))
+    : rawParams;
+  const fn = common.invokedFunction || (event && event.action && event.action.actionMethodName);
+
   if (type === 'ADDED_TO_SPACE') return { text: '✅ SprintHub is here. Daily EOD check-ins will post in this space.' };
-  if (type === 'MESSAGE') return { text: 'I post the daily EOD check-in card here — tap ✅ Done or ❌ Not done on your tasks.' };
-  if (type === 'CARD_CLICKED') {
-    const fn = event.common && event.common.invokedFunction;
-    const params = (event.common && event.common.parameters) || {};
+  if (type === 'MESSAGE' && !fn) return { text: 'I post the daily EOD check-in card here — tap ✅ Done or ❌ Not done on your tasks.' };
+  if (fn || type === 'CARD_CLICKED') {
     const id = params.id;
     if (fn === 'markDone') {
       await recordResponse({ id, status: 'done' });
@@ -126,10 +134,9 @@ export async function handleChatEvent(event) {
     }
     if (fn === 'markNotDone') return reasonDialog(id);
     if (fn === 'submitNotDone') {
-      const reason = event.common && event.common.formInputs && event.common.formInputs.reason
-        && event.common.formInputs.reason.stringInputs && event.common.formInputs.reason.stringInputs.value
-        && event.common.formInputs.reason.stringInputs.value[0];
-      await recordResponse({ id, status: 'notdone', reason: reason || '' });
+      const fi = common.formInputs || {};
+      const reason = (fi.reason && fi.reason.stringInputs && fi.reason.stringInputs.value && fi.reason.stringInputs.value[0]) || '';
+      await recordResponse({ id, status: 'notdone', reason });
       await updateCard(dateOf(id));
       return { actionResponse: { type: 'DIALOG', dialogAction: { actionStatus: { statusCode: 'OK', userFacingMessage: 'Saved ✅' } } } };
     }
