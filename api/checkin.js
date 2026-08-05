@@ -16,5 +16,6 @@ export default async function handler(req, res) {
   }
   const dryRun = /[?&]preview=1\b/.test(req.url || '');
   const all = /[?&]all=1\b/.test(req.url || '');
-  await handleCheckin(res, { dryRun, all });
+  const app = /[?&]app=1\b/.test(req.url || '');
+  await handleCheckin(res, { dryRun, all, app });
 }
